@@ -1,2 +1,2 @@
-const { generateDependencyReport } = require('@discordjs/voice');
-console.log(generateDependencyReport());
+// const { generateDependencyReport } = require('@discordjs/voice');
+// console.log(generateDependencyReport());
