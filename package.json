@@ -4,14 +4,13 @@
   "description": "A simple Node app built on fastify, instantly up and running. Built to be remixed on Glitch.com.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node voice.js"
   },
   "dependencies": {
-    "fastify": "^4.2.1",
-    "handlebars": "^4.7.7",
-    "@fastify/formbody": "^7.0.1",
-    "@fastify/static": "^6.4.1",
-    "@fastify/view": "^7.0.0"
+    "discord.js": "^14.1.2",
+    "@discordjs/voice": "^0.11.0",
+    "@discordjs/opus": "^0.8.0",
+    "sodium": "^3.0.2"
   },
   "engines": {
     "node": "14.x"
