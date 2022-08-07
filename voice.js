@@ -1,6 +1,8 @@
 // const { generateDependencyReport } = require('@discordjs/voice');
 // console.log(generateDependencyReport());
 
+import { Configuration, OpenAIApi } from "openai";
+
 const { 
     createAudioPlayer, 
     createAudioResource, 
@@ -15,6 +17,11 @@ const { Client, GatewayIntentBits } = require('discord.js');
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
+
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
