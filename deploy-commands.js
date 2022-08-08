@@ -6,7 +6,10 @@ const guildId = "";
 const token = "";
 
 const commands = [
-	new SlashCommandBuilder().setName('ping').setDescription('Replies with pong!'),
+	new SlashCommandBuilder().setName('hoopsPing').setDescription('Replies with pong!'),
+  new SlashCommandBuilder().setName('hoopsJoin').setDescription('Joins voice channel'),
+  new SlashCommandBuilder().setName('hoopsLeave').setDescription('Leavs voice channel'),
+  new SlashCommandBuilder().setName('hoopsGenerate').setDescription('Generate text based on prompt')
 ]
 	.map(command => command.toJSON());
 
