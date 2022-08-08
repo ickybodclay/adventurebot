@@ -38,18 +38,18 @@ client.on('interactionCreate', async interaction => {
       if (!connection) connection.destroy();
       await interaction.reply({ content: 'Leaving voice channel', ephemeral: true});
     } else if (interaction.commandName === 'k9generate') {
-        const response = await generate(interaction.options.getString('input'));
-        await interaction.reply({ content: response, ephemeral: true });
+      const response = await generate(interaction.options.getString('input'));
+      await interaction.reply({ content: response, ephemeral: true });
     } 
   });
 
 // Login to Discord with your client's token
-client.login();
+//client.login();
 
 function setupVoice() {
     if(!client) return console.error("Please connect to client first!");
 
-    channel = client.channels.get(voiceChannelId); // on-air
+    channel = client.channels.cache.get(voiceChannelId);
     if (!channel) return console.error("The channel does not exist!");
 
     connection = joinVoiceChannel({
