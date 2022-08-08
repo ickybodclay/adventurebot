@@ -29,13 +29,14 @@ var channel, connection;
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
   
-    if (interaction.commandName === 'hoopsPing') {
+    if (interaction.commandName === 'k9ping') {
       await interaction.reply('Hoops: Pong!');
-    } else if (interaction.commandName === 'hoopsJoin') {
+    } else if (interaction.commandName === 'k9join') {
         setupVoice();
-    } else if (interaction.commandName === 'hoopsLeave') {
+    } else if (interaction.commandName === 'k9leave') {
         if (!connection) connection.destroy();
-    } else if (interaction.commandName === 'hoopsGenerate') {
+    } else if (interaction.commandName === 'k9generate') {
+        console.log(JSON.stringify(interaction.message));
         const response = await generate(interaction.message.content);
         await interaction.reply(response);
     } 
