@@ -38,7 +38,7 @@ client.on('interactionCreate', async interaction => {
       if (!connection) connection.destroy();
       await interaction.reply({ content: 'Leaving voice channel', ephemeral: true});
     } else if (interaction.commandName === 'k9generate') {
-      const response = await generate(interaction.options.getString('input'));
+      const response = await generate(interaction.user.username, interaction.options.getString('input'));
       await interaction.reply({ content: response, ephemeral: true });
     } 
   });
