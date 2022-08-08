@@ -40,7 +40,10 @@ client.on('interactionCreate', async interaction => {
         setupVoice();
     } else if (interaction.commandName === 'hoopsLeave') {
         if (!connection) connection.destroy();
-    }
+    } else if (interaction.commandName === 'hoopsGenerate') {
+        const response = await generate(interaction.message.content);
+        await interaction.reply(response);
+    } 
   });
 
 // Login to Discord with your client's token
@@ -89,4 +92,13 @@ function setupVoice() {
     player.on(AudioPlayerStatus.Pause, () => {
         // player.play(getNextResource());
     });
+}
+
+async function generate(prompt) {
+  const completion = await openai.createCompletion({
+    model: "text-davinci-002",
+    prompt: prompt,
+    temperature: 0.6,
+  });
+  return completion.data.choices[0].text;
 }
