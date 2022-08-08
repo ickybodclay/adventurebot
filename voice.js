@@ -91,11 +91,17 @@ function setupVoice() {
     });
 }
 
-async function generate(prompt) {
+async function generate(user, prompt) {
+  const chatPrompt = `The following is a conversation with an AI assistant named K9000. The assistant is very friendly, creative, and dumb.\n\n${user}: ${prompt}\nK9000:`;
   const completion = await openai.createCompletion({
     model: "text-davinci-002",
-    prompt: prompt,
-    temperature: 0.6,
+    prompt: chatPrompt,
+    temperature: 0.9,
+    max_tokens: 150,
+    top_p: 1,
+    frequency_penalty: 0,
+    presence_penalty: 0.6,
+    stop: [` ${user}:`, " K9000:"],
   });
   return completion.data.choices[0].text;
 }
