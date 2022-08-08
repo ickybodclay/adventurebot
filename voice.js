@@ -32,13 +32,14 @@ client.on('interactionCreate', async interaction => {
     if (interaction.commandName === 'k9ping') {
       await interaction.reply('Hoops: Pong!');
     } else if (interaction.commandName === 'k9join') {
-        setupVoice();
+      setupVoice();
+      await interaction.reply({ content: 'Joining voice channel', ephemeral: true});
     } else if (interaction.commandName === 'k9leave') {
-        if (!connection) connection.destroy();
+      if (!connection) connection.destroy();
+      await interaction.reply({ content: 'Leaving voice channel', ephemeral: true});
     } else if (interaction.commandName === 'k9generate') {
-        console.log(JSON.stringify(interaction.message));
-        const response = await generate(interaction.message.content);
-        await interaction.reply(response);
+        const response = await generate(interaction.options.getString('input'));
+        await interaction.reply({ content: response, ephemeral: true });
     } 
   });
 

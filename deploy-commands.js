@@ -13,9 +13,10 @@ const commands = [
     .setName('k9generate')
     .setDescription('Generate text based on prompt')
     .addStringOption(option =>
-		option.setName('input')
-			.setDescription('The input to echo back')
-			.setRequired(true))
+      option.setName('input')
+        .setDescription('The prompt to send as input to OpenAI')
+        .setRequired(true)
+    )
 ]
 	.map(command => command.toJSON());
 
