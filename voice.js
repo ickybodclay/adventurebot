@@ -10,6 +10,10 @@ const {
     AudioPlayerStatus, 
     VoiceConnectionStatus 
 } = require('@discordjs/voice');
+const TTSQueue = require("./tts-queue");
+
+// const queue = new TTSQueue();
+// queue.processQueue();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const configuration = new Configuration({
