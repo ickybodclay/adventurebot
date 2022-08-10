@@ -1,4 +1,5 @@
 const { createReadStream } = require('node:fs');
+const { join } = require('node:path');
 const {  
   createAudioResource,
   AudioPlayerStatus, 
@@ -18,17 +19,19 @@ module.exports = class TTSQueue {
 
   play(audio_file, close_callback = () => {}) {
     console.log(`playing: ${audio_file}`);
-    const resource = createAudioResource(createReadStream(audio_file), {
+    const resource = createAudioResource(createReadStream(join(__dirname, audio_file)), {
       inputType: StreamType.OggOpus,
     });
-    this._subscription.player.on(AudioPlayerStatus.Idle, () => {
-      if (this._isPlaying) {
-        this._isPlaying = false;
-        if (close_callback) close_callback();
-      }
-    });
-    this._subscription.player.on(AudioPlayerStatus.Playing, () => {
-      this._isPlaying = true;
+    this._subscription.player.once(AudioPlayerStatus.Playing, () => {
+      console.log("audio player entered playing state");
+      // now that player is playing, set callback for when player is idle (aka finished)
+      this._subscription.player.once(AudioPlayerStatus.Idle, () => {
+       console.log("audio player entered idle state");
+        if (this._isPlaying) {
+          this._isPlaying = false;
+          if (close_callback) close_callback();
+        }
+      });
     });
     this._subscription.player.play(resource);
   }
@@ -99,6 +102,7 @@ module.exports = class TTSQueue {
   async processQueue() {
     if (!this._isPlaying && !this._isStopped && this.size > 0) {
       this._next = this.mainPlayerQueue.shift(); // dequeue
+      this._isPlaying = true;
       this._next
         .generate(
           this._next.message.text,
