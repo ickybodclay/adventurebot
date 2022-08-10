@@ -137,10 +137,49 @@ async function generate(user, prompt) {
   return completion.data.choices[0].text;
 }
 
+const IGNORED_USERS = ["nightbot", "streamelements"];
+// Available Google Text-To-Speech Voices
+const VOICES_MAP = [
+  // male voices
+  "en-US-Wavenet-A",
+  "en-US-Wavenet-B",
+  "en-US-Wavenet-D",
+  "en-US-Wavenet-I",
+  "en-US-Wavenet-J",
+  "en-GB-Wavenet-B",
+  "en-GB-Wavenet-D",
+  "en-AU-Wavenet-B",
+  "en-AU-Wavenet-D",
+  "en-IN-Wavenet-B",
+  "en-IN-Wavenet-C",
+  "de-DE-Wavenet-D",
+  // female voices
+  "en-US-Wavenet-C",
+  "en-US-Wavenet-E",
+  "en-US-Wavenet-F",
+  "en-US-Wavenet-G",
+  "en-US-Wavenet-H",
+  "en-GB-Wavenet-A",
+  "en-GB-Wavenet-C",
+  "en-GB-Wavenet-F",
+  "en-AU-Wavenet-A",
+  "en-AU-Wavenet-C",
+  "en-IN-Wavenet-A",
+  "en-IN-Wavenet-D"
+];
 twitch.on("message", (channel, userstate, message, self) => {
-  // ignore echoed messages
+  // ignore echoed messages & commands
   if (self) return;
+  if (message.startsWith("!")) return;
   
+  const user = userstate.username;
+  if (IGNORED_USERS.indexOf(user) > -1) return;
+  
+  // const response = await generate(username, prompt); // FIXME: disabled for testing
+  const response = `Squak! ${message}`;
+  twitch.say(channel, response);
+  
+  // TODO map username to voice (seed RNG with username?)
   
 });
 
