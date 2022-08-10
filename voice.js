@@ -5,15 +5,13 @@ const { Configuration, OpenAIApi } = require('openai');
 const { Client, GatewayIntentBits } = require('discord.js');
 const { 
     createAudioPlayer, 
-    createAudioResource, 
-    joinVoiceChannel, 
-    AudioPlayerStatus, 
-    VoiceConnectionStatus 
+    joinVoiceChannel
 } = require('@discordjs/voice');
+const { playMessage } = require("./tts");
 const TTSQueue = require("./tts-queue");
 
-// const queue = new TTSQueue();
-// queue.processQueue();
+const queue = new TTSQueue();
+queue.processQueue();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const configuration = new Configuration({
@@ -22,13 +20,13 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
+const botName = "K9000";
+var channel;
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
 	console.log('Ready!');
 });
-
-var channel, connection;
 
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
@@ -36,67 +34,38 @@ client.on('interactionCreate', async interaction => {
     if (interaction.commandName === 'k9ping') {
       await interaction.reply('Hoops: Pong!');
     } else if (interaction.commandName === 'k9join') {
-      setupVoice();
+      setupVoice(queue);
       await interaction.reply({ content: 'Joining voice channel', ephemeral: true});
     } else if (interaction.commandName === 'k9leave') {
-      if (!connection) connection.destroy();
+      queue.destroyConnection();
       await interaction.reply({ content: 'Leaving voice channel', ephemeral: true});
     } else if (interaction.commandName === 'k9generate') {
-      const response = await generate(interaction.user.username, interaction.options.getString('input'));
+      const username = interaction.user.username;
+      const prompt = interaction.options.getString('input');
+      playMessage(queue, `${username}: ${prompt}`);
+      const response = await generate(username, prompt);
+      playMessage(queue, `${botName}: ${response}`);
       await interaction.reply({ content: response, ephemeral: true });
     } 
   });
 
-// Login to Discord with your client's token
-//client.login();
-
-function setupVoice() {
+function setupVoice(queue) {
     if(!client) return console.error("Please connect to client first!");
 
     channel = client.channels.cache.get(voiceChannelId);
     if (!channel) return console.error("The channel does not exist!");
 
-    connection = joinVoiceChannel({
+    const connection = joinVoiceChannel({
         channelId: channel.id,
         guildId: channel.guild.id,
         adapterCreator: channel.guild.voiceAdapterCreator,
     });
-    
     const player = createAudioPlayer();
-    const subscription = connection.subscribe(player);
-    
-    // const resource = createAudioResource('.data/tmp.mp3');
-    // player.play(resource);
-    
-    connection.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
-        console.log('Connection is in the Ready state!');
-    });
-    
-    // OR
-    // connection.on('stateChange', (oldState, newState) => {
-    // 	console.log(`Connection transitioned from ${oldState.status} to ${newState.status}`);
-    // });
-    
-    player.on('error', error => {
-        console.error(error);
-    });
-    
-    
-    player.on(AudioPlayerStatus.Idle, () => {
-        // player.play(getNextResource());
-    });
-    
-    player.on(AudioPlayerStatus.Playing, () => {
-        // player.play(getNextResource());
-    });
-    
-    player.on(AudioPlayerStatus.Pause, () => {
-        // player.play(getNextResource());
-    });
+    queue.subscription = connection.subscribe(player);
 }
 
 async function generate(user, prompt) {
-  const chatPrompt = `The following is a conversation with an AI assistant named K9000. The assistant is very friendly, creative, and dumb.\n\n${user}: ${prompt}\nK9000:`;
+  const chatPrompt = `The following is a conversation with an AI assistant named ${botName}. The assistant is very knowledgable, friendly, and dumb.\n\n${user}: ${prompt}\n${botName}:`;
   const completion = await openai.createCompletion({
     model: "text-davinci-002",
     prompt: chatPrompt,
@@ -105,7 +74,10 @@ async function generate(user, prompt) {
     top_p: 1,
     frequency_penalty: 0,
     presence_penalty: 0.6,
-    stop: [` ${user}:`, " K9000:"],
+    stop: [` ${user}:`, ` ${botName}:`],
   });
   return completion.data.choices[0].text;
 }
+
+// Login to Discord with your client's token
+client.login();

@@ -1,14 +1,38 @@
+const {  
+  createAudioResource,
+  AudioPlayerStatus, 
+  PlayerSubscription,
+  VoiceConnectionStatus
+} = require('@discordjs/voice');
+
 module.exports = class TTSQueue {
   constructor() {
     this.mainPlayerQueue = [];
-    this.player = null;
+    this._subscription = null;
     this._isPlaying = false;
     this._isStopped = false;
     this._next = null;
   }
 
-  play(audio_data, close_callback = () => {}) {
-    // TODO send audio data to Discord Bot player
+  play(audio_file, close_callback = () => {}) {
+    const resource = createAudioResource(audio_file);
+    this._subscription.player.play(resource);
+    this._subscription.player.on(AudioPlayerStatus.Idle, () => {
+      this._isPlaying = false;
+      if (close_callback) close_callback();
+  });
+  }
+
+  vpause() {
+    this._subscription.player.pause();
+  }
+
+  vunpause() {
+    this._subscription.player.unpause();
+  }
+
+  vstop() {
+    this._subscription.player.stop();
   }
 
   queue(message, generate, on_next_callback = () => {}) {
@@ -20,6 +44,28 @@ module.exports = class TTSQueue {
     });
   }
 
+  /**
+   * @param {PlayerSubscription} subscription
+   */
+  set subscription(subscription) {
+    this.destroyConnection(); // check if subscription exists and if so, destroy it
+
+    this._subscription = subscription;
+    this._subscription.connection.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
+        console.log('Connection is in the Ready state!');
+    });
+    this._subscription.player.on('error', error => {
+        console.error(error);
+    });
+  }
+
+  destroyConnection() {
+    if (this._subscription) {
+      this._subscription.connection.destroy();
+      this._subscription = null;
+    }
+  }
+
   get size() {
     return this.mainPlayerQueue.length;
   }
@@ -28,6 +74,7 @@ module.exports = class TTSQueue {
    * Stops and clears the queue.
    */
   stop() {
+    this.vstop();
     this._isStopped = true;
     this.mainPlayerQueue = [];
   }
@@ -47,11 +94,12 @@ module.exports = class TTSQueue {
         .generate(
           this._next.message.text,
           this._next.message.voice,
-          this._next.message.languageCode
+          this._next.message.languageCode,
+          this._next.message.filename
         )
         .then((audio_data) => {
           console.log(`> playing: ${this._next.message.text}`);
-          this.play(audio_data, this._next.callback);
+          this.play(this._next.message.filename, this._next.callback);
         })
         .catch((err) => {
           console.log(err);
