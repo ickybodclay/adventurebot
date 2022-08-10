@@ -36,7 +36,7 @@ client.on('interactionCreate', async interaction => {
     if (interaction.commandName === 'k9ping') {
       await interaction.reply('Hoops: Pong!');
     } else if (interaction.commandName === 'k9join') {
-      setupVoice(queue);
+      await setupVoice(queue);
       await interaction.reply({ content: 'Joining voice channel', ephemeral: true});
     } else if (interaction.commandName === 'k9leave') {
       // queue.destroyConnection();
@@ -52,15 +52,17 @@ client.on('interactionCreate', async interaction => {
     } 
   });
 
-function setupVoice(queue) {
+async function setupVoice(queue) {
     if(!client) return console.error("Please connect to client first!");
 
-    channel = client.channels.cache.get(voiceChannelId);
+    channel = await client.channels.fetch(voiceChannelId);
     if (!channel) return console.error("The channel does not exist!");
+  
+    console.log(`joining voice channel> channelName = ${channel.name}, channelId = ${channel.id}, guildId = ${channel.guild.id}`);
 
     const connection = joinVoiceChannel({
         channelId: channel.id,
-        guildId: channel.guild.id,
+        guildId: `${channel.guild.id}`,
         adapterCreator: channel.guild.voiceAdapterCreator,
     });
     // connection.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
@@ -91,6 +93,7 @@ function setupVoice(queue) {
     });
     queue._connection = connection;
     queue._player = player;
+    queue._subscription = connection.subscribe(player);
 }
 
 async function generate(user, prompt) {

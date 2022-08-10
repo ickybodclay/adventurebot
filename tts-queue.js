@@ -37,7 +37,6 @@ module.exports = class TTSQueue {
       });
     });
     this._player.play(resource);
-    this._subscription = this._connection.subscribe(this._player);
   }
 
 //   vpause() {
