@@ -45,7 +45,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
-const botName = "K9000";
+const botName = "K9000"; // Discord bot alias
 var channel;
 
 // When the client is ready, run this code (only once)
