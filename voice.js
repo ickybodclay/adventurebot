@@ -45,7 +45,7 @@ client.on('interactionCreate', async interaction => {
       const username = interaction.user.username;
       const prompt = interaction.options.getString('input');
       playMessage(queue, `${username}: ${prompt}`);
-      //const response = await generate(username, prompt);
+      //const response = await generate(username, prompt); // FIXME: disabled for TTS testing
       const response = "Boom shakalaka!";
       playMessage(queue, `${botName}: ${response}`);
       await interaction.reply({ content: response, ephemeral: true });
@@ -63,23 +63,29 @@ function setupVoice(queue) {
         guildId: channel.guild.id,
         adapterCreator: channel.guild.voiceAdapterCreator,
     });
-    connection.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
-        console.log('Connection is in the Ready state!');
-    });
-    connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
-      console.log('Connection is disconnected...');
-      try {
-        await Promise.race([
-          entersState(connection, VoiceConnectionStatus.Signalling, 5),
-          entersState(connection, VoiceConnectionStatus.Connecting, 5),
-        ]);
-        // Seems to be reconnecting to a new channel - ignore disconnect
-      } catch (error) {
-        // Seems to be a real disconnect which SHOULDN'T be recovered from
-        connection.destroy();
-      }
+    // connection.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
+    //     console.log('Connection is in the Ready state!');
+    // });
+    // connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
+    //   console.log('Connection is disconnected...');
+    //   try {
+    //     await Promise.race([
+    //       entersState(connection, VoiceConnectionStatus.Signalling, 5),
+    //       entersState(connection, VoiceConnectionStatus.Connecting, 5),
+    //     ]);
+    //     // Seems to be reconnecting to a new channel - ignore disconnect
+    //   } catch (error) {
+    //     // Seems to be a real disconnect which SHOULDN'T be recovered from
+    //     connection.destroy();
+    //   }
+    // });
+    connection.on('stateChange', (oldState, newState) => {
+      console.log(`Connection transitioned from ${oldState.status} to ${newState.status}`);
     });
     const player = createAudioPlayer();
+    player.on('stateChange', (oldState, newState) => {
+      console.log(`Audio player transitioned from ${oldState.status} to ${newState.status}`);
+    });
     player.on('error', error => {
       console.error(error);
     });
