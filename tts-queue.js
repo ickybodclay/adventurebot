@@ -11,12 +11,12 @@ const {
 module.exports = class TTSQueue {
   constructor() {
     this.mainPlayerQueue = [];
-    this._subscription = null;
     this._isPlaying = false;
     this._isStopped = false;
     this._next = null;
     this._player = null;
     this._connection = null;
+    this._subscription = null;
   }
 
   play(audio_file, close_callback = () => {}) {
@@ -25,30 +25,32 @@ module.exports = class TTSQueue {
     const resource = createAudioResource(createReadStream(join(__dirname, audio_file)), {
       inputType: StreamType.OggOpus,
     });
-    this._subscription.player.once(AudioPlayerStatus.Idle, () => {
-     console.log("audio player entered idle state");
-      if (this._isPlaying) {
-        this._isPlaying = false;
-        if (close_callback) close_callback();
-      }
-    });
-    this._subscription.player.once(AudioPlayerStatus.Playing, () => {
+    this._player.once(AudioPlayerStatus.Playing, () => {
       console.log("audio player entered playing state");
+      
+      this._player.once(AudioPlayerStatus.Idle, () => {
+       console.log("audio player entered idle state");
+        if (this._isPlaying) {
+          this._isPlaying = false;
+          if (close_callback) close_callback();
+        }
+      });
     });
-    this._subscription.player.play(resource);
+    this._player.play(resource);
+    this._subscription = this._connection.subscribe(this._player);
   }
 
-  vpause() {
-    this._subscription.player.pause();
-  }
+//   vpause() {
+//     this._player.pause();
+//   }
 
-  vunpause() {
-    this._subscription.player.unpause();
-  }
+//   vunpause() {
+//     this._player.unpause();
+//   }
 
-  vstop() {
-    this._subscription.player.stop();
-  }
+//   vstop() {
+//     this._player.stop();
+//   }
 
   queue(message, generate, on_next_callback = () => {}) {
     console.log(`< queued: ${message.text}`);
@@ -57,28 +59,6 @@ module.exports = class TTSQueue {
       generate: generate,
       callback: on_next_callback,
     });
-  }
-
-  /**
-   * @param {PlayerSubscription} subscription
-   */
-  set subscription(subscription) {
-    this.destroyConnection(); // check if subscription exists and if so, destroy it
-
-    this._subscription = subscription;
-    // this._subscription.connection.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
-    //     console.log('Connection is in the Ready state!');
-    // });
-    // this._subscription.player.on('error', error => {
-    //     console.error(error);
-    // });
-  }
-
-  destroyConnection() {
-    if (this._subscription) {
-      this._subscription.connection.destroy();
-      this._subscription = null;
-    }
   }
 
   get size() {

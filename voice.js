@@ -5,7 +5,9 @@ const { Configuration, OpenAIApi } = require('openai');
 const { Client, GatewayIntentBits } = require('discord.js');
 const { 
     createAudioPlayer, 
-    joinVoiceChannel
+    entersState,
+    joinVoiceChannel,
+    VoiceConnectionStatus
 } = require('@discordjs/voice');
 const { playMessage } = require("./tts");
 const TTSQueue = require("./tts-queue");
@@ -37,7 +39,7 @@ client.on('interactionCreate', async interaction => {
       setupVoice(queue);
       await interaction.reply({ content: 'Joining voice channel', ephemeral: true});
     } else if (interaction.commandName === 'k9leave') {
-      queue.destroyConnection();
+      // queue.destroyConnection();
       await interaction.reply({ content: 'Leaving voice channel', ephemeral: true});
     } else if (interaction.commandName === 'k9generate') {
       const username = interaction.user.username;
@@ -61,12 +63,28 @@ function setupVoice(queue) {
         guildId: channel.guild.id,
         adapterCreator: channel.guild.voiceAdapterCreator,
     });
-  
+    connection.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
+        console.log('Connection is in the Ready state!');
+    });
+    connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
+      console.log('Connection is disconnected...');
+      try {
+        await Promise.race([
+          entersState(connection, VoiceConnectionStatus.Signalling, 5),
+          entersState(connection, VoiceConnectionStatus.Connecting, 5),
+        ]);
+        // Seems to be reconnecting to a new channel - ignore disconnect
+      } catch (error) {
+        // Seems to be a real disconnect which SHOULDN'T be recovered from
+        connection.destroy();
+      }
+    });
     const player = createAudioPlayer();
     player.on('error', error => {
       console.error(error);
     });
-    queue.subscription = connection.subscribe(player);
+    queue._connection = connection;
+    queue._player = player;
 }
 
 async function generate(user, prompt) {
