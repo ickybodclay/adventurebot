@@ -42,10 +42,10 @@ client.on('interactionCreate', async interaction => {
       await interaction.reply('Hoops: Pong!');
     } else if (interaction.commandName === 'k9join') {
       await setupVoice(queue);
-      await interaction.reply({ content: 'Joining voice channel', ephemeral: true});
+      // await interaction.reply({ content: 'Joining voice channel', ephemeral: true});
     } else if (interaction.commandName === 'k9leave') {
-      // queue.destroyConnection();
-      await interaction.reply({ content: 'Leaving voice channel', ephemeral: true});
+      queue.vdisconnect();
+      // await interaction.reply({ content: 'Leaving voice channel', ephemeral: true});
     } else if (interaction.commandName === 'k9generate') {
       const username = interaction.user.username;
       const prompt = interaction.options.getString('input');
@@ -114,4 +114,4 @@ async function generate(user, prompt) {
 }
 
 // Login to Discord with your client's token
-// client.login();
+client.login();

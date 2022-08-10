@@ -38,6 +38,16 @@ module.exports = class TTSQueue {
     });
     this._player.play(resource);
   }
+  
+  vdisconnect() {
+    if (this._connection) {
+      this._connection.destroy();
+      
+      this._player = null;
+      this._connection = null;
+      this._subscription = null;
+    }
+  }
 
 //   vpause() {
 //     this._player.pause();
