@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "description": "Discord bot to TTS Twitch chat and occasionally respond with Goose AI",
   "main": "voice.js",
-  "type": "module",
   "scripts": {
     "start": "node voice.js"
   },
@@ -14,7 +13,7 @@
     "@discordjs/rest": "^1.0.1",
     "libsodium-wrappers": "^0.7.10",
     "openai": "^3.0.0",
-    "node-fetch": "^3.2.10"
+    "node-fetch": "2.6.6"
   },
   "engines": {
     "node": "16.14.2"

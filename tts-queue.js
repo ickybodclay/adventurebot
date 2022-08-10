@@ -16,11 +16,11 @@ module.exports = class TTSQueue {
 
   play(audio_file, close_callback = () => {}) {
     const resource = createAudioResource(audio_file);
-    this._subscription.player.play(resource);
     this._subscription.player.on(AudioPlayerStatus.Idle, () => {
       this._isPlaying = false;
       if (close_callback) close_callback();
-  });
+    });
+    this._subscription.player.play(resource);
   }
 
   vpause() {

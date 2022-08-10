@@ -70,6 +70,28 @@ function syntehsize_GCTTS_chunk(chunk, voice, languageCode, filename) {
     });
 }
 
+function json(response) {
+  return response.json();
+}
+
+function splitMessageToChunks(message, maxChunkLength) {
+  const words = message.split(" ");
+  const chunkedMsgArray = [];
+  var currentChunk = "";
+  words.forEach((word) => {
+    if (currentChunk.length + word.length >= maxChunkLength) {
+      chunkedMsgArray.push(currentChunk.trim());
+      currentChunk = `${word} `;
+    } else {
+      currentChunk += `${word} `;
+    }
+  });
+  if (currentChunk.length > 0) {
+    chunkedMsgArray.push(currentChunk.trim());
+  }
+  return chunkedMsgArray;
+}
+
 function escapeJsonValue(unsafe) {
   return unsafe.replace(/'"]/g, function (c) {
     switch (c) {
