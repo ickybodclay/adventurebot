@@ -180,7 +180,9 @@ twitch.on("message", (channel, userstate, message, self) => {
   twitch.say(channel, response);
   
   // TODO map username to voice (seed RNG with username?)
-  
+  // TODO tts chat message
+  // TODO tts bot response
+  // TODO while queue is not empty, ignore chat messages (this needs testing, has to be better way)
 });
 
 // Login to Discord with your client's token

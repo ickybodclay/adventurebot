@@ -1,12 +1,14 @@
 # Hular Hoops Bot
 
-Discord bot for handling Twitch chat with Goose.AI
+Discord bot that generates TTS for Twitch chat and occasionally responds with AI generated text.
 
-![Glitch](https://cdn.glitch.com/a9975ea6-8949-4bab-addb-8a95021dc2da%2FLogo_Color.svg?v=1602781328576)
+## Setup
 
-## You built this with Glitch!
-
-[Glitch](https://glitch.com) is a friendly community where millions of people come together to build web apps and websites.
-
-- Need more help? [Check out our Help Center](https://help.glitch.com/) for answers to any common questions.
-- Ready to make it official? [Become a paid Glitch member](https://glitch.com/pricing) to boost your app with private sharing, more storage and memory, domains and more.
+1) Add required secret keys.  You'll need the following:
+    - A Twitch bot
+    - A Discord bot
+    - The twitch channel that you want to observe chat of
+    - The Discord guild id* (server you want bot to join)
+    - The Dicord voice channel id* (voice channel you want bot to join)
+    
+    *Note: use the 
