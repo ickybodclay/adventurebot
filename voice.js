@@ -3,25 +3,42 @@
 
 const wait = require('node:timers/promises').setTimeout;
 const { Configuration, OpenAIApi } = require('openai');
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client: DiscordClient, GatewayIntentBits } = require('discord.js');
 const { 
     createAudioPlayer, 
     entersState,
     joinVoiceChannel,
     VoiceConnectionStatus
 } = require('@discordjs/voice');
+const { Client: TwitchClient } = require("tmi.js");
+
+
 const { playMessage } = require("./tts");
 const TTSQueue = require("./tts-queue");
 
 const queue = new TTSQueue();
 queue.processQueue();
 
-const client = new Client({ 
+const discord = new DiscordClient({ 
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildVoiceStates
   ] 
 });
+
+const twitch = new TwitchClient({
+  // options: { debug: true },
+  connection: {
+    secure: true,
+    reconnect: true,
+  },
+  identity: {
+    username: process.env.TWITCH_BOT_USERNAME,
+    password: process.env.TWITCH_BOT_TOKEN,
+  },
+  channels: [process.env.TWITCH_CHANNEL],
+});
+
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -32,11 +49,11 @@ const botName = "K9000";
 var channel;
 
 // When the client is ready, run this code (only once)
-client.once('ready', () => {
+discord.once('ready', () => {
 	console.log('Ready!');
 });
 
-client.on('interactionCreate', async interaction => {
+discord.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
   
     if (interaction.commandName === 'k9ping') {
@@ -65,9 +82,9 @@ client.on('interactionCreate', async interaction => {
   });
 
 async function setupVoice(queue) {
-    if(!client) return console.error("Please connect to client first!");
+    if(!discord) return console.error("Please connect to client first!");
 
-    channel = await client.channels.fetch(voiceChannelId);
+    channel = await discord.channels.fetch(voiceChannelId);
     if (!channel) return console.error("The channel does not exist!");
   
     console.log(`joining voice channel> channelName = ${channel.name}, channelId = ${channel.id}, guildId = ${channel.guild.id}`);
@@ -120,5 +137,14 @@ async function generate(user, prompt) {
   return completion.data.choices[0].text;
 }
 
+twitch.on("message", (channel, userstate, message, self) => {
+  // ignore echoed messages
+  if (self) return;
+  
+  
+});
+
 // Login to Discord with your client's token
-// client.login();
+// discord.login();
+
+// twitch.login();

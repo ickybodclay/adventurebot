@@ -20,16 +20,14 @@ module.exports = class TTSQueue {
   }
 
   play(audio_file, close_callback = () => {}) {
-    console.log(`playing: ${audio_file}`);
-    console.log(`>> ${join(__dirname, audio_file)}`);
     const resource = createAudioResource(createReadStream(join(__dirname, audio_file)), {
       inputType: StreamType.OggOpus,
     });
     this._player.once(AudioPlayerStatus.Playing, () => {
-      console.log("audio player entered playing state");
+      // console.log("audio player entered playing state");
       
       this._player.once(AudioPlayerStatus.Idle, () => {
-       console.log("audio player entered idle state");
+       // console.log("audio player entered idle state");
         if (this._isPlaying) {
           this._isPlaying = false;
           if (close_callback) close_callback();
@@ -50,15 +48,15 @@ module.exports = class TTSQueue {
   }
 
   vpause() {
-    this._player.pause();
+    if (this._player) this._player.pause();
   }
 
   vunpause() {
-    this._player.unpause();
+    if (this._player) this._player.unpause();
   }
 
   vstop() {
-    this._player.stop();
+    if (this._player) this._player.stop();
   }
 
   queue(message, generate, on_next_callback = () => {}) {

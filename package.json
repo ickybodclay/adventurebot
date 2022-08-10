@@ -13,7 +13,8 @@
     "@discordjs/rest": "^1.0.1",
     "libsodium-wrappers": "^0.7.10",
     "openai": "^3.0.0",
-    "node-fetch": "2.6.6"
+    "node-fetch": "2.6.6",
+    "tmi.js": "^1.8.5"
   },
   "engines": {
     "node": "16.14.2"
