@@ -1,6 +1,8 @@
+const { createReadStream } = require('node:fs');
 const {  
   createAudioResource,
   AudioPlayerStatus, 
+  StreamType,
   PlayerSubscription,
   VoiceConnectionStatus
 } = require('@discordjs/voice');
@@ -15,10 +17,18 @@ module.exports = class TTSQueue {
   }
 
   play(audio_file, close_callback = () => {}) {
-    const resource = createAudioResource(audio_file);
+    console.log(`playing: ${audio_file}`);
+    const resource = createAudioResource(createReadStream(audio_file), {
+      inputType: StreamType.OggOpus,
+    });
     this._subscription.player.on(AudioPlayerStatus.Idle, () => {
-      this._isPlaying = false;
-      if (close_callback) close_callback();
+      if (this._isPlaying) {
+        this._isPlaying = false;
+        if (close_callback) close_callback();
+      }
+    });
+    this._subscription.player.on(AudioPlayerStatus.Playing, () => {
+      this._isPlaying = true;
     });
     this._subscription.player.play(resource);
   }
@@ -89,7 +99,6 @@ module.exports = class TTSQueue {
   async processQueue() {
     if (!this._isPlaying && !this._isStopped && this.size > 0) {
       this._next = this.mainPlayerQueue.shift(); // dequeue
-      this._isPlaying = true;
       this._next
         .generate(
           this._next.message.text,
