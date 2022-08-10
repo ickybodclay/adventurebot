@@ -18,8 +18,7 @@ queue.processQueue();
 const client = new Client({ 
   intents: [
     GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildVoiceStates,
-    GatewayIntentBits.GuildPresences
+    GatewayIntentBits.GuildVoiceStates
   ] 
 });
 const configuration = new Configuration({
@@ -51,7 +50,7 @@ client.on('interactionCreate', async interaction => {
       const username = interaction.user.username;
       const prompt = interaction.options.getString('input');
       playMessage(queue, `${username}: ${prompt}`);
-      //const response = await generate(username, prompt); // FIXME: disabled for TTS testing
+      // const response = await generate(username, prompt); // FIXME: disabled for testing
       const response = "Boom shakalaka!";
       playMessage(queue, `${botName}: ${response}`);
       await interaction.reply({ content: response, ephemeral: true });
@@ -115,4 +114,4 @@ async function generate(user, prompt) {
 }
 
 // Login to Discord with your client's token
-client.login();
+// client.login();
