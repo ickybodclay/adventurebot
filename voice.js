@@ -109,4 +109,4 @@ async function generate(user, prompt) {
 }
 
 // Login to Discord with your client's token
-client.login();
+// client.login();
