@@ -15,7 +15,13 @@ const TTSQueue = require("./tts-queue");
 const queue = new TTSQueue();
 queue.processQueue();
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ 
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildPresences
+  ] 
+});
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -61,26 +67,23 @@ async function setupVoice(queue) {
     console.log(`joining voice channel> channelName = ${channel.name}, channelId = ${channel.id}, guildId = ${channel.guild.id}`);
 
     const connection = joinVoiceChannel({
-        channelId: channel.id,
+        channelId: `${channel.id}`,
         guildId: `${channel.guild.id}`,
         adapterCreator: channel.guild.voiceAdapterCreator,
     });
-    // connection.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
-    //     console.log('Connection is in the Ready state!');
-    // });
-    // connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
-    //   console.log('Connection is disconnected...');
-    //   try {
-    //     await Promise.race([
-    //       entersState(connection, VoiceConnectionStatus.Signalling, 5),
-    //       entersState(connection, VoiceConnectionStatus.Connecting, 5),
-    //     ]);
-    //     // Seems to be reconnecting to a new channel - ignore disconnect
-    //   } catch (error) {
-    //     // Seems to be a real disconnect which SHOULDN'T be recovered from
-    //     connection.destroy();
-    //   }
-    // });
+    connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
+      console.log('Connection is disconnected...');
+      try {
+        await Promise.race([
+          entersState(connection, VoiceConnectionStatus.Signalling, 5),
+          entersState(connection, VoiceConnectionStatus.Connecting, 5),
+        ]);
+        // Seems to be reconnecting to a new channel - ignore disconnect
+      } catch (error) {
+        // Seems to be a real disconnect which SHOULDN'T be recovered from
+        connection.destroy();
+      }
+    });
     connection.on('stateChange', (oldState, newState) => {
       console.log(`Connection transitioned from ${oldState.status} to ${newState.status}`);
     });
@@ -112,4 +115,4 @@ async function generate(user, prompt) {
 }
 
 // Login to Discord with your client's token
-// client.login();
+client.login();

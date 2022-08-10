@@ -68,7 +68,7 @@ module.exports = class TTSQueue {
    * Stops and clears the queue.
    */
   stop() {
-    this.vstop();
+    // this.vstop();
     this._isStopped = true;
     this.mainPlayerQueue = [];
   }
