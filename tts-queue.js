@@ -49,17 +49,17 @@ module.exports = class TTSQueue {
     }
   }
 
-//   vpause() {
-//     this._player.pause();
-//   }
+  vpause() {
+    this._player.pause();
+  }
 
-//   vunpause() {
-//     this._player.unpause();
-//   }
+  vunpause() {
+    this._player.unpause();
+  }
 
-//   vstop() {
-//     this._player.stop();
-//   }
+  vstop() {
+    this._player.stop();
+  }
 
   queue(message, generate, on_next_callback = () => {}) {
     console.log(`< queued: ${message.text}`);

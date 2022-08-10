@@ -1,6 +1,7 @@
 // const { generateDependencyReport } = require('@discordjs/voice');
 // console.log(generateDependencyReport());
 
+const wait = require('node:timers/promises').setTimeout;
 const { Configuration, OpenAIApi } = require('openai');
 const { Client, GatewayIntentBits } = require('discord.js');
 const { 
@@ -43,10 +44,12 @@ client.on('interactionCreate', async interaction => {
     } else if (interaction.commandName === 'k9join') {
       await setupVoice(queue);
       await interaction.reply("Joining voice channel...");
+      await wait(1000);
       await interaction.deleteReply();
     } else if (interaction.commandName === 'k9leave') {
       queue.vdisconnect();
       await interaction.reply("Leaving voice channel...");
+      await wait(1000);
       await interaction.deleteReply();
     } else if (interaction.commandName === 'k9generate') {
       const username = interaction.user.username;
@@ -56,6 +59,7 @@ client.on('interactionCreate', async interaction => {
       const response = "Boom shakalaka!";
       playMessage(queue, `${botName}: ${response}`);
       await interaction.reply(`${botName}: ${response}`);
+      await wait(1000);
       await interaction.deleteReply();
     }
   });

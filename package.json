@@ -1,7 +1,7 @@
 {
   "name": "hular-hoops-bot",
   "version": "0.1.0",
-  "description": "Discord bot to TTS Twitch chat and occasionally respond with Goose AI",
+  "description": "Discord bot to TTS Twitch chat and occasionally respond with AI generated text",
   "main": "voice.js",
   "scripts": {
     "start": "node voice.js"
@@ -24,6 +24,9 @@
   "license": "MIT",
   "keywords": [
     "node",
-    "glitch"
+    "glitch",
+    "openai",
+    "discord",
+    "twitch"
   ]
 }
