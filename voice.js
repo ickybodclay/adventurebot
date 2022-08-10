@@ -43,7 +43,8 @@ client.on('interactionCreate', async interaction => {
       const username = interaction.user.username;
       const prompt = interaction.options.getString('input');
       playMessage(queue, `${username}: ${prompt}`);
-      const response = await generate(username, prompt);
+      //const response = await generate(username, prompt);
+      const response = "Boom shakalaka!";
       playMessage(queue, `${botName}: ${response}`);
       await interaction.reply({ content: response, ephemeral: true });
     } 
@@ -60,7 +61,11 @@ function setupVoice(queue) {
         guildId: channel.guild.id,
         adapterCreator: channel.guild.voiceAdapterCreator,
     });
+  
     const player = createAudioPlayer();
+    player.on('error', error => {
+      console.error(error);
+    });
     queue.subscription = connection.subscribe(player);
 }
 

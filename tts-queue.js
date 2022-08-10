@@ -15,23 +15,25 @@ module.exports = class TTSQueue {
     this._isPlaying = false;
     this._isStopped = false;
     this._next = null;
+    this._player = null;
+    this._connection = null;
   }
 
   play(audio_file, close_callback = () => {}) {
     console.log(`playing: ${audio_file}`);
+    console.log(`>> ${join(__dirname, audio_file)}`);
     const resource = createAudioResource(createReadStream(join(__dirname, audio_file)), {
       inputType: StreamType.OggOpus,
     });
+    this._subscription.player.once(AudioPlayerStatus.Idle, () => {
+     console.log("audio player entered idle state");
+      if (this._isPlaying) {
+        this._isPlaying = false;
+        if (close_callback) close_callback();
+      }
+    });
     this._subscription.player.once(AudioPlayerStatus.Playing, () => {
       console.log("audio player entered playing state");
-      // now that player is playing, set callback for when player is idle (aka finished)
-      this._subscription.player.once(AudioPlayerStatus.Idle, () => {
-       console.log("audio player entered idle state");
-        if (this._isPlaying) {
-          this._isPlaying = false;
-          if (close_callback) close_callback();
-        }
-      });
     });
     this._subscription.player.play(resource);
   }
@@ -64,12 +66,12 @@ module.exports = class TTSQueue {
     this.destroyConnection(); // check if subscription exists and if so, destroy it
 
     this._subscription = subscription;
-    this._subscription.connection.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
-        console.log('Connection is in the Ready state!');
-    });
-    this._subscription.player.on('error', error => {
-        console.error(error);
-    });
+    // this._subscription.connection.on(VoiceConnectionStatus.Ready, (oldState, newState) => {
+    //     console.log('Connection is in the Ready state!');
+    // });
+    // this._subscription.player.on('error', error => {
+    //     console.error(error);
+    // });
   }
 
   destroyConnection() {
