@@ -156,7 +156,7 @@ const VOICES_MAP = [
   // female voices
   "en-US-Wavenet-C",
   "en-US-Wavenet-E",
-  "en-US-Wavenet-F",
+  // "en-US-Wavenet-F",
   "en-US-Wavenet-G",
   "en-US-Wavenet-H",
   "en-GB-Wavenet-A",
@@ -167,7 +167,9 @@ const VOICES_MAP = [
   "en-IN-Wavenet-A",
   "en-IN-Wavenet-D"
 ];
-twitch.on("message", (channel, userstate, message, self) => {
+const BOT_VOICE = "en-US-Wavenet-F";
+
+twitch.on("message", async (channel, userstate, message, self) => {
   // ignore echoed messages & commands
   if (self) return;
   if (message.startsWith("!")) return;
@@ -175,15 +177,28 @@ twitch.on("message", (channel, userstate, message, self) => {
   const user = userstate.username;
   if (IGNORED_USERS.indexOf(user) > -1) return;
   
-  // const response = await generate(username, prompt); // FIXME: disabled for testing
-  const response = `Squak! ${message}`;
-  twitch.say(channel, response);
-  
-  // TODO map username to voice (seed RNG with username?)
-  // TODO tts chat message
-  // TODO tts bot response
-  // TODO while queue is not empty, ignore chat messages (this needs testing, has to be better way)
+  if (queue.size == 0) {
+    // const response = await generate(username, message); // FIXME: disabled for testing
+    const userVoice = mapUserToVoice(user, VOICES_MAP);
+    playMessage(queue, `${user}: ${message}`, userVoice);
+
+    const response = await fakeGenerate(user, message);
+    playMessage(queue, response, BOT_VOICE);
+    twitch.say(channel, response);
+  }
 });
+
+async function fakeGenerate(username, prompt) {
+  return `Squak! ${username} says ${prompt}`;
+}
+
+function mapUserToVoice(user, voices) {
+  var index = 0;
+  for (let i = 0; i < user.length; i++) {
+    index += user.charCodeAt(i)
+  }
+  return voices[index % voices.length];
+}
 
 // Login to Discord with your client's token
 // discord.login();

@@ -71,12 +71,16 @@ module.exports = class TTSQueue {
   get size() {
     return this.mainPlayerQueue.length;
   }
+  
+  get isConnected() {
+    return this._subscription != null;
+  }
 
   /**
    * Stops and clears the queue.
    */
   stop() {
-    // this.vstop();
+    this.vstop();
     this._isStopped = true;
     this.mainPlayerQueue = [];
   }
@@ -89,7 +93,10 @@ module.exports = class TTSQueue {
   }
 
   async processQueue() {
-    if (!this._isPlaying && !this._isStopped && this.size > 0) {
+    if (!this._isPlaying && 
+        !this._isStopped && 
+        this.isConnected() &&
+        this.size > 0) {
       this._next = this.mainPlayerQueue.shift(); // dequeue
       this._isPlaying = true;
       this._next
