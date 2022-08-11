@@ -178,11 +178,11 @@ twitch.on("message", async (channel, userstate, message, self) => {
   if (IGNORED_USERS.indexOf(user) > -1) return;
   
   if (queue.size == 0) {
-    // const response = await generate(username, message); // FIXME: disabled for testing
     const userVoice = mapUserToVoice(user, VOICES_MAP);
     playMessage(queue, `${user}: ${message}`, userVoice);
 
-    const response = await fakeGenerate(user, message);
+    const response = await generate(user, message);
+    // const response = await fakeGenerate(user, message); // for testing only
     playMessage(queue, response, BOT_VOICE);
     twitch.say(channel, response);
   }
