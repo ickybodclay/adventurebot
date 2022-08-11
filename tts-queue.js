@@ -84,11 +84,20 @@ module.exports = class TTSQueue {
     this._isStopped = true;
     this.mainPlayerQueue = [];
   }
+  
+  /**
+   * Pauses the queue.
+   */
+  pause() {
+    this.vpause();
+    this._isStopped = true;
+  }
 
   /**
    * Resume the queue.
    */
   resume() {
+    this.vunpause();
     this._isStopped = false;
   }
 

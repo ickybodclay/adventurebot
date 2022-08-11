@@ -124,11 +124,11 @@ async function setupVoice(queue) {
 }
 
 async function generate(user, prompt) {
-  const chatPrompt = `The following is a conversation with an AI comedian named ${botName}. The comedian is very funny, friendly, and dumb.\n\n${user}: ${escapeJsonValue(prompt)}\n${botName}:`;
+  const chatPrompt = `The following is a conversation with an AI named ${botName}.\n\n${user}: ${escapeJsonValue(prompt)}\n${botName}:`;
   const completion = await openai.createCompletion({
     model: "text-davinci-002",
     prompt: chatPrompt,
-    temperature: 0.9,
+    temperature: 0.6,
     max_tokens: 150,
     top_p: 1,
     frequency_penalty: 0,
@@ -192,6 +192,12 @@ twitch.on("message", async (channel, userstate, message, self) => {
       queue.vpause();
     } else if (command === "skip") {
       queue.vstop();
+    } else if (command === "qplay") {
+      queue.resume();
+    } else if (command === "qpause") {
+      queue.pause();
+    } else if (command === "qstop") {
+      queue.stop();
     }
     
     return;
