@@ -123,7 +123,7 @@ async function setupVoice(queue) {
 }
 
 async function generate(user, prompt) {
-  const chatPrompt = `The following is a conversation with an AI assistant named ${botName}. The assistant is very knowledgable, friendly, and dumb.\n\n${user}: ${prompt}\n${botName}:`;
+  const chatPrompt = `The following is a conversation with an AI comedian named ${botName}. The comedian is very funny, friendly, and dumb.\n\n${user}: ${prompt}\n${botName}:`;
   const completion = await openai.createCompletion({
     model: "text-davinci-002",
     prompt: chatPrompt,
