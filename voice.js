@@ -14,6 +14,7 @@ const { Client: TwitchClient } = require("tmi.js");
 
 
 const { playMessage } = require("./tts");
+const { escapeJsonValue } = require("./utils");
 const TTSQueue = require("./tts-queue");
 
 const queue = new TTSQueue();
@@ -168,14 +169,35 @@ const VOICES_MAP = [
   "en-IN-Wavenet-D"
 ];
 const BOT_VOICE = "en-US-Wavenet-F";
+const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 
 twitch.on("message", async (channel, userstate, message, self) => {
   // ignore echoed messages & commands
   if (self) return;
-  if (message.startsWith("!")) return;
   
   const user = userstate.username;
+  const isOwner = channel === `#${user}`;
+  const isMod = userstate.mod;
+  
   if (IGNORED_USERS.indexOf(user) > -1) return;
+  
+  const cmdFound = message.match(cmdRegex);
+  if (cmdFound && (isOwner || isMod)) {
+    var [_, command, argument] = cmdFound;
+    command = command.toLowerCase();
+    
+    if (command === "play") {
+      queue.vunpause();
+    } else if (command === "pause") {
+      queue.vpause();
+    } else if (command === "skip") {
+      queue.vstop();
+    }
+    
+    return;
+  }
+  
+  if (message.startsWith("!")) return;
   
   if (queue.size == 0) {
     const userVoice = mapUserToVoice(user, VOICES_MAP);

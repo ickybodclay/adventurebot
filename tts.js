@@ -1,5 +1,6 @@
 const fs = require("fs");
 const fetch = require("node-fetch");
+const { escapeJsonValue } = require("./utils");
 
 const languageCodeRegex = /([a-z]{2}-[A-Z]{2})-.+/i;
 
@@ -90,17 +91,6 @@ function splitMessageToChunks(message, maxChunkLength) {
     chunkedMsgArray.push(currentChunk.trim());
   }
   return chunkedMsgArray;
-}
-
-function escapeJsonValue(unsafe) {
-  return unsafe.replace(/'"]/g, function (c) {
-    switch (c) {
-      case "'":
-        return "\\'";
-      case '"':
-        return '\\"';
-    }
-  });
 }
 
 module.exports = { playMessage };
