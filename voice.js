@@ -128,10 +128,10 @@ async function generate(user, prompt) {
   const completion = await openai.createCompletion({
     model: "text-davinci-002",
     prompt: chatPrompt,
-    temperature: 0.6,
+    temperature: 0.9,
     max_tokens: 150,
     top_p: 1,
-    frequency_penalty: 0,
+    frequency_penalty: 0.35,
     presence_penalty: 0.6,
     stop: [` ${user}:`, ` ${botName}:`],
   });
