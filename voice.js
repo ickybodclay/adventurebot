@@ -108,12 +108,12 @@ async function setupVoice(queue) {
       }
     });
     connection.on('stateChange', (oldState, newState) => {
-      console.log(`Connection transitioned from ${oldState.status} to ${newState.status}`);
+      console.log(`! Discord voice connection: ${oldState.status} -> ${newState.status}`);
     });
     const player = createAudioPlayer();
-    player.on('stateChange', (oldState, newState) => {
-      console.log(`Audio player transitioned from ${oldState.status} to ${newState.status}`);
-    });
+    // player.on('stateChange', (oldState, newState) => {
+    //   console.log(`Audio player transitioned from ${oldState.status} to ${newState.status}`);
+    // });
     player.on('error', error => {
       console.error(error);
     });
@@ -200,7 +200,10 @@ function mapUserToVoice(user, voices) {
   return voices[index % voices.length];
 }
 
-// Login to Discord with your client's token
-// discord.login();
+function start() {
+  console.log("Starting hular hoops bot...");
+  discord.login();
+  twitch.connect();
+}
 
-// twitch.login();
+// start();

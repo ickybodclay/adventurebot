@@ -72,7 +72,7 @@ module.exports = class TTSQueue {
     return this.mainPlayerQueue.length;
   }
   
-  get isConnected() {
+  isConnected() {
     return this._subscription != null;
   }
 
