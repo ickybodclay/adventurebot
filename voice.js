@@ -124,7 +124,7 @@ async function setupVoice(queue) {
 }
 
 async function generate(user, prompt) {
-  const chatPrompt = `The following is a conversation with an AI comedian named ${botName}. The comedian is very funny, friendly, and dumb.\n\n${user}: ${prompt}\n${botName}:`;
+  const chatPrompt = `The following is a conversation with an AI comedian named ${botName}. The comedian is very funny, friendly, and dumb.\n\n${user}: ${escapeJsonValue(prompt)}\n${botName}:`;
   const completion = await openai.createCompletion({
     model: "text-davinci-002",
     prompt: chatPrompt,
@@ -199,7 +199,8 @@ twitch.on("message", async (channel, userstate, message, self) => {
   
   if (message.startsWith("!")) return;
   
-  if (queue.size == 0) {
+  if (queue.isConnected() && 
+      queue.size == 0) {
     const userVoice = mapUserToVoice(user, VOICES_MAP);
     playMessage(queue, `${user}: ${message}`, userVoice);
 
