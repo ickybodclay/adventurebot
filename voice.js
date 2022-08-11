@@ -206,7 +206,7 @@ twitch.on("message", async (channel, userstate, message, self) => {
 
     const response = await generate(user, message);
     // const response = await fakeGenerate(user, message); // for testing only
-    playMessage(queue, response, BOT_VOICE);
+    playMessage(queue, `${botName}: ${response}`, BOT_VOICE);
     twitch.say(channel, `@${user} ${response}`);
   }
 });
