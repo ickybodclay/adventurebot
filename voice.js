@@ -240,7 +240,7 @@ async function generate(user, prompt) {
   recentChat.forEach(chat => chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`);
   chatPrompt += `\n${botName}:`;
   
-  console.log(`>>>START<<<\n${chatPrompt}\n>>>END<<<`);
+  // console.log(`>>>START<<<\n${chatPrompt}\n>>>END<<<`);
   
   const completion = await openai.createCompletion({
     model: "text-davinci-002", // "gpt-neo-20b",
