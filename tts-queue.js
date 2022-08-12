@@ -75,6 +75,10 @@ module.exports = class TTSQueue {
   isConnected() {
     return this._subscription != null;
   }
+  
+  get isPlaying() {
+    return this._isPlaying;
+  }
 
   /**
    * Stops and clears the queue.

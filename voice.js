@@ -206,14 +206,18 @@ twitch.on("message", async (channel, userstate, message, self) => {
   if (message.startsWith("!")) return;
   
   if (queue.isConnected() && 
-      queue.size == 0) {
+      queue.size == 0 &&
+      !queue.isPlaying() &&
+      message.startsWith("$")) {
+    const formattedMessage = message.substring(1).trim();
+    if (formattedMessage.length == 0) return;
     const userVoice = mapUserToVoice(user, VOICES_MAP);
-    playMessage(queue, `${user}: ${message}`, userVoice);
+    playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
 
-    const response = await generate(user, message);
+    const response = await generate(user, formattedMessage);
     // const response = await fakeGenerate(user, message); // for testing only
     playMessage(queue, `${botName}: ${response}`, BOT_VOICE);
-    twitch.say(channel, `@${user} ${response}`);
+    // twitch.say(channel, `@${user} ${response}`);
   }
 });
 
