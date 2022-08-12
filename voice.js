@@ -45,6 +45,8 @@ const twitch = new TwitchClient({
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
+  // apiKey: process.env.GOOSE_API_KEY,
+  // basePath: 'https://api.goose.ai/v1',
 });
 const openai = new OpenAIApi(configuration);
 
@@ -126,21 +128,6 @@ async function setupVoice(queue) {
     queue._subscription = connection.subscribe(player);
 }
 
-async function generate(user, prompt) {
-  const chatPrompt = `The following is a conversation with an AI named ${botName}.\n\n${user}: ${escapeJsonValue(prompt)}\n${botName}:`;
-  const completion = await openai.createCompletion({
-    model: "text-davinci-002",
-    prompt: chatPrompt,
-    temperature: 0.9,
-    max_tokens: 150,
-    top_p: 1,
-    frequency_penalty: 0.35,
-    presence_penalty: 0.6,
-    stop: [` ${user}:`, ` ${botName}:`],
-  });
-  return completion.data.choices[0].text;
-}
-
 const IGNORED_USERS = ["nightbot", "streamelements"];
 // Available Google Text-To-Speech Voices
 const VOICES_MAP = [
@@ -173,7 +160,9 @@ const VOICES_MAP = [
 ];
 const BOT_VOICE = "en-US-Wavenet-F";
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
+const recentUsers = []; // formatted as chat stop tokens for openai
 const recentChat = [];
+const recentLimit = 5;
 
 twitch.on("message", async (channel, userstate, message, self) => {
   // ignore echoed messages & commands
@@ -224,14 +213,17 @@ twitch.on("message", async (channel, userstate, message, self) => {
     // const response = await fakeGenerate(user, message); // for testing only
     playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
     // twitch.say(channel, `@${user} ${response}`);
+    
+    recentUsers.push(` ${user}:`);
     recentChat.push({user: user, message: formattedMessage});
     recentChat.push({user: botName, message: cleanResposne});
+    
+    while (recentChat.length >= recentLimit) {
+      recentUsers.shift();
+      recentChat.shift();
+    }
   }
 });
-
-async function fakeGenerate(username, prompt) {
-  return `Squak! ${username} says ${prompt}`;
-}
 
 function mapUserToVoice(user, voices) {
   var index = 0;
@@ -239,6 +231,25 @@ function mapUserToVoice(user, voices) {
     index += user.charCodeAt(i)
   }
   return voices[index % voices.length];
+}
+
+async function generate(user, prompt) {
+  const chatPrompt = `The following is a conversation with an AI named ${botName}.\n\n${user}: ${escapeJsonValue(prompt)}\n${botName}:`;
+  const completion = await openai.createCompletion({
+    model: "text-davinci-002",
+    prompt: chatPrompt,
+    temperature: 0.9,
+    max_tokens: 150,
+    top_p: 1,
+    frequency_penalty: 0.35,
+    presence_penalty: 0.6,
+    stop: [` ${user}:`, ` ${botName}:`],
+  });
+  return completion.data.choices[0].text;
+}
+
+async function fakeGenerate(username, prompt) {
+  return `Squak! ${username} says ${prompt}`;
 }
 
 function start() {
