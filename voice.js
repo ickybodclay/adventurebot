@@ -211,6 +211,7 @@ twitch.on("message", async (channel, userstate, message, self) => {
       message.startsWith("$")) {
     const formattedMessage = message.substring(1).trim();
     if (formattedMessage.length == 0) return;
+    
     const userVoice = mapUserToVoice(user, VOICES_MAP);
     playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
 
