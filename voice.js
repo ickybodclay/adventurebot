@@ -250,7 +250,7 @@ async function generate(users, chats) {
     top_p: 1,
     frequency_penalty: 0.35,
     presence_penalty: 0.6,
-    stop: [...new Set(...users, ` ${botName}:`)], //[` ${user}:`, ` ${botName}:`]
+    stop: [ ...new Set(users.concat([` ${botName}:`])) ], //[` ${user}:`, ` ${botName}:`]
   });
   return completion.data.choices[0].text;
 }
