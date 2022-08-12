@@ -14,7 +14,8 @@
     "libsodium-wrappers": "^0.7.10",
     "openai": "^3.0.0",
     "node-fetch": "2.6.6",
-    "tmi.js": "^1.8.5"
+    "tmi.js": "^1.8.5",
+    "censor-sensor": "^1.0.6"
   },
   "engines": {
     "node": "16.14.2"

@@ -11,11 +11,14 @@ const {
     VoiceConnectionStatus
 } = require('@discordjs/voice');
 const { Client: TwitchClient } = require("tmi.js");
+const { CensorSensor } = require("censor-sensor");
 
 
 const { playMessage } = require("./tts");
 const { escapeJsonValue } = require("./utils");
 const TTSQueue = require("./tts-queue");
+const censor = new CensorSensor();
+censor.disableTier(4);
 
 const queue = new TTSQueue();
 queue.processQueue();
@@ -209,15 +212,16 @@ twitch.on("message", async (channel, userstate, message, self) => {
       queue.size == 0 &&
       !queue.isPlaying() &&
       message.startsWith("$")) {
-    const formattedMessage = message.substring(1).trim();
+    const formattedMessage = censor.cleanProfanity(message.substring(1).trim());
     if (formattedMessage.length == 0) return;
     
     const userVoice = mapUserToVoice(user, VOICES_MAP);
     playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
 
     const response = await generate(user, formattedMessage);
+    const cleanResposne = censor.cleanProfanity(response);
     // const response = await fakeGenerate(user, message); // for testing only
-    playMessage(queue, `${botName}: ${response}`, BOT_VOICE);
+    playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
     // twitch.say(channel, `@${user} ${response}`);
   }
 });
