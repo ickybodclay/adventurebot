@@ -160,9 +160,9 @@ const VOICES_MAP = [
 ];
 const BOT_VOICE = "en-US-Wavenet-F";
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
-const recentUsers = []; // formatted as chat stop tokens for openai
-const recentChat = [];
-const recentLimit = 5;
+// const recentUsers = []; // formatted as chat stop tokens for openai
+// const recentChat = [];
+// const recentLimit = 5;
 
 twitch.on("message", async (channel, userstate, message, self) => {
   // ignore echoed messages & commands
@@ -208,22 +208,23 @@ twitch.on("message", async (channel, userstate, message, self) => {
     const userVoice = mapUserToVoice(user, VOICES_MAP);
     playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
     
-    recentUsers.push(` ${user}:`);
-    recentChat.push({user: user, message: formattedMessage});
+    // recentUsers.push(` ${user}:`);
+    // recentChat.push({user: user, message: formattedMessage});
 
-    const response = await generate(recentUsers, recentChat);
+    // const response = await generate(recentUsers, recentChat);
+    const response = await generate(user, formattedMessage);
     const cleanResposne = censor.cleanProfanity(response.trim());
     // const response = await fakeGenerate(user, message); // for testing only
     playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
     // twitch.say(channel, `@${user} ${response}`);
     
-    recentUsers.push(` ${botName}:`);
-    recentChat.push({user: botName, message: cleanResposne});
+//     recentUsers.push(` ${botName}:`);
+//     recentChat.push({user: botName, message: cleanResposne});
     
-    while (recentChat.length >= recentLimit) {
-      recentUsers.shift();
-      recentChat.shift();
-    }
+//     while (recentChat.length >= recentLimit) {
+//       recentUsers.shift();
+//       recentChat.shift();
+//     }
   }
 });
 
@@ -235,10 +236,10 @@ function mapUserToVoice(user, voices) {
   return voices[index % voices.length];
 }
 
-async function generate(users, chats) {
+async function generate(user, prompt) {
   var chatPrompt = `The following is a conversation with an AI named ${botName}.\n\n`;
-  chats.forEach(chat => chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`);
-  chatPrompt += `\n${botName}:`;
+  // chats.forEach(chat => chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`);
+  chatPrompt += `${user}: ${prompt}\n${botName}:`;
   
   //console.log(`>>>START<<<\n${chatPrompt}\n>>>END<<<`);
   
@@ -250,7 +251,7 @@ async function generate(users, chats) {
     top_p: 1,
     frequency_penalty: 0.35,
     presence_penalty: 0.6,
-    stop: [ ...new Set(users) ], //[` ${user}:`, ` ${botName}:`]
+    stop: [` ${user}:`, ` ${botName}:` ] // [ ...new Set(users) ],
   });
   return completion.data.choices[0].text;
 }
