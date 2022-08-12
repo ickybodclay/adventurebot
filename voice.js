@@ -217,6 +217,7 @@ twitch.on("message", async (channel, userstate, message, self) => {
     playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
     // twitch.say(channel, `@${user} ${response}`);
     
+    recentUsers.push(` ${botName}:`);
     recentChat.push({user: botName, message: cleanResposne});
     
     while (recentChat.length >= recentLimit) {
@@ -249,7 +250,7 @@ async function generate(user, prompt) {
     top_p: 1,
     frequency_penalty: 0.35,
     presence_penalty: 0.6,
-    stop: [...new Set(recentUsers), ` ${botName}:`],
+    stop: [...new Set(recentUsers)], //[` ${user}:`, ` ${botName}:`]
   });
   return completion.data.choices[0].text;
 }
