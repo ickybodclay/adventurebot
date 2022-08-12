@@ -234,7 +234,9 @@ function mapUserToVoice(user, voices) {
 }
 
 async function generate(user, prompt) {
-  const chatPrompt = `The following is a conversation with an AI named ${botName}.\n\n${user}: ${escapeJsonValue(prompt)}\n${botName}:`;
+  var chatPrompt = `The following is a conversation with an AI named ${botName}.\n\n`;
+  recentChat.forEach(chat => chatPrompt += `${chat.user}: ${chat.message}\n`);
+  chatPrompt += `${user}: ${escapeJsonValue(prompt)}\n${botName}:`;
   
   const completion = await openai.createCompletion({
     model: "text-davinci-002", // "gpt-neo-20b",
@@ -244,7 +246,7 @@ async function generate(user, prompt) {
     top_p: 1,
     frequency_penalty: 0.35,
     presence_penalty: 0.6,
-    stop: [` ${user}:`, ` ${botName}:`],
+    stop: [...new Set(recentUsers), ` ${botName}:`],
   });
   return completion.data.choices[0].text;
 }
