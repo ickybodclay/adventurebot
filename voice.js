@@ -211,7 +211,7 @@ twitch.on("message", async (channel, userstate, message, self) => {
     recentUsers.push(` ${user}:`);
     recentChat.push({user: user, message: formattedMessage});
 
-    const response = await generate(user, formattedMessage);
+    const response = await generate(recentUsers, recentChat);
     const cleanResposne = censor.cleanProfanity(response.trim());
     // const response = await fakeGenerate(user, message); // for testing only
     playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
@@ -235,9 +235,9 @@ function mapUserToVoice(user, voices) {
   return voices[index % voices.length];
 }
 
-async function generate(user, prompt) {
+async function generate(users, chats) {
   var chatPrompt = `The following is a conversation with an AI named ${botName}.\n\n`;
-  recentChat.forEach(chat => chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`);
+  chats.forEach(chat => chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`);
   chatPrompt += `\n${botName}:`;
   
   // console.log(`>>>START<<<\n${chatPrompt}\n>>>END<<<`);
@@ -250,7 +250,7 @@ async function generate(user, prompt) {
     top_p: 1,
     frequency_penalty: 0.35,
     presence_penalty: 0.6,
-    stop: [...new Set(recentUsers)], //[` ${user}:`, ` ${botName}:`]
+    stop: [...new Set(...users, ` ${botName}:`)], //[` ${user}:`, ` ${botName}:`]
   });
   return completion.data.choices[0].text;
 }
