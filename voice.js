@@ -173,6 +173,7 @@ const VOICES_MAP = [
 ];
 const BOT_VOICE = "en-US-Wavenet-F";
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
+const recentChat = [];
 
 twitch.on("message", async (channel, userstate, message, self) => {
   // ignore echoed messages & commands
@@ -223,6 +224,8 @@ twitch.on("message", async (channel, userstate, message, self) => {
     // const response = await fakeGenerate(user, message); // for testing only
     playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
     // twitch.say(channel, `@${user} ${response}`);
+    recentChat.push({user: user, message: formattedMessage});
+    recentChat.push({user: botName, message: cleanResposne});
   }
 });
 
