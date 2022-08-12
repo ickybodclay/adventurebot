@@ -235,8 +235,9 @@ function mapUserToVoice(user, voices) {
 
 async function generate(user, prompt) {
   const chatPrompt = `The following is a conversation with an AI named ${botName}.\n\n${user}: ${escapeJsonValue(prompt)}\n${botName}:`;
+  
   const completion = await openai.createCompletion({
-    model: "text-davinci-002",
+    model: "text-davinci-002", // "gpt-neo-20b",
     prompt: chatPrompt,
     temperature: 0.9,
     max_tokens: 150,
