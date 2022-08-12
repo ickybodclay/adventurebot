@@ -240,7 +240,7 @@ async function generate(users, chats) {
   chats.forEach(chat => chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`);
   chatPrompt += `\n${botName}:`;
   
-  // console.log(`>>>START<<<\n${chatPrompt}\n>>>END<<<`);
+  //console.log(`>>>START<<<\n${chatPrompt}\n>>>END<<<`);
   
   const completion = await openai.createCompletion({
     model: "text-davinci-002", // "gpt-neo-20b",
@@ -250,7 +250,7 @@ async function generate(users, chats) {
     top_p: 1,
     frequency_penalty: 0.35,
     presence_penalty: 0.6,
-    stop: [ ...new Set(users.concat([` ${botName}:`])) ], //[` ${user}:`, ` ${botName}:`]
+    stop: [ ...new Set(users) ], //[` ${user}:`, ` ${botName}:`]
   });
   return completion.data.choices[0].text;
 }
