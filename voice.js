@@ -200,7 +200,7 @@ twitch.on("message", async (channel, userstate, message, self) => {
   
   if (queue.isConnected() && 
       queue.size == 0 &&
-      !queue.isPlaying() &&
+      !queue.isPlaying &&
       message.startsWith("$")) {
     const formattedMessage = censor.cleanProfanity(message.substring(1).trim());
     if (formattedMessage.length == 0) return;
@@ -212,7 +212,7 @@ twitch.on("message", async (channel, userstate, message, self) => {
     recentChat.push({user: user, message: formattedMessage});
 
     const response = await generate(user, formattedMessage);
-    const cleanResposne = censor.cleanProfanity(response);
+    const cleanResposne = censor.cleanProfanity(response.trim());
     // const response = await fakeGenerate(user, message); // for testing only
     playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
     // twitch.say(channel, `@${user} ${response}`);
@@ -238,9 +238,9 @@ function mapUserToVoice(user, voices) {
 async function generate(user, prompt) {
   var chatPrompt = `The following is a conversation with an AI named ${botName}.\n\n`;
   recentChat.forEach(chat => chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`);
-  chatPrompt += `${user}: ${escapeJsonValue(prompt)}\n${botName}:`;
+  chatPrompt += `\n${botName}:`;
   
-  console.log(`>>> ${chatPrompt}`);
+  console.log(`>>>START<<<\n${chatPrompt}\n>>>END<<<`);
   
   const completion = await openai.createCompletion({
     model: "text-davinci-002", // "gpt-neo-20b",
