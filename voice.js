@@ -161,8 +161,9 @@ const VOICES_MAP = [
 ];
 const BOT_VOICE = "en-US-Wavenet-F";
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
+const queueMax = 10;
 
-twitch.on("message", async (channel, userstate, message, self) => {
+twitch.on("message", (channel, userstate, message, self) => {
   // ignore echoed messages & commands
   if (self) return;
   
@@ -197,21 +198,27 @@ twitch.on("message", async (channel, userstate, message, self) => {
   if (message.startsWith("!")) return;
   
   if (queue.isConnected() && 
-      queue.size == 0 &&
-      !queue.isPlaying &&
+      // queue.size == 0 &&
+      // !queue.isPlaying &&
       message.startsWith("$")) {
     const formattedMessage = censor.cleanProfanity(message.substring(1).trim());
     if (formattedMessage.length == 0) return;
+    if (queue.size > queueMax) {
+      twitch.say(channel, `@${user} K9000 chat queue is full, please wait & try again.`);
+      return;
+    }
     
     const userVoice = mapUserToVoice(user, VOICES_MAP);
     
-    const response = await generate(user, formattedMessage);
-    const cleanResposne = censor.cleanProfanity(response.trim());
-    // const response = await fakeGenerate(user, message); // for testing only
-    
-    playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
-    playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
-    // twitch.say(channel, `@${user} ${response}`);
+    // fakeGenerate(user, message); // for testing only
+    generate(user, formattedMessage)
+      .then((response) => {
+        const cleanResposne = censor.cleanProfanity(response.trim());
+
+        playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
+        playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
+        // twitch.say(channel, `@${user} ${response}`);
+      });
   }
 });
 
