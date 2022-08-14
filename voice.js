@@ -204,11 +204,12 @@ twitch.on("message", async (channel, userstate, message, self) => {
     if (formattedMessage.length == 0) return;
     
     const userVoice = mapUserToVoice(user, VOICES_MAP);
-    playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
     
     const response = await generate(user, formattedMessage);
     const cleanResposne = censor.cleanProfanity(response.trim());
     // const response = await fakeGenerate(user, message); // for testing only
+    
+    playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
     playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
     // twitch.say(channel, `@${user} ${response}`);
   }
