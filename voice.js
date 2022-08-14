@@ -85,7 +85,13 @@ discord.on('interactionCreate', async interaction => {
       await interaction.reply(`${botName}: ${response}`);
       await wait(1000);
       await interaction.deleteReply();
-    }
+    } else if (interaction.commandName === 'k9pause') {
+      queue.pause();
+      await interaction.reply('TTS queue paused');
+    } else if (interaction.commandName === 'k9resume') {
+      queue.resume();
+      await interaction.reply('TTS queue resumed');
+    } 
   });
 
 async function setupVoice(queue) {

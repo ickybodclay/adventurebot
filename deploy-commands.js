@@ -9,6 +9,8 @@ const commands = [
 	new SlashCommandBuilder().setName('k9ping').setDescription('Replies with pong!'),
   new SlashCommandBuilder().setName('k9join').setDescription('Joins voice channel'),
   new SlashCommandBuilder().setName('k9leave').setDescription('Leavs voice channel'),
+  new SlashCommandBuilder().setName('k9pause').setDescription('Pause TTS queue'),
+  new SlashCommandBuilder().setName('k9resume').setDescription('Resume TTS queue'),
   new SlashCommandBuilder()
     .setName('k9generate')
     .setDescription('Generate text based on prompt')

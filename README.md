@@ -27,4 +27,8 @@ And that should be it!
 
 `/k9leave` - leaves voice channel
 
+`/k9pause` - pause tts queue
+
+`/k9resume` - resume tts queue
+
 `/k9generate INPUT` - TTS user input & AI generated response (test to make sure you've setup OpenAI)
