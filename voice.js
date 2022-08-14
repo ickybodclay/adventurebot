@@ -18,6 +18,7 @@ const { playMessage } = require("./tts");
 const { escapeJsonValue } = require("./utils");
 const TTSQueue = require("./tts-queue");
 const censor = new CensorSensor();
+censor.disableTier(2);
 censor.disableTier(4);
 
 const queue = new TTSQueue();
@@ -160,9 +161,6 @@ const VOICES_MAP = [
 ];
 const BOT_VOICE = "en-US-Wavenet-F";
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
-// const recentUsers = []; // formatted as chat stop tokens for openai
-// const recentChat = [];
-// const recentLimit = 5;
 
 twitch.on("message", async (channel, userstate, message, self) => {
   // ignore echoed messages & commands
@@ -208,23 +206,11 @@ twitch.on("message", async (channel, userstate, message, self) => {
     const userVoice = mapUserToVoice(user, VOICES_MAP);
     playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
     
-    // recentUsers.push(` ${user}:`);
-    // recentChat.push({user: user, message: formattedMessage});
-
-    // const response = await generate(recentUsers, recentChat);
     const response = await generate(user, formattedMessage);
     const cleanResposne = censor.cleanProfanity(response.trim());
     // const response = await fakeGenerate(user, message); // for testing only
     playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
     // twitch.say(channel, `@${user} ${response}`);
-    
-//     recentUsers.push(` ${botName}:`);
-//     recentChat.push({user: botName, message: cleanResposne});
-    
-//     while (recentChat.length >= recentLimit) {
-//       recentUsers.shift();
-//       recentChat.shift();
-//     }
   }
 });
 
@@ -238,10 +224,7 @@ function mapUserToVoice(user, voices) {
 
 async function generate(user, prompt) {
   var chatPrompt = `The following is a conversation with an AI named ${botName}.\n\n`;
-  // chats.forEach(chat => chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`);
   chatPrompt += `${user}: ${prompt}\n${botName}:`;
-  
-  //console.log(`>>>START<<<\n${chatPrompt}\n>>>END<<<`);
   
   const completion = await openai.createCompletion({
     model: "text-davinci-002", // "gpt-neo-20b",
@@ -251,7 +234,7 @@ async function generate(user, prompt) {
     top_p: 1,
     frequency_penalty: 0.35,
     presence_penalty: 0.6,
-    stop: [` ${user}:`, ` ${botName}:` ] // [ ...new Set(users) ],
+    stop: [` ${user}:`, ` ${botName}:` ]
   });
   return completion.data.choices[0].text;
 }
