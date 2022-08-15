@@ -280,4 +280,4 @@ function start() {
   twitch.connect();
 }
 
-// start();
+start();
