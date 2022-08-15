@@ -242,8 +242,10 @@ function mapUserToVoice(user, voices) {
   return voices[index % voices.length];
 }
 
+const recentChats = [];
 async function generate(user, prompt) {
-  var chatPrompt = `The following is a conversation with an AI named ${botName}. ${botName} has an answer for everything, even if it's incorrect. ${botName} is creative, pragmatic, and crude.\n\n`;
+  var chatPrompt = `${botName} is an AI chatbot that has an answer for everything, even if it's incorrect. ${botName} is helpful, creative, and enthusiastic.\n\n`;
+  recentChats.forEach(chat => chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`);
   chatPrompt += `${user}: ${escapeJsonValue(prompt)}\n${botName}:`;
   
   const completion = await openai.createCompletion({
@@ -253,10 +255,15 @@ async function generate(user, prompt) {
     max_tokens: 150,
     top_p: 1,
     frequency_penalty: 0.35,
-    presence_penalty: 0.6,
+    presence_penalty: 0,
     stop: [` ${user}:`, ` ${botName}:` ]
   });
-  return completion.data.choices[0].text;
+  const response = completion.data.choices[0].text;
+  
+  recentChats.push({user: user, message: prompt});
+  recentChats.push({user: botName, message: response});
+  
+  return response;
 }
 
 async function fakeGenerate(username, prompt) {
