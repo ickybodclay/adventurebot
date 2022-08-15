@@ -229,6 +229,7 @@ twitch.on("message", (channel, userstate, message, self) => {
 
         playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
         playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
+        queue.addBreak();
         // twitch.say(channel, `@${user} ${response}`);
       });
   }

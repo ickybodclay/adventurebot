@@ -120,26 +120,26 @@ module.exports = class TTSQueue {
         this.size > 0) {
       this._next = this.mainPlayerQueue.shift(); // dequeue
       
-      if (this.event === "pause") {
-        
+      if (this._next.event === "pause") {
+        await new Promise(resolve => setTimeout(resolve, this.pauseDelayInMs));
+      } else if (this._next.event === "tts") {
+        this._isPlaying = true;
+        this._next
+          .generate(
+            this._next.message.text,
+            this._next.message.voice,
+            this._next.message.languageCode,
+            this._next.message.filename
+          )
+          .then((audio_data) => {
+            console.log(`> playing: ${this._next.message.text}`);
+            this.play(this._next.message.filename, this._next.callback);
+          })
+          .catch((err) => {
+            console.log(err);
+            this._isPlaying = false;
+          });
       }
-      
-      this._isPlaying = true;
-      this._next
-        .generate(
-          this._next.message.text,
-          this._next.message.voice,
-          this._next.message.languageCode,
-          this._next.message.filename
-        )
-        .then((audio_data) => {
-          console.log(`> playing: ${this._next.message.text}`);
-          this.play(this._next.message.filename, this._next.callback);
-        })
-        .catch((err) => {
-          console.log(err);
-          this._isPlaying = false;
-        });
     }
 
     setTimeout(this.processQueue.bind(this), 250);
