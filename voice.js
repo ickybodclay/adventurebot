@@ -17,9 +17,15 @@ const { CensorSensor } = require("censor-sensor");
 const { playMessage } = require("./tts");
 const { escapeJsonValue } = require("./utils");
 const TTSQueue = require("./tts-queue");
+
+// https://github.com/seiyria/censor-sensor
 const censor = new CensorSensor();
 censor.disableTier(2);
+censor.disableTier(3);
 censor.disableTier(4);
+censor.addWord("rape");
+censor.addWord("raping");
+censor.addWord("rapist");
 
 const queue = new TTSQueue();
 queue.processQueue();
