@@ -243,9 +243,10 @@ function mapUserToVoice(user, voices) {
 }
 
 const recentChats = [];
+const recentChatMax = 10;
 async function generate(user, prompt) {
   var chatPrompt = `${botName} is an AI chatbot that has an answer for everything, even if it's incorrect. ${botName} is helpful, creative, and enthusiastic.\n\n`;
-  recentChats.forEach(chat => chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`);
+  if (recentChats.length > 0) recentChats.forEach(chat => chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`);
   chatPrompt += `${user}: ${escapeJsonValue(prompt)}\n${botName}:`;
   
   const completion = await openai.createCompletion({
@@ -261,7 +262,10 @@ async function generate(user, prompt) {
   const response = completion.data.choices[0].text;
   
   recentChats.push({user: user, message: prompt});
+  if (recentChats.length > recentChatMax) recentChats.shift();
+  
   recentChats.push({user: botName, message: response});
+  if (recentChats.length > recentChatMax) recentChats.shift();
   
   return response;
 }
