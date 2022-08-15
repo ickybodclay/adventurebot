@@ -121,7 +121,9 @@ module.exports = class TTSQueue {
       this._next = this.mainPlayerQueue.shift(); // dequeue
       
       if (this._next.event === "pause") {
+        console.log("> pausing queue");
         await new Promise(resolve => setTimeout(resolve, this.pauseDelayInMs));
+        console.log("> resuming queue");
       } else if (this._next.event === "tts") {
         this._isPlaying = true;
         this._next
