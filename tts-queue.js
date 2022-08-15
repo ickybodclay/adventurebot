@@ -11,6 +11,7 @@ const {
 module.exports = class TTSQueue {
   constructor() {
     this.mainPlayerQueue = [];
+    this.pauseDelayInMs = 10*1000; // 10 seconds
     this._isPlaying = false;
     this._isStopped = false;
     this._next = null;
@@ -62,9 +63,16 @@ module.exports = class TTSQueue {
   queue(message, generate, on_next_callback = () => {}) {
     console.log(`< queued: ${message.text}`);
     this.mainPlayerQueue.push({
+      event: "tts",
       message: message,
       generate: generate,
       callback: on_next_callback,
+    });
+  }
+  
+  addBreak() {
+    this.mainPlayerQueue.push({
+      event: "pause"
     });
   }
 
@@ -111,6 +119,11 @@ module.exports = class TTSQueue {
         this.isConnected() &&
         this.size > 0) {
       this._next = this.mainPlayerQueue.shift(); // dequeue
+      
+      if (this.event === "pause") {
+        
+      }
+      
       this._isPlaying = true;
       this._next
         .generate(
