@@ -21,14 +21,32 @@ And that should be it!
 
 ## Usage
 
-`/k9ping` - sends pong (simple test command for making sure you've setup Discord)
+### Discord commands
 
-`/k9join` - join voice channel (specified `.env` file)
+`/k9ping` - Sends pong (simple test command for making sure you've setup Discord)
 
-`/k9leave` - leaves voice channel
+`/k9join` - Join voice channel (specified `.env` file)
 
-`/k9pause` - pause TTS queue
+`/k9leave` - Leaves voice channel
 
-`/k9resume` - resume TTS queue
+`/k9pause` - Pause TTS queue
 
-`/k9generate INPUT` - TTS user input & AI generated response (test to make sure you've setup OpenAI)
+`/k9resume` - Resume TTS queue
+
+`/k9generate INPUT` - Generate AI response from input and then text-to-speech user input & response (test to make sure you've setup OpenAI)
+
+### Twitch commands
+
+`!!play` - Resume TTS (if audio present)
+
+`!!pause` - Pause TTS (if audio present)
+
+`!!skip` - Skip current TTS (if audio present)
+
+`!!qplay` - Resume TTS queue
+
+`!!qpause` - Pause TTS queue
+
+`!!qstop` - Stop TTS queue
+
+Note: for Twitch commands, must be channel owner or moderator.
