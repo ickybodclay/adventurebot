@@ -238,7 +238,7 @@ function mapUserToVoice(user, voices) {
 
 async function generate(user, prompt) {
   var chatPrompt = `The following is a conversation with an AI named ${botName}. ${botName} has an answer for everything, even if it's incorrect. ${botName} is creative, pragmatic, and crude.\n\n`;
-  chatPrompt += `${user}: ${prompt}\n${botName}:`;
+  chatPrompt += `${user}: ${escapeJsonValue(prompt)}\n${botName}:`;
   
   const completion = await openai.createCompletion({
     model: "text-davinci-002", // "gpt-neo-20b",
