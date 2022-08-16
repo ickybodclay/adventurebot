@@ -11,7 +11,7 @@ const {
 module.exports = class TTSQueue {
   constructor() {
     this.mainPlayerQueue = [];
-    this.pauseDelayInMs = 10*1000; // 10 seconds
+    this.pauseDelayInMs = 5*1000;
     this._isPlaying = false;
     this._isStopped = false;
     this._next = null;
@@ -122,10 +122,10 @@ module.exports = class TTSQueue {
       this._next = this.mainPlayerQueue.shift(); // dequeue
       
       if (this._next.event === "pause") {
-        console.log("> pausing queue");
-        await new Promise(resolve => setTimeout(resolve, this.pauseDelayInMs));
+        console.log("> starting cooldown...");
         if (this._next.callback) this._next.callback();
-        console.log("> resuming queue");
+        await new Promise(resolve => setTimeout(resolve, this.pauseDelayInMs));
+        console.log("> done.");
       } else if (this._next.event === "tts") {
         this._isPlaying = true;
         this._next
