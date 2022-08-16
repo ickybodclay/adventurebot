@@ -170,11 +170,12 @@ const VOICES_MAP = [
   "en-AU-Wavenet-C",
   "en-IN-Wavenet-A",
   "en-IN-Wavenet-D"
-];
+]; // 23 voices
 const BOT_VOICE = "en-US-Wavenet-F";
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 const queueMax = 10;
 const usersInQueue = {};
+const voiceOverride = {};
 
 twitch.on("message", (channel, userstate, message, self) => {
   // ignore echoed messages & commands
@@ -206,6 +207,10 @@ twitch.on("message", (channel, userstate, message, self) => {
     }
     
     return;
+  } else if (cmdFound) {
+    var [_, command, argument] = cmdFound;
+    command = command.toLowerCase();
+    
   }
   
   if (message.startsWith("!")) return;
@@ -235,9 +240,8 @@ twitch.on("message", (channel, userstate, message, self) => {
 
         playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
         playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
-        queue.addBreak();
+        queue.addBreak(() => { usersInQueue[user] = false; });
         // twitch.say(channel, `@${user} ${response}`);
-        usersInQueue[user] = false;
       });
   }
 });

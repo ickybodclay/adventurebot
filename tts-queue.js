@@ -70,9 +70,10 @@ module.exports = class TTSQueue {
     });
   }
   
-  addBreak() {
+  addBreak(on_resume_callback = () => {}) {
     this.mainPlayerQueue.push({
-      event: "pause"
+      event: "pause",
+      callback: on_resume_callback
     });
   }
 
@@ -123,6 +124,7 @@ module.exports = class TTSQueue {
       if (this._next.event === "pause") {
         console.log("> pausing queue");
         await new Promise(resolve => setTimeout(resolve, this.pauseDelayInMs));
+        if (this._next.callback) this._next.callback();
         console.log("> resuming queue");
       } else if (this._next.event === "tts") {
         this._isPlaying = true;
