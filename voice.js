@@ -268,7 +268,7 @@ function mapUserToVoice(user, voices) {
 // const recentChats = [];
 // const recentChatMax = 6;
 async function generate(user, prompt) {
-  var chatPrompt = `${botName} is an AI chatbot that is helpful, .\n\n`;
+  var chatPrompt = `${botName} is an AI chatbot that responds like a comedian.  ${botName} is sarcastic, playful, and witty.\n\n`;
   // for(const chat of recentChats) {
   //   chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`;
   // }
