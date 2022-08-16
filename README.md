@@ -12,7 +12,7 @@ Discord bot that generates TTS for Twitch chat and occasionally responds with AI
     - The Discord guild id* (server you want bot to join)
     - The Dicord voice channel id* (voice channel you want bot to join)
     - An OpenAI API key
-    
+
     *Note: use Discord developer mode so you can easily right click and "Copy ID" for these values
 2) Invite Discord bot to your server.
 3) Register slash commands by running `node deploy-commands.js` in terminal.
