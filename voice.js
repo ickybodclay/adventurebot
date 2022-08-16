@@ -170,7 +170,7 @@ const VOICES_MAP = [
   "en-AU-Wavenet-C",
   "en-IN-Wavenet-A",
   "en-IN-Wavenet-D"
-]; // 23 voices
+];
 const BOT_VOICE = "en-US-Wavenet-F";
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 const queueMax = 10;
@@ -188,9 +188,19 @@ twitch.on("message", (channel, userstate, message, self) => {
   if (IGNORED_USERS.indexOf(user) > -1) return;
   
   const cmdFound = message.match(cmdRegex);
-  if (cmdFound && (isOwner || isMod)) {
+  if (cmdFound) {
     var [_, command, argument] = cmdFound;
     command = command.toLowerCase();
+    
+    if (command === "setvoice") {
+      var voiceIndex = parseInt(argument);
+      if (isNaN(voiceIndex) || voiceIndex < 1 || voiceIndex > VOICES_MAP.length) {
+        voiceIndex = 1;
+      }
+      voiceOverride[user] = voiceIndex;
+    }
+    
+    if (!isOwner && !isMod) return;
     
     if (command === "play") {
       queue.vunpause();
@@ -207,10 +217,6 @@ twitch.on("message", (channel, userstate, message, self) => {
     }
     
     return;
-  } else if (cmdFound) {
-    var [_, command, argument] = cmdFound;
-    command = command.toLowerCase();
-    
   }
   
   if (message.startsWith("!")) return;
@@ -237,8 +243,13 @@ twitch.on("message", (channel, userstate, message, self) => {
     generate(user, formattedMessage)
       .then((response) => {
         const cleanResposne = censor.cleanProfanity(response.trim());
+        
+        if (voiceOverride[user]) {
+          playMessage(queue, `${user}: ${formattedMessage}`, VOICES_MAP[voiceOverride[user]]);
+        } else {
+          playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
+        }
 
-        playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
         playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
         queue.addBreak(() => { usersInQueue[user] = false; });
         // twitch.say(channel, `@${user} ${response}`);
