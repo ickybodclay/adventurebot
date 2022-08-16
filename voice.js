@@ -236,22 +236,22 @@ twitch.on("message", (channel, userstate, message, self) => {
       return;
     }
     
-    const userVoice = mapUserToVoice(user, VOICES_MAP);
     usersInQueue[user] = true;
     
     // fakeGenerate(user, message); // for testing only
     generate(user, formattedMessage)
       .then((response) => {
         const cleanResposne = censor.cleanProfanity(response.trim());
-        
+      
+        var userVoice = mapUserToVoice(user, VOICES_MAP);
         if (voiceOverride[user]) {
-          playMessage(queue, `${user}: ${formattedMessage}`, VOICES_MAP[voiceOverride[user]]);
-        } else {
-          playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
+          userVoice = VOICES_MAP[voiceOverride[user]];
         }
 
+        playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
         playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
         queue.addBreak(() => { usersInQueue[user] = false; });
+      
         // twitch.say(channel, `@${user} ${response}`);
       });
   }
