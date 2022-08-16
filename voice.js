@@ -174,6 +174,7 @@ const VOICES_MAP = [
 const BOT_VOICE = "en-US-Wavenet-F";
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 const queueMax = 10;
+const usersInQueue = {};
 
 twitch.on("message", (channel, userstate, message, self) => {
   // ignore echoed messages & commands
@@ -219,8 +220,13 @@ twitch.on("message", (channel, userstate, message, self) => {
       twitch.say(channel, `@${user} K9000 chat queue is full, please wait & try again.`);
       return;
     }
+    if (usersInQueue[user]) {
+      twitch.say(channel, `@${user} already has chat pending for K9000, please wait for K9000 to respond.`);
+      return;
+    }
     
     const userVoice = mapUserToVoice(user, VOICES_MAP);
+    usersInQueue[user] = true;
     
     // fakeGenerate(user, message); // for testing only
     generate(user, formattedMessage)
@@ -231,6 +237,7 @@ twitch.on("message", (channel, userstate, message, self) => {
         playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
         queue.addBreak();
         // twitch.say(channel, `@${user} ${response}`);
+        usersInQueue[user] = false;
       });
   }
 });
