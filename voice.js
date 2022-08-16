@@ -197,7 +197,7 @@ twitch.on("message", (channel, userstate, message, self) => {
       if (isNaN(voiceIndex) || voiceIndex < 1 || voiceIndex > VOICES_MAP.length) {
         voiceIndex = 1;
       }
-      voiceOverride[user] = voiceIndex;
+      voiceOverride[user] = voiceIndex - 1;
     }
     
     if (!isOwner && !isMod) return;
