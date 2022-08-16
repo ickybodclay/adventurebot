@@ -37,6 +37,10 @@ And that should be it!
 
 ### Twitch commands
 
+`!!setvoice [1-23]` - changes the TTS voice for the user
+
+Note: for the following Twitch commands, must be channel owner or moderator.
+
 `!!play` - Resume TTS (if audio present)
 
 `!!pause` - Pause TTS (if audio present)
@@ -48,5 +52,3 @@ And that should be it!
 `!!qpause` - Pause TTS queue
 
 `!!qstop` - Stop TTS queue
-
-Note: for Twitch commands, must be channel owner or moderator.
