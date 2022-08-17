@@ -154,11 +154,11 @@ const VOICES_MAP = [
   "en-GB-Wavenet-D",
   "en-AU-Wavenet-B",
   "en-AU-Wavenet-D",
-  "en-IN-Wavenet-B",
-  "en-IN-Wavenet-C",
+  // "en-IN-Wavenet-B",
+  // "en-IN-Wavenet-C",
   "de-DE-Wavenet-D",
   // female voices
-  // "en-US-Neural2-A", // !!setvoice 13
+  "en-US-Neural2-A", // !!setvoice 13
   "en-GB-Neural2-A",
   "en-GB-Neural2-C",
   "en-AU-Neural2-A",
@@ -173,10 +173,10 @@ const VOICES_MAP = [
   "en-GB-Wavenet-F",
   "en-AU-Wavenet-A",
   "en-AU-Wavenet-C",
-  "en-IN-Wavenet-A",
-  "en-IN-Wavenet-D",
+  // "en-IN-Wavenet-A",
+  // "en-IN-Wavenet-D",
 ];
-const BOT_VOICE = "en-US-Neural2-A";
+const BOT_VOICE = "en-US-Wavenet-F";
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 const queueMax = 6;
 const usersInQueue = {};
@@ -315,4 +315,4 @@ function start() {
   twitch.connect();
 }
 
-start();
+// start();
