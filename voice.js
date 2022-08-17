@@ -145,7 +145,7 @@ const IGNORED_USERS = ["nightbot", "streamelements"];
 // Available Google Text-To-Speech Voices
 const VOICES_MAP = [
   // male voices
-  "en-US-Wavenet-A",
+  "en-US-Wavenet-A", // !!setvoice 1
   "en-US-Wavenet-B",
   "en-US-Wavenet-D",
   "en-US-Wavenet-I",
@@ -158,6 +158,11 @@ const VOICES_MAP = [
   "en-IN-Wavenet-C",
   "de-DE-Wavenet-D",
   // female voices
+  // "en-US-Neural2-A", // !!setvoice 13
+  "en-GB-Neural2-A",
+  "en-GB-Neural2-C",
+  "en-AU-Neural2-A",
+  "en-AU-Neural2-C",
   "en-US-Wavenet-C",
   "en-US-Wavenet-E",
   // "en-US-Wavenet-F",
@@ -169,9 +174,9 @@ const VOICES_MAP = [
   "en-AU-Wavenet-A",
   "en-AU-Wavenet-C",
   "en-IN-Wavenet-A",
-  "en-IN-Wavenet-D"
+  "en-IN-Wavenet-D",
 ];
-const BOT_VOICE = "en-US-Wavenet-F";
+const BOT_VOICE = "en-US-Neural2-A";
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 const queueMax = 6;
 const usersInQueue = {};
@@ -310,4 +315,4 @@ function start() {
   twitch.connect();
 }
 
-// start();
+start();
