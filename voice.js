@@ -332,10 +332,29 @@ async function setupPubsub() {
     console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId})`);
 
     // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
-    // const redemptionMsg = `${message.userDisplayName} redeemed ${message.rewardTitle}`;
-    // playMessageMS(queue, redemptionMsg);
     if (message.rewardTitle === "Talk to K9000") {
-      // TODO
+      if (!queue.isConnected()) return;
+      
+      const user = message.userName;
+      const formattedMessage = censor.cleanProfanity(message.rewardPrompt.trim());
+      if (formattedMessage.length == 0) return;
+
+      usersInQueue[user] = true;
+
+      // fakeGenerate(user, message); // for testing only
+      generate(user, formattedMessage)
+        .then((response) => {
+          const cleanResposne = censor.cleanProfanity(response.trim());
+
+          var userVoice = mapUserToVoice(user, VOICES_MAP);
+          if (voiceOverride[user]) {
+            userVoice = VOICES_MAP[voiceOverride[user]];
+          }
+
+          playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
+          playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
+          queue.addBreak();
+        });
     }
     
   });
@@ -346,6 +365,7 @@ function start() {
   console.log(`# of voices available: ${VOICES_MAP.length}`);
   discord.login();
   twitch.connect();
+  // setupPubsub();
 }
 
 // start();
