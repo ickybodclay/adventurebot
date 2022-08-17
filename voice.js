@@ -158,7 +158,7 @@ const VOICES_MAP = [
   // "en-IN-Wavenet-C",
   "de-DE-Wavenet-D",
   // female voices
-  "en-US-Neural2-A", // !!setvoice 13
+  "en-US-Neural2-A", 
   "en-GB-Neural2-A",
   "en-GB-Neural2-C",
   "en-AU-Neural2-A",
@@ -172,7 +172,7 @@ const VOICES_MAP = [
   "en-GB-Wavenet-C",
   "en-GB-Wavenet-F",
   "en-AU-Wavenet-A",
-  "en-AU-Wavenet-C",
+  "en-AU-Wavenet-C", // !!setvoice 24
   // "en-IN-Wavenet-A",
   // "en-IN-Wavenet-D",
 ];
@@ -311,6 +311,7 @@ async function fakeGenerate(username, prompt) {
 
 function start() {
   console.log("Starting hular hoops bot...");
+  console.log(`# of voices available: ${VOICES_MAP.length}`);
   discord.login();
   twitch.connect();
 }
