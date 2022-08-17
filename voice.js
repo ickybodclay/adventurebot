@@ -173,7 +173,7 @@ const VOICES_MAP = [
 ];
 const BOT_VOICE = "en-US-Wavenet-F";
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
-const queueMax = 10;
+const queueMax = 6;
 const usersInQueue = {};
 const voiceOverride = {};
 
