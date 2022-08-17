@@ -17,13 +17,13 @@ const { PubSubClient } = require("@twurple/pubsub");
 const { StaticAuthProvider } = require("@twurple/auth");
 
 // https://twitchapps.com/tmi/ - changed scope to 'channel:read:redemptions'
-const accessToken = process.env.TWITCH_PUBSUB_OAUTH_TOKEN;
-const authProvider = new StaticAuthProvider("", accessToken);
-const pubSubClient = new PubSubClient();
+// const accessToken = process.env.TWITCH_PUBSUB_OAUTH_TOKEN;
+// const authProvider = new StaticAuthProvider("", accessToken);
+// const pubSubClient = new PubSubClient();
 
-const IGNORE_REWARDS = [
-  "Highlight My Message"
-];
+// const IGNORE_REWARDS = [
+//   "Highlight My Message"
+// ];
 
 const { playMessage } = require("./tts");
 const { escapeJsonValue } = require("./utils");
@@ -241,8 +241,6 @@ twitch.on("message", (channel, userstate, message, self) => {
   if (message.startsWith("!")) return;
   
   if (queue.isConnected() && 
-      // queue.size == 0 &&
-      // !queue.isPlaying &&
       message.startsWith("$")) {
     const formattedMessage = censor.cleanProfanity(message.substring(1).trim());
     if (formattedMessage.length == 0) return;
@@ -323,42 +321,42 @@ async function fakeGenerate(username, prompt) {
 /**
  * Initializes Twitch pubsub listener.
  */
-async function setupPubsub() {
-  console.log("twitch-pubsub listening for channel point redemptions...");
-  const userId = await pubSubClient.registerUserListener(authProvider);
-  const redeemListener = await pubSubClient.onRedemption(userId, (message) => {
-    if (IGNORE_REWARDS.indexOf(message.rewardTitle) > -1) return;
+// async function setupPubsub() {
+//   console.log("twitch-pubsub listening for channel point redemptions...");
+//   const userId = await pubSubClient.registerUserListener(authProvider);
+//   const redeemListener = await pubSubClient.onRedemption(userId, (message) => {
+//     if (IGNORE_REWARDS.indexOf(message.rewardTitle) > -1) return;
     
-    console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId})`);
+//     console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId})`);
 
-    // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
-    if (message.rewardTitle === "Talk to K9000") {
-      if (!queue.isConnected()) return;
+//     // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
+//     if (message.rewardTitle === "Talk to K9000") {
+//       if (!queue.isConnected()) return;
       
-      const user = message.userName;
-      const formattedMessage = censor.cleanProfanity(message.rewardPrompt.trim());
-      if (formattedMessage.length == 0) return;
+//       const user = message.userName;
+//       const formattedMessage = censor.cleanProfanity(message.rewardPrompt.trim());
+//       if (formattedMessage.length == 0) return;
 
-      usersInQueue[user] = true;
+//       usersInQueue[user] = true;
 
-      // fakeGenerate(user, message); // for testing only
-      generate(user, formattedMessage)
-        .then((response) => {
-          const cleanResposne = censor.cleanProfanity(response.trim());
+//       // fakeGenerate(user, message); // for testing only
+//       generate(user, formattedMessage)
+//         .then((response) => {
+//           const cleanResposne = censor.cleanProfanity(response.trim());
 
-          var userVoice = mapUserToVoice(user, VOICES_MAP);
-          if (voiceOverride[user]) {
-            userVoice = VOICES_MAP[voiceOverride[user]];
-          }
+//           var userVoice = mapUserToVoice(user, VOICES_MAP);
+//           if (voiceOverride[user]) {
+//             userVoice = VOICES_MAP[voiceOverride[user]];
+//           }
 
-          playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
-          playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
-          queue.addBreak();
-        });
-    }
+//           playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
+//           playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
+//           queue.addBreak();
+//         });
+//     }
     
-  });
-}
+//   });
+// }
 
 function start() {
   console.log("Starting hular hoops bot...");
