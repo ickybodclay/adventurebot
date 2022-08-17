@@ -271,7 +271,9 @@ function mapUserToVoice(user, voices) {
 // const recentChats = [];
 // const recentChatMax = 6;
 async function generate(user, prompt) {
-  var chatPrompt = `${botName} is an AI chatbot that responds like a comedian.  ${botName} is sarcastic, playful, and witty.\n\n`;
+  var chatPrompt = `${botName} is an AI chatbot that responds like a dog.  ${botName} is friendly, playful, and very excited.\n\n`;
+  chatPrompt += `${user}: Hello ${botName}!`;
+  chatPrompt += `${botName}: Woof woof!  Hi ${user}, how can I help you?\n`;
   // for(const chat of recentChats) {
   //   chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`;
   // }
@@ -283,7 +285,7 @@ async function generate(user, prompt) {
     temperature: 0.9,
     max_tokens: 150,
     top_p: 1,
-    frequency_penalty: 1,
+    frequency_penalty: 0.6,
     presence_penalty: 0.6,
     stop: [` ${user}:`, ` ${botName}:` ]
   });
