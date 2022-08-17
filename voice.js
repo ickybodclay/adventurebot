@@ -272,8 +272,8 @@ function mapUserToVoice(user, voices) {
 // const recentChatMax = 6;
 async function generate(user, prompt) {
   var chatPrompt = `${botName} is an AI chatbot that responds like a dog.  ${botName} is friendly, playful, and very excited.\n\n`;
-  chatPrompt += `${user}: Hello ${botName}!`;
-  chatPrompt += `${botName}: Woof woof!  Hi ${user}, how can I help you?\n`;
+  // chatPrompt += `${user}: Hello ${botName}!`;
+  // chatPrompt += `${botName}: Woof woof!  Hi ${user}, how can I help you?\n`;
   // for(const chat of recentChats) {
   //   chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`;
   // }
