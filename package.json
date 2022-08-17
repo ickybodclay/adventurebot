@@ -15,7 +15,9 @@
     "openai": "^3.0.0",
     "node-fetch": "2.6.6",
     "tmi.js": "^1.8.5",
-    "censor-sensor": "^1.0.6"
+    "censor-sensor": "^1.0.6",
+    "@twurple/pubsub": "^5.2.1",
+    "@twurple/auth": "^5.2.1"
   },
   "engines": {
     "node": "16.14.2"

@@ -12,7 +12,7 @@ const {
 } = require('@discordjs/voice');
 const { Client: TwitchClient } = require("tmi.js");
 const { CensorSensor } = require("censor-sensor");
-
+//const { setupPubsub } = require("./twitch-pubsub");
 
 const { playMessage } = require("./tts");
 const { escapeJsonValue } = require("./utils");
