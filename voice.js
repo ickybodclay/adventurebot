@@ -12,7 +12,18 @@ const {
 } = require('@discordjs/voice');
 const { Client: TwitchClient } = require("tmi.js");
 const { CensorSensor } = require("censor-sensor");
-//const { setupPubsub } = require("./twitch-pubsub");
+// https://www.npmjs.com/package/@twurple/pubsub
+const { PubSubClient } = require("@twurple/pubsub");
+const { StaticAuthProvider } = require("@twurple/auth");
+
+// https://twitchapps.com/tmi/ - changed scope to 'channel:read:redemptions'
+const accessToken = process.env.TWITCH_PUBSUB_OAUTH_TOKEN;
+const authProvider = new StaticAuthProvider("", accessToken);
+const pubSubClient = new PubSubClient();
+
+const IGNORE_REWARDS = [
+  "Highlight My Message"
+];
 
 const { playMessage } = require("./tts");
 const { escapeJsonValue } = require("./utils");
@@ -307,6 +318,27 @@ async function generate(user, prompt) {
 
 async function fakeGenerate(username, prompt) {
   return `Squak! ${username} says ${prompt}`;
+}
+
+/**
+ * Initializes Twitch pubsub listener.
+ */
+async function setupPubsub() {
+  console.log("twitch-pubsub listening for channel point redemptions...");
+  const userId = await pubSubClient.registerUserListener(authProvider);
+  const redeemListener = await pubSubClient.onRedemption(userId, (message) => {
+    if (IGNORE_REWARDS.indexOf(message.rewardTitle) > -1) return;
+    
+    console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId})`);
+
+    // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
+    // const redemptionMsg = `${message.userDisplayName} redeemed ${message.rewardTitle}`;
+    // playMessageMS(queue, redemptionMsg);
+    if (message.rewardTitle === "Talk to K9000") {
+      // TODO
+    }
+    
+  });
 }
 
 function start() {
