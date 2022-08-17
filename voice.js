@@ -184,6 +184,9 @@ twitch.on("message", (channel, userstate, message, self) => {
   const user = userstate.username;
   const isOwner = channel === `#${user}`;
   const isMod = userstate.mod;
+  const isVip = userstate.badges != null && userstate.badges.vip;
+  const isSubscriber = userstate.subscriber;
+  const isReward = userstate["custom-reward-id"] != null;
   
   if (IGNORED_USERS.indexOf(user) > -1) return;
   
