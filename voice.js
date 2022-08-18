@@ -267,9 +267,10 @@ twitch.on("message", (channel, userstate, message, self) => {
 
         playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
         playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
-        queue.addBreak(() => { usersInQueue[user] = false; });
-      
-        // twitch.say(channel, `@${user} ${response}`);
+        queue.addBreak(() => { 
+          usersInQueue[user] = false; 
+          twitch.say(channel, `@${user} ${response}`);
+        });  
       });
   }
 });
@@ -326,35 +327,27 @@ async function fakeGenerate(username, prompt) {
 //   const userId = await pubSubClient.registerUserListener(authProvider);
 //   const redeemListener = await pubSubClient.onRedemption(userId, (message) => {
 //     if (IGNORE_REWARDS.indexOf(message.rewardTitle) > -1) return;
-    
 //     console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId})`);
-
 //     // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
 //     if (message.rewardTitle === "Talk to K9000") {
 //       if (!queue.isConnected()) return;
-      
 //       const user = message.userName;
 //       const formattedMessage = censor.cleanProfanity(message.rewardPrompt.trim());
 //       if (formattedMessage.length == 0) return;
-
 //       usersInQueue[user] = true;
-
 //       // fakeGenerate(user, message); // for testing only
 //       generate(user, formattedMessage)
 //         .then((response) => {
 //           const cleanResposne = censor.cleanProfanity(response.trim());
-
 //           var userVoice = mapUserToVoice(user, VOICES_MAP);
 //           if (voiceOverride[user]) {
 //             userVoice = VOICES_MAP[voiceOverride[user]];
 //           }
-
 //           playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
 //           playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
 //           queue.addBreak();
 //         });
 //     }
-    
 //   });
 // }
 
