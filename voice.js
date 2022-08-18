@@ -13,8 +13,8 @@ const {
 const { Client: TwitchClient } = require("tmi.js");
 const { CensorSensor } = require("censor-sensor");
 // https://www.npmjs.com/package/@twurple/pubsub
-const { PubSubClient } = require("@twurple/pubsub");
-const { StaticAuthProvider } = require("@twurple/auth");
+// const { PubSubClient } = require("@twurple/pubsub");
+// const { StaticAuthProvider } = require("@twurple/auth");
 
 // https://twitchapps.com/tmi/ - changed scope to 'channel:read:redemptions'
 // const accessToken = process.env.TWITCH_PUBSUB_OAUTH_TOKEN;
@@ -269,7 +269,7 @@ twitch.on("message", (channel, userstate, message, self) => {
         playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
         queue.addBreak(() => { 
           usersInQueue[user] = false; 
-          twitch.say(channel, `@${user} ${response}`);
+          twitch.say(channel, `@${user} ${cleanResposne}`);
         });  
       });
   }
@@ -308,7 +308,6 @@ async function generate(user, prompt) {
   
 //   recentChats.push({user: user, message: prompt});
 //   if (recentChats.length > recentChatMax) recentChats.shift();
-  
 //   recentChats.push({user: botName, message: response});
 //   if (recentChats.length > recentChatMax) recentChats.shift();
   
