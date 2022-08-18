@@ -174,9 +174,9 @@ const VOICES_MAP = [
   "en-GB-Neural2-C",
   "en-AU-Neural2-A",
   "en-AU-Neural2-C",
-  "en-US-Wavenet-C",
+  // "en-US-Wavenet-C",
   "en-US-Wavenet-E",
-  // "en-US-Wavenet-F",
+  "en-US-Wavenet-F",
   "en-US-Wavenet-G",
   "en-US-Wavenet-H",
   "en-GB-Wavenet-A",
@@ -187,7 +187,7 @@ const VOICES_MAP = [
   // "en-IN-Wavenet-A",
   // "en-IN-Wavenet-D",
 ];
-const BOT_VOICE = "en-US-Wavenet-F";
+const BOT_VOICE = "en-US-Wavenet-C";
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 const queueMax = 6;
 const usersInQueue = {};
