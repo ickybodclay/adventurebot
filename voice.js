@@ -66,7 +66,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-const { gooseGenerate } = require("./goose");
+// const { gooseGenerate } = require("./goose");
 
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
 const botName = "K9000"; // Discord bot alias
@@ -256,10 +256,10 @@ twitch.on("message", (channel, userstate, message, self) => {
     usersInQueue[user] = true;
     
     // fakeGenerate(user, message); // for testing only
-    //generate(user, formattedMessage)
-    var chatPrompt = `${botName} is an AI chatbot talking to Twitch user named ${user}.  ${botName} is friendly, playful, and likes to make up stories.\n\n`;
-    chatPrompt += `${user}: ${escapeJsonValue(formattedMessage)}\n${botName}:`;
-    gooseGenerate(user, botName, chatPrompt)
+    generate(user, formattedMessage)
+    // var chatPrompt = `${botName} is an AI chatbot talking to Twitch user named ${user}.  ${botName} is friendly, playful, and likes to make up stories.\n\n`;
+    // chatPrompt += `${user}: ${escapeJsonValue(formattedMessage)}\n${botName}:`;
+    // gooseGenerate(user, botName, chatPrompt)
       .then((response) => {
         if (!response) return;
         const cleanResposne = censor.cleanProfanity(response.trim());
@@ -372,4 +372,4 @@ function start() {
   // setupPubsub();
 }
 
-start();
+// start();
