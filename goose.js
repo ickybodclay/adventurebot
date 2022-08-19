@@ -9,7 +9,7 @@ function gooseGenerate(user, bot, prompt) {
   const postData = {
     prompt: prompt,
     temperature: 0.9,
-    stop: [` ${user}:`, ` ${bot}:`],
+    stop: [` ${user}:`, ` ${bot}:`, `\n${user}:`, `\n${bot}:`, "<|endoftext|>"],
     presence_penalty: 0,
     frequency_penalty: 0,
     max_tokens: 100,
@@ -24,7 +24,7 @@ function gooseGenerate(user, bot, prompt) {
   })
     .then(json)
     .then((data) => {
-      console.log(`GOOSE> ${JSON.stringify(data)}`);
+      // console.log(`GOOSE> ${JSON.stringify(data)}`);
       return data.choices[0].text;
     })
     .catch((error) => {

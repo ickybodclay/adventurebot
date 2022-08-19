@@ -308,7 +308,7 @@ async function generate(user, prompt) {
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
-      stop: [` ${user}:`, ` ${botName}:` ]
+      stop: [` ${user}:`, ` ${botName}:`]
     });
     return completion.data.choices[0].text;
   } catch (ex) {
