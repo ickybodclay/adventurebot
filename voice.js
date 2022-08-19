@@ -257,7 +257,9 @@ twitch.on("message", (channel, userstate, message, self) => {
     
     // fakeGenerate(user, message); // for testing only
     //generate(user, formattedMessage)
-    gooseGenerate(user, botName, formattedMessage)
+    var chatPrompt = `${botName} is an AI chatbot talking to Twitch user named ${user}.  ${botName} is friendly, playful, and likes to make up stories.\n\n`;
+    chatPrompt += `${user}: ${escapeJsonValue(formattedMessage)}\n${botName}:`;
+    gooseGenerate(user, botName, chatPrompt)
       .then((response) => {
         if (!response) return;
         const cleanResposne = censor.cleanProfanity(response.trim());
@@ -288,7 +290,7 @@ function mapUserToVoice(user, voices) {
 // const recentChats = [];
 // const recentChatMax = 6;
 async function generate(user, prompt) {
-  var chatPrompt = `${botName} is an AI chatbot talking to Twitch user named ${user}.  ${botName} is friendly, playful, and likes to make up stories.\n\n`;
+  var chatPrompt = `${botName} is an AI chatbot talking to a Twitch user named ${user}.  ${botName} is friendly, playful, and likes to make up gibberish words.\n\n`;
   // chatPrompt += `${user}: Hello ${botName}!`;
   // chatPrompt += `${botName}: Woof woof!  Hi ${user}, how can I help you?\n`;
   // for(const chat of recentChats) {
@@ -370,4 +372,4 @@ function start() {
   // setupPubsub();
 }
 
-// start();
+start();

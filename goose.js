@@ -11,7 +11,8 @@ function gooseGenerate(user, bot, prompt) {
     temperature: 0.9,
     stop: [` ${user}:`, ` ${bot}:`],
     presence_penalty: 0,
-    frequency_penalty: 0
+    frequency_penalty: 0,
+    max_tokens: 100,
   };
   return fetch(requestUrl, {
     method: "post",
