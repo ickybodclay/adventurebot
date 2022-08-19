@@ -1,6 +1,6 @@
 const fs = require("fs");
 const fetch = require("node-fetch");
-const { escapeJsonValue } = require("./utils");
+const { escapeJsonValue, json } = require("./utils");
 
 const languageCodeRegex = /([a-z]{2}-[A-Z]{2})-.+/i;
 
@@ -69,10 +69,6 @@ function syntehsize_GCTTS_chunk(chunk, voice, languageCode, filename) {
     .catch((error) => {
       console.log("Request failed", error);
     });
-}
-
-function json(response) {
-  return response.json();
 }
 
 function splitMessageToChunks(message, maxChunkLength) {

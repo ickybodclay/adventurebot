@@ -9,4 +9,8 @@ function escapeJsonValue(unsafe) {
   });
 }
 
-module.exports = { escapeJsonValue };
+function json(response) {
+  return response.json();
+}
+
+module.exports = { escapeJsonValue, json };
