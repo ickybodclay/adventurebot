@@ -62,9 +62,9 @@ const twitch = new TwitchClient({
 });
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-  // apiKey: process.env.GOOSE_API_KEY,
-  // basePath: 'https://api.goose.ai/v1',
+  // apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.GOOSE_API_KEY,
+  basePath: 'https://api.goose.ai/v1'
 });
 const openai = new OpenAIApi(configuration);
 
