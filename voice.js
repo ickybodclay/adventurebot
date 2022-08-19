@@ -255,11 +255,12 @@ twitch.on("message", (channel, userstate, message, self) => {
     
     usersInQueue[user] = true;
     
+    var chatPrompt = `${botName} is an AI chatbot talking to a Twitch user named ${user}.  ${botName} responds like a News Anchor.\n\n`;
+    chatPrompt += `${user}: ${escapeJsonValue(formattedMessage)}\n${botName}:`;
+
     // fakeGenerate(user, message); // for testing only
-    generate(user, formattedMessage)
-    // var chatPrompt = `${botName} is an AI chatbot talking to Twitch user named ${user}.  ${botName} is friendly, playful, and likes to make up stories.\n\n`;
-    // chatPrompt += `${user}: ${escapeJsonValue(formattedMessage)}\n${botName}:`;
     // gooseGenerate(user, botName, chatPrompt)
+    generate(user, botName, chatPrompt)
       .then((response) => {
         if (!response) return;
         const cleanResposne = censor.cleanProfanity(response.trim());
@@ -287,28 +288,17 @@ function mapUserToVoice(user, voices) {
   return voices[index % voices.length];
 }
 
-// const recentChats = [];
-// const recentChatMax = 6;
-async function generate(user, prompt) {
-  var chatPrompt = `${botName} is an AI chatbot talking to a Twitch user named ${user}.  ${botName} responds like a News Anchor.\n\n`;
-  // chatPrompt += `${user}: Hello ${botName}!`;
-  // chatPrompt += `${botName}: Woof woof!  Hi ${user}, how can I help you?\n`;
-  // for(const chat of recentChats) {
-  //   chatPrompt += `${chat.user}: ${escapeJsonValue(chat.message)}\n`;
-  // }
-  chatPrompt += `${user}: ${escapeJsonValue(prompt)}\n${botName}:`;
-  
+async function generate(user, bot, prompt) {  
   try {
     const completion = await openai.createCompletion({
-      model: "text-davinci-002", // OpenAI
-      // model: "gpt-neo-20b", // GooseAI
-      prompt: chatPrompt,
+      model: "text-davinci-002",
+      prompt: prompt,
       temperature: 1.0,
       max_tokens: 100,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0,
-      stop: [` ${user}:`, ` ${botName}:`]
+      stop: [` ${user}:`, ` ${bot}:`]
     });
     return completion.data.choices[0].text;
   } catch (ex) {
@@ -319,11 +309,6 @@ async function generate(user, prompt) {
       console.error(ex.stack);
     }
   }
-  
-//   recentChats.push({user: user, message: prompt});
-//   if (recentChats.length > recentChatMax) recentChats.shift();
-//   recentChats.push({user: botName, message: response});
-//   if (recentChats.length > recentChatMax) recentChats.shift();
   
   return null;
 }
