@@ -7,7 +7,7 @@ const engineId = "gpt-neo-20b"; //"gpt-j-6b"; //"gpt-neo-2-7b"; //"fairseq-13b";
 function gooseGenerate(user, bot, prompt) {
   const requestUrl = `https://api.goose.ai/v1/engines/${engineId}/completions`;
   const postData = {
-    prompt: prompt,
+    prompt: escapeJsonValue(prompt),
     temperature: 0.9, // [0, 1.0]
     presence_penalty: 0, // [-2.0, 2.0]
     frequency_penalty: 0, // [-2.0, 2.0]
@@ -30,8 +30,13 @@ function gooseGenerate(user, bot, prompt) {
       const response = data.choices[0].text;
       return response.replace(`/(${user}:|${bot}:)$/i`, ""); // remove trailing stop tokens
     })
-    .catch((error) => {
-      console.error("Goose request failed", error);
+    .catch((ex) => {
+      console.error(`gooseai generate error ${ex.name}: ${ex.message}`);
+      if (ex.response) {
+        console.error(ex.response.data);
+      } else {
+        console.error(ex.stack);
+      }
     });
 }
 

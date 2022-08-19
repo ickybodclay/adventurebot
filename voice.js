@@ -242,8 +242,8 @@ twitch.on("message", (channel, userstate, message, self) => {
   
   if (queue.isConnected() && 
       message.startsWith("$")) {
-    const formattedMessage = censor.cleanProfanity(message.substring(1).trim());
-    if (formattedMessage.length == 0) return;
+    const cleanMessage = censor.cleanProfanity(message.substring(1).trim());
+    if (cleanMessage.length == 0) return;
     if (queue.size > queueMax) {
       twitch.say(channel, `@${user} K9000 chat queue is full, please wait & try again.`);
       return;
@@ -256,7 +256,7 @@ twitch.on("message", (channel, userstate, message, self) => {
     usersInQueue[user] = true;
     
     var chatPrompt = `${botName} is an AI chatbot talking to a Twitch user named ${user}.  ${botName} responds like a News Anchor.\n\n`;
-    chatPrompt += `${user}: ${escapeJsonValue(formattedMessage)}\n${botName}:`;
+    chatPrompt += `${user}: ${cleanMessage}\n${botName}:`;
 
     // fakeGenerate(user, message); // for testing only
     // gooseGenerate(user, botName, chatPrompt)
@@ -270,7 +270,7 @@ twitch.on("message", (channel, userstate, message, self) => {
           userVoice = VOICES_MAP[voiceOverride[user]];
         }
 
-        playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
+        playMessage(queue, `${user}: ${cleanMessage}`, userVoice);
         playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
         queue.addBreak(() => { 
           usersInQueue[user] = false; 
@@ -292,7 +292,7 @@ async function generate(user, bot, prompt) {
   try {
     const completion = await openai.createCompletion({
       model: "text-davinci-002",
-      prompt: prompt,
+      prompt: escapeJsonValue(prompt),
       temperature: 0.9,
       max_tokens: 100,
       top_p: 1,
@@ -302,7 +302,7 @@ async function generate(user, bot, prompt) {
     });
     return completion.data.choices[0].text;
   } catch (ex) {
-    console.error(`generate error ${ex.name}: ${ex.message}`);
+    console.error(`openai generate error ${ex.name}: ${ex.message}`);
     if (ex.response) {
       console.error(ex.response.data);
     } else {
