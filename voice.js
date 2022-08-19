@@ -258,6 +258,7 @@ twitch.on("message", (channel, userstate, message, self) => {
     // fakeGenerate(user, message); // for testing only
     generate(user, formattedMessage)
       .then((response) => {
+        if (!response) return;
         const cleanResposne = censor.cleanProfanity(response.trim());
       
         var userVoice = mapUserToVoice(user, VOICES_MAP);
@@ -294,24 +295,28 @@ async function generate(user, prompt) {
   // }
   chatPrompt += `${user}: ${escapeJsonValue(prompt)}\n${botName}:`;
   
-  const completion = await openai.createCompletion({
-    model: "text-davinci-002", // "gpt-neo-20b",
-    prompt: chatPrompt,
-    temperature: 1.0,
-    max_tokens: 100,
-    top_p: 1,
-    frequency_penalty: 0,
-    presence_penalty: 0,
-    stop: [` ${user}:`, ` ${botName}:` ]
-  });
-  const response = completion.data.choices[0].text;
+  try {
+    const completion = await openai.createCompletion({
+      model: "text-davinci-002", // "gpt-neo-20b",
+      prompt: chatPrompt,
+      temperature: 1.0,
+      max_tokens: 100,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+      stop: [` ${user}:`, ` ${botName}:` ]
+    });
+    return completion.data.choices[0].text;
+  } catch (ex) {
+    console.error(`generate error ${ex.name}: ${ex.message}`);
+  }
   
 //   recentChats.push({user: user, message: prompt});
 //   if (recentChats.length > recentChatMax) recentChats.shift();
 //   recentChats.push({user: botName, message: response});
 //   if (recentChats.length > recentChatMax) recentChats.shift();
   
-  return response;
+  return null;
 }
 
 async function fakeGenerate(username, prompt) {
