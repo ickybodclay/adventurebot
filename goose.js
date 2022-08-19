@@ -26,7 +26,8 @@ function gooseGenerate(user, bot, prompt) {
     .then(json)
     .then((data) => {
       console.log(`GOOSE> ${JSON.stringify(data)}`);
-      return data.choices[0].text;
+      const response = data.choices[0].text;
+      return response.replace(`/(${user}:|${bot}:)$/i`, ""); // remove trailing stop tokens
     })
     .catch((error) => {
       console.error("Goose request failed", error);
