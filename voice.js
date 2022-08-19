@@ -62,11 +62,11 @@ const twitch = new TwitchClient({
 });
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-  // apiKey: process.env.GOOSE_API_KEY,
-  // basePath: 'https://api.goose.ai/v1',
+  apiKey: process.env.OPENAI_API_KEY
 });
 const openai = new OpenAIApi(configuration);
+
+const { gooseGenerate } = require("./goose");
 
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
 const botName = "K9000"; // Discord bot alias
@@ -256,7 +256,8 @@ twitch.on("message", (channel, userstate, message, self) => {
     usersInQueue[user] = true;
     
     // fakeGenerate(user, message); // for testing only
-    generate(user, formattedMessage)
+    //generate(user, formattedMessage)
+    gooseGenerate(user, botName, formattedMessage)
       .then((response) => {
         if (!response) return;
         const cleanResposne = censor.cleanProfanity(response.trim());
@@ -366,9 +367,6 @@ function start() {
   console.log(`# of voices available: ${VOICES_MAP.length}`);
   discord.login();
   twitch.connect();
-  // openai.listEngines().then((response) => {
-  //     console.log(JSON.stringify(response.data));
-  // });
   // setupPubsub();
 }
 
