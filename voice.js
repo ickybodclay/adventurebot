@@ -293,7 +293,7 @@ async function generate(user, bot, prompt) {
     const completion = await openai.createCompletion({
       model: "text-davinci-002",
       prompt: prompt,
-      temperature: 1.0,
+      temperature: 0.9,
       max_tokens: 100,
       top_p: 1,
       frequency_penalty: 0,
