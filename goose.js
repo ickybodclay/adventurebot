@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 const { escapeJsonValue, json } = require("./utils");
 
 // https://goose.ai/docs/api/engines
-const engineId = "gpt-neo-2-7b"; //"fairseq-13b"; //"gpt-neo-20b";
+const engineId = "gpt-j-6b"; //"gpt-neo-2-7b"; //"fairseq-13b"; //"gpt-neo-20b";
 
 function gooseGenerate(user, bot, prompt) {
   const apiKey = process.env.GOOSE_API_KEY;

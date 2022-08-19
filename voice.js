@@ -290,7 +290,7 @@ function mapUserToVoice(user, voices) {
 // const recentChats = [];
 // const recentChatMax = 6;
 async function generate(user, prompt) {
-  var chatPrompt = `${botName} is an AI chatbot talking to a Twitch user named ${user}.  ${botName} likes to roleplay as a dog cyborg from the future.\n\n`;
+  var chatPrompt = `${botName} is an AI chatbot talking to a Twitch user named ${user}.  ${botName} responds like a News Anchor.\n\n`;
   // chatPrompt += `${user}: Hello ${botName}!`;
   // chatPrompt += `${botName}: Woof woof!  Hi ${user}, how can I help you?\n`;
   // for(const chat of recentChats) {
