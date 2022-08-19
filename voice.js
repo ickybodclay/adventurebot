@@ -62,9 +62,9 @@ const twitch = new TwitchClient({
 });
 
 const configuration = new Configuration({
-  // apiKey: process.env.OPENAI_API_KEY,
-  apiKey: process.env.GOOSE_API_KEY,
-  basePath: 'https://api.goose.ai/v1'
+  apiKey: process.env.OPENAI_API_KEY,
+  // apiKey: process.env.GOOSE_API_KEY,
+  // basePath: 'https://api.goose.ai/v1',
 });
 const openai = new OpenAIApi(configuration);
 
@@ -297,8 +297,8 @@ async function generate(user, prompt) {
   
   try {
     const completion = await openai.createCompletion({
-      // model: "text-davinci-002", // OpenAI
-      model: "gpt-neo-20b", // GooseAI
+      model: "text-davinci-002", // OpenAI
+      // model: "gpt-neo-20b", // GooseAI
       prompt: chatPrompt,
       temperature: 1.0,
       max_tokens: 100,
@@ -372,4 +372,4 @@ function start() {
   // setupPubsub();
 }
 
-start();
+// start();
