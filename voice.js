@@ -298,7 +298,7 @@ async function generate(user, prompt) {
   try {
     const completion = await openai.createCompletion({
       // model: "text-davinci-002", // OpenAI
-      model: "gpt-neo-20b", // GooseAI
+      model: "gpt-j-6b", //"gpt-neo-20b", // GooseAI
       prompt: chatPrompt,
       temperature: 1.0,
       max_tokens: 100,
@@ -310,6 +310,10 @@ async function generate(user, prompt) {
     return completion.data.choices[0].text;
   } catch (ex) {
     console.error(`generate error ${ex.name}: ${ex.message}`);
+    console.error(ex.stack);
+    if (ex.response) {
+      
+    }
   }
   
 //   recentChats.push({user: user, message: prompt});
@@ -364,4 +368,4 @@ function start() {
   // setupPubsub();
 }
 
-// start();
+start();
