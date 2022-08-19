@@ -259,8 +259,8 @@ twitch.on("message", (channel, userstate, message, self) => {
     chatPrompt += `${user}: ${cleanMessage}\n${botName}:`;
 
     // fakeGenerate(user, message); // for testing only
-    gooseGenerate(user, botName, chatPrompt)
-    // generate(user, botName, chatPrompt)
+    // gooseGenerate(user, botName, chatPrompt)
+    generate(user, botName, chatPrompt)
       .then((response) => {
         if (!response) return;
         const cleanResposne = censor.cleanProfanity(response.trim());
