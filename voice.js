@@ -286,7 +286,7 @@ function mapUserToVoice(user, voices) {
 // const recentChats = [];
 // const recentChatMax = 6;
 async function generate(user, prompt) {
-  var chatPrompt = `${botName} is an AI chatbot talking to Twitch user named ${user}.  ${botName} is friendly, playful, and says 'baller' a lot.\n\n`;
+  var chatPrompt = `${botName} is an AI chatbot talking to Twitch user named ${user}.  ${botName} is friendly, playful, and like to tell stories.\n\n`;
   // chatPrompt += `${user}: Hello ${botName}!`;
   // chatPrompt += `${botName}: Woof woof!  Hi ${user}, how can I help you?\n`;
   // for(const chat of recentChats) {
@@ -297,11 +297,11 @@ async function generate(user, prompt) {
   const completion = await openai.createCompletion({
     model: "text-davinci-002", // "gpt-neo-20b",
     prompt: chatPrompt,
-    temperature: 0.9,
-    max_tokens: 150,
+    temperature: 1.0,
+    max_tokens: 100,
     top_p: 1,
-    frequency_penalty: 0.6,
-    presence_penalty: 0.6,
+    frequency_penalty: 0,
+    presence_penalty: 0,
     stop: [` ${user}:`, ` ${botName}:` ]
   });
   const response = completion.data.choices[0].text;
@@ -358,4 +358,4 @@ function start() {
   // setupPubsub();
 }
 
-start();
+// start();
