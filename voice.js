@@ -112,6 +112,7 @@ discord.on('interactionCreate', async interaction => {
     } else if (interaction.commandName === 'k9tts') {
       const message = interaction.options.getString('message');
       playMessage(queue, message);
+      await interaction.reply(`Message added to TTS queue.`);
       await wait(1000);
       await interaction.deleteReply();
     } 
@@ -223,6 +224,7 @@ twitch.on("message", (channel, userstate, message, self) => {
         voiceIndex = 1;
       }
       voiceOverride[user] = voiceIndex - 1;
+      twitch.say(channel, `@${user} your TTS voice has been set to ${VOICES_MAP[voiceOverride[user]]}`);
     }
     
     if (!isOwner && !isMod) return;
