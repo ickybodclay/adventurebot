@@ -35,6 +35,8 @@ And that should be it!
 
 `/k9generate INPUT` - Generate AI response from input and then text-to-speech user input & response (test to make sure you've setup OpenAI)
 
+`/k9tts MESSAGE` - Add message directly to the TTS queue for K9000 to say
+
 ### Twitch commands
 
 `!!setvoice [1-23]` - changes the TTS voice for the user

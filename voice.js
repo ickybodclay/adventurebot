@@ -199,6 +199,7 @@ const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 const queueMax = 6;
 const usersInQueue = {};
 const voiceOverride = {};
+var firstMessage = true;
 
 twitch.on("message", (channel, userstate, message, self) => {
   // ignore echoed messages & commands
@@ -263,7 +264,13 @@ twitch.on("message", (channel, userstate, message, self) => {
     
     usersInQueue[user] = true;
     
-    var chatPrompt = `${botName} is an AI chatbot talking to a Twitch user named ${user}.  ${botName} responds like a News Anchor.\n\n`;
+    var chatPrompt = "";
+    // for KoboldAI only, use story and memory
+    // if (firstMessage) {
+    //   chatPrompt += `${botName} is an AI chatbot talking to a Twitch user named ${user}.  ${botName} responds like a News Anchor.\n\n`;
+    //   firstMessage = false;
+    // }
+    chatPrompt += `${botName} is a friendly AI dog talking to a human named ${user}. ${botName} is wacky, weird, and likes to use a lot of flowery words.\n\n`;
     chatPrompt += `${user}: ${cleanMessage}\n${botName}:`;
 
     // fakeGenerate(user, message); // for testing only

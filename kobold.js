@@ -11,6 +11,7 @@ function koboldGenerate(user, bot, prompt) {
     rep_pen: 1.0, // [1,]
     max_length: 100,
     // use_story: true,
+    // use_memory: true,
   };
   return fetch(requestUrl, {
     method: "post",
