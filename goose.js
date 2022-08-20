@@ -6,7 +6,7 @@ const engineId = "gpt-neo-20b"; //"gpt-j-6b"; //"gpt-neo-2-7b"; //"fairseq-13b";
 
 function gooseGenerate(user, bot, prompt) {
   const requestUrl = `https://api.goose.ai/v1/engines/${engineId}/completions`;
-  const stopTokenRegex = new RegExp("", "im");
+  const stopTokenRegex = new RegExp(`(${user}:|${bot}:)$`, "im");
   const postData = {
     prompt: escapeJsonValue(prompt),
     temperature: 0.9, // [0, 1.0]
@@ -29,7 +29,7 @@ function gooseGenerate(user, bot, prompt) {
     .then((data) => {
       console.log(`GOOSE> ${JSON.stringify(data)}`);
       const response = data.choices[0].text;
-      return response.replace(/(${user}:|${bot}:)$/im, ""); // remove trailing stop tokens
+      return response.replace(stopTokenRegex, ""); // remove trailing stop tokens
     })
     .catch((ex) => {
       console.error(`gooseai generate error ${ex.name}: ${ex.message}`);
