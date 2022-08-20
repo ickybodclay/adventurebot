@@ -18,7 +18,15 @@ const commands = [
       option.setName('input')
         .setDescription('The prompt to send as input to OpenAI')
         .setRequired(true)
-    )
+    ),
+  new SlashCommandBuilder()
+    .setName('k9tts')
+    .setDescription('Adds TTS directly to queue')
+    .addStringOption(option =>
+      option.setName('message')
+        .setDescription('A message for K9000 to say via TTS')
+        .setRequired(true)
+    ),
 ]
 	.map(command => command.toJSON());
 

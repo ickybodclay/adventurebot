@@ -67,6 +67,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 const { gooseGenerate } = require("./goose");
+const { koboldGenerate } = require("./kobold");
 
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
 const botName = "K9000"; // Discord bot alias
@@ -108,6 +109,11 @@ discord.on('interactionCreate', async interaction => {
     } else if (interaction.commandName === 'k9resume') {
       queue.resume();
       await interaction.reply('TTS queue resumed');
+    } else if (interaction.commandName === 'k9tts') {
+      const message = interaction.options.getString('message');
+      playMessage(queue, message);
+      await wait(1000);
+      await interaction.deleteReply();
     } 
   });
 
@@ -260,6 +266,7 @@ twitch.on("message", (channel, userstate, message, self) => {
 
     // fakeGenerate(user, message); // for testing only
     // gooseGenerate(user, botName, chatPrompt)
+    // koboldGenerate(user, botName, chatPrompt)
     generate(user, botName, chatPrompt)
       .then((response) => {
         if (!response) return;
