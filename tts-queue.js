@@ -2,6 +2,7 @@ const { createReadStream } = require('node:fs');
 const { join } = require('node:path');
 const {  
   createAudioResource,
+  demuxProbe,
   AudioPlayerStatus, 
   StreamType,
   PlayerSubscription,
@@ -36,6 +37,11 @@ module.exports = class TTSQueue {
       });
     });
     this._player.play(resource);
+  }
+  
+  async probeAndCreateResource(readableStream) {
+    const { stream, type } = await demuxProbe(readableStream);
+    return createAudioResource(stream, { inputType: type });
   }
   
   vdisconnect() {

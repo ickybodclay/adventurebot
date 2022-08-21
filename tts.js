@@ -2,6 +2,9 @@ const fs = require("fs");
 const fetch = require("node-fetch");
 const { escapeJsonValue, json } = require("./utils");
 
+const uberduckSdk = require('api')('@uberduck/v1.2#7pucwt1ql6jnykd4');
+uberduckSdk.auth('pub_ilalsmzejusdwmxlnc');
+
 const languageCodeRegex = /([a-z]{2}-[A-Z]{2})-.+/i;
 
 /**
@@ -71,7 +74,54 @@ function syntehsize_GCTTS_chunk(chunk, voice, languageCode, filename) {
     });
 }
 
+/**
+ * Add TTS message to queue using uberduck.ai TTS.
+ * @param {!TTSQueue} queue queue to add tts message to
+ * @param {string} message TTS message
+ * @param {string} [voice=glados] TTS voice
+ */
+function playMessageUD(
+  queue,
+  message,
+  voice = "glados"
+) {
+  var languageCode = "en-US";
+  const languageFound = voice.match(languageCodeRegex);
+  if (languageFound) {
+    const [raw, langCode] = languageFound;
+    languageCode = languageCode;
+  }
+  
+  // chunk size based on quota limit https://cloud.google.com/text-to-speech/quotas
+  const chunks = splitMessageToChunks(message, 5000);
+  chunks.forEach((chunk) =>
+    queue.queue(
+      {
+        text: chunk,
+        voice: voice,
+        languageCode: languageCode,
+        filename: ".data/tmp.wav",
+      },
+      syntehsize_UDTSS_chunk
+    )
+  );
+}
 
+function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
+  uberduckSdk.generate_speech_synchronously_speak_synchronous_post({
+    voice: 'lj',
+    pace: 1,
+    speech: 'hello world'
+  }, {'uberduck-id': 'aipd'})
+    .then(data => {
+      fs.writeFileSync(
+        filename,
+        data,
+        "binary"
+      );
+    })
+    .catch(err => console.error(err));
+}
 
 function splitMessageToChunks(message, maxChunkLength) {
   const words = message.split(" ");
