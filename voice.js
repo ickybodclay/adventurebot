@@ -111,7 +111,7 @@ discord.on('interactionCreate', async interaction => {
       await interaction.reply('TTS queue resumed');
     } else if (interaction.commandName === 'k9tts') {
       const message = interaction.options.getString('message');
-      playMessage(queue, message);
+      playMessageUD(queue, message);
       await interaction.reply(`Message added to TTS queue.`);
       await wait(1000);
       await interaction.deleteReply();
@@ -373,4 +373,4 @@ function start() {
   // setupPubsub();
 }
 
-// start();
+start();

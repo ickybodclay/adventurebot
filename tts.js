@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 const { escapeJsonValue, json } = require("./utils");
 
 const uberduckSdk = require('api')('@uberduck/v1.2#7pucwt1ql6jnykd4');
-uberduckSdk.auth('pub_ilalsmzejusdwmxlnc');
+uberduckSdk.auth(process.env.UBERDUCK_API_KEY, process.env.UBERDUCK_API_SECRET);
 
 const languageCodeRegex = /([a-z]{2}-[A-Z]{2})-.+/i;
 
@@ -84,14 +84,7 @@ function playMessageUD(
   queue,
   message,
   voice = "glados"
-) {
-  var languageCode = "en-US";
-  const languageFound = voice.match(languageCodeRegex);
-  if (languageFound) {
-    const [raw, langCode] = languageFound;
-    languageCode = languageCode;
-  }
-  
+) {  
   // FIXME: determine actual chunk size
   const chunks = splitMessageToChunks(message, 5000);
   chunks.forEach((chunk) =>
@@ -99,7 +92,6 @@ function playMessageUD(
       {
         text: chunk,
         voice: voice,
-        languageCode: languageCode,
         filename: ".data/tmp.wav",
       },
       syntehsize_UDTSS_chunk
@@ -109,7 +101,7 @@ function playMessageUD(
 
 function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
   // https://uberduck.readme.io/reference/generate_speech_synchronously_speak_synchronous_post
-  uberduckSdk.generate_speech_synchronously_speak_synchronous_post({
+  return uberduckSdk.generate_speech_synchronously_speak_synchronous_post({
     voice: voice.toLowerCase(), // voice can be specified by providing either voice + model_type, or voicemodel_uuid
     speech: chunk
   }, {'uberduck-id': 'aipd'})

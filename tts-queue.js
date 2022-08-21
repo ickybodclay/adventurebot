@@ -140,9 +140,9 @@ module.exports = class TTSQueue {
             this._next.message.languageCode,
             this._next.message.filename
           )
-          .then(async (audio_data) => {
+          .then((audio_data) => {
             console.log(`> playing: ${this._next.message.text}`);
-            await this.play(this._next.message.filename, this._next.callback);
+            this.play(this._next.message.filename, this._next.callback);
           })
           .catch((err) => {
             console.log(err);
