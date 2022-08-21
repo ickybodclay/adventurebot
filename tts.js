@@ -96,28 +96,29 @@ function playMessageUD(
 
 function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
   // https://uberduck.readme.io/reference/generate_speech_synchronously_speak_synchronous_post
-  const options = {
-    method: "post",
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: 'Basic ' + Buffer.from(process.env.UBERDUCK_API_KEY + ":" + process.env.UBERDUCK_API_SECRET).toString('base64')
-    },
-    body: JSON.stringify({
-      voice: voice, 
+    const requestUrl = "https://api.uberduck.ai/speak-synchronous";
+    const postData = {
+      voice: voice,
       speech: escapeJsonValue(chunk)
+    };
+    return fetch(requestUrl, {
+      method: "post",
+      body: JSON.stringify(postData),
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${Buffer.from(process.env.UBERDUCK_API_KEY + ":" + process.env.UBERDUCK_API_SECRET).toString('base64')}`,
+        'uberduck-id': 'anonymous'
+      }
     })
-  };
-
-  return fetch('https://api.uberduck.ai/speak-synchronous', options)
-    .then(json)
-    .then(data => {
-      fs.writeFileSync(
-        filename,
-        data,
-        "binary"
-      );
-    });
+      .then((response) => {
+        console.log(response.bo)
+        fs.writeFileSync(
+          filename,
+          response.body,
+          "binary"
+        );
+      });
 }
 
 function splitMessageToChunks(message, maxChunkLength) {
