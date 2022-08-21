@@ -288,6 +288,10 @@ twitch.on("message", (channel, userstate, message, self) => {
           usersInQueue[user] = false; 
           twitch.say(channel, `@${user} ${cleanResposne}`);
         });  
+      })
+      .catch((err) => {
+        console.error(err);
+        usersInQueue[user] = false;
       });
   }
 });

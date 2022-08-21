@@ -145,7 +145,7 @@ module.exports = class TTSQueue {
             this.play(this._next.message.filename, this._next.callback);
           })
           .catch((err) => {
-            console.log(err);
+            console.error(err);
             this._isPlaying = false;
           });
       }
