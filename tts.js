@@ -94,6 +94,11 @@ function playMessageUD(
   );
 }
 
+const {createWriteStream} = require('node:fs');
+const {pipeline} = require('node:stream');
+const {promisify} = require('node:util');
+const streamPipeline = promisify(pipeline);
+
 function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
   // https://uberduck.readme.io/reference/generate_speech_synchronously_speak_synchronous_post
     const requestUrl = "https://api.uberduck.ai/speak-synchronous";
@@ -112,12 +117,7 @@ function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
       }
     })
       .then((response) => {
-        console.log(response.bo)
-        fs.writeFileSync(
-          filename,
-          response.body,
-          "binary"
-        );
+        return streamPipeline(response.body, createWriteStream(filename));
       });
 }
 
