@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 const { escapeJsonValue, json } = require("./utils");
 
 // please make sure you are using KoboldAI United version for API
-const baseUrl = "https://trycloudflare.com";
+const baseUrl = process.env.KOBOLDAI_BASE_URL;
 
 function koboldGenerate(user, bot, prompt) {
   const requestUrl = `${baseUrl}/api/v1/generate`;

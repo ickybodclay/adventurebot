@@ -71,6 +71,7 @@ const { koboldGenerate } = require("./kobold");
 
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
 const botName = "K9000"; // Discord bot alias
+var botVoice = "glados";
 var channel;
 
 // When the client is ready, run this code (only once)
@@ -111,7 +112,7 @@ discord.on('interactionCreate', async interaction => {
       await interaction.reply('TTS queue resumed');
     } else if (interaction.commandName === 'k9tts') {
       const message = interaction.options.getString('message');
-      playMessageUD(queue, message);
+      playMessageUD(queue, message, botVoice);
       await interaction.reply(`Message added to TTS queue.`);
       await wait(1000);
       await interaction.deleteReply();
@@ -194,7 +195,6 @@ const VOICES_MAP = [
   // "en-IN-Wavenet-A",
   // "en-IN-Wavenet-D",
 ];
-const BOT_VOICE = "glados";
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 const queueMax = 6;
 const usersInQueue = {};
@@ -242,6 +242,8 @@ twitch.on("message", (channel, userstate, message, self) => {
       queue.pause();
     } else if (command === "qstop") {
       queue.stop();
+    } else if (command === "setbotvoice") {
+      botVoice = argument;
     }
     
     return;
@@ -266,17 +268,17 @@ twitch.on("message", (channel, userstate, message, self) => {
     
     var chatPrompt = "";
     // for KoboldAI only, use story and memory
-    // if (firstMessage) {
-    //   chatPrompt += `${botName} is an AI chatbot talking to a Twitch user named ${user}.  ${botName} responds like a News Anchor.\n\n`;
-    //   firstMessage = false;
-    // }
-    chatPrompt += `${botName} is a friendly AI dog talking to a human named ${user}. ${botName} is wacky, weird, and likes to use a lot of flowery words.\n\n`;
+    if (firstMessage) {
+      chatPrompt += `${botName} is a friendly AI dog talking to a human named ${user}. ${botName} is wacky, weird, and likes to use a lot of flowery words.\n\n`;
+      firstMessage = false;
+    }
+    // chatPrompt += `${botName} is a friendly AI dog talking to a human named ${user}. ${botName} is wacky, weird, and likes to use a lot of flowery words.\n\n`;
     chatPrompt += `${user}: ${cleanMessage}\n${botName}:`;
 
     // fakeGenerate(user, message); // for testing only
     // gooseGenerate(user, botName, chatPrompt)
-    // koboldGenerate(user, botName, chatPrompt)
-    generate(user, botName, chatPrompt)
+    koboldGenerate(user, botName, chatPrompt)
+    // generate(user, botName, chatPrompt)
       .then((response) => {
         if (!response) return;
         const cleanResposne = censor.cleanProfanity(response.trim());
@@ -287,7 +289,7 @@ twitch.on("message", (channel, userstate, message, self) => {
         }
 
         playMessage(queue, `${user}: ${cleanMessage}`, userVoice);
-        playMessageUD(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
+        playMessageUD(queue, `${botName}: ${cleanResposne}`, botVoice);
         queue.addBreak(() => { 
           usersInQueue[user] = false; 
           twitch.say(channel, `@${user} ${cleanResposne}`);

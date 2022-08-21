@@ -54,3 +54,5 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 `!!qpause` - Pause TTS queue
 
 `!!qstop` - Stop TTS queue
+
+`!!setbotvoice` - change the TTS voice for K9000
