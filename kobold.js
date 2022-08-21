@@ -11,8 +11,8 @@ function koboldGenerate(user, bot, prompt) {
     temperature: 0.9, // [0, 1.0]
     rep_pen: 1.0, // [1,]
     max_length: 100,
-    // use_story: true,
-    // use_memory: true,
+    use_story: true,
+    use_memory: true,
   };
   return fetch(requestUrl, {
     method: "post",
