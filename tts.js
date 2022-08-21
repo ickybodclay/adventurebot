@@ -71,6 +71,8 @@ function syntehsize_GCTTS_chunk(chunk, voice, languageCode, filename) {
     });
 }
 
+
+
 function splitMessageToChunks(message, maxChunkLength) {
   const words = message.split(" ");
   const chunkedMsgArray = [];
