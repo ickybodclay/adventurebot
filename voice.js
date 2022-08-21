@@ -25,7 +25,7 @@ const { CensorSensor } = require("censor-sensor");
 //   "Highlight My Message"
 // ];
 
-const { playMessage } = require("./tts");
+const { playMessage, playMessageUD } = require("./tts");
 const { escapeJsonValue } = require("./utils");
 const TTSQueue = require("./tts-queue");
 
@@ -99,7 +99,7 @@ discord.on('interactionCreate', async interaction => {
       playMessage(queue, `${username}: ${prompt}`);
       // const response = await generate(username, prompt); // FIXME: disabled for testing
       const response = "Boom shakalaka!";
-      playMessage(queue, `${botName}: ${response}`);
+      playMessageUD(queue, `${botName}: ${response}`);
       await interaction.reply(`${botName}: ${response}`);
       await wait(1000);
       await interaction.deleteReply();
@@ -194,7 +194,7 @@ const VOICES_MAP = [
   // "en-IN-Wavenet-A",
   // "en-IN-Wavenet-D",
 ];
-const BOT_VOICE = "en-US-Wavenet-C";
+const BOT_VOICE = "glados";
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 const queueMax = 6;
 const usersInQueue = {};
@@ -287,7 +287,7 @@ twitch.on("message", (channel, userstate, message, self) => {
         }
 
         playMessage(queue, `${user}: ${cleanMessage}`, userVoice);
-        playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
+        playMessageUD(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
         queue.addBreak(() => { 
           usersInQueue[user] = false; 
           twitch.say(channel, `@${user} ${cleanResposne}`);

@@ -108,9 +108,9 @@ function playMessageUD(
 }
 
 function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
+  // https://uberduck.readme.io/reference/generate_speech_synchronously_speak_synchronous_post
   uberduckSdk.generate_speech_synchronously_speak_synchronous_post({
-    voice: voice,
-    pace: 1,
+    voice: voice.toLowerCase(), // voice can be specified by providing either voice + model_type, or voicemodel_uuid
     speech: chunk
   }, {'uberduck-id': 'aipd'})
     .then(data => {
