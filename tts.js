@@ -89,6 +89,7 @@ function playMessageUD(
       {
         text: chunk,
         voice: voice,
+        languageCode: 'english',
         filename: ".data/tmp.wav",
       },
       syntehsize_UDTSS_chunk
@@ -102,7 +103,6 @@ function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
     method: 'POST',
     headers: {
       Accept: 'application/json',
-      'uberduck-id': 'aipd',
       'Content-Type': 'application/json',
       Authorization: 'Basic ' + Buffer.from(process.env.UBERDUCK_API_KEY + ":" + process.env.UBERDUCK_API_SECRET).toString('base64')
     },
@@ -110,11 +110,12 @@ function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
   };
 
   return fetch('https://api.uberduck.ai/speak-synchronous', options)
-    .then(response => response.json())
+    // .then(json)
     .then(data => {
+      console.log(JSON.stringify(data));
       fs.writeFileSync(
         filename,
-        data,
+        Buffer.from(data, "base64"),
         "binary"
       );
     })
