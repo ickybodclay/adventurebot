@@ -65,9 +65,6 @@ function syntehsize_GCTTS_chunk(chunk, voice, languageCode, filename) {
         Buffer.from(data.audioContent, "base64"),
         "binary"
       );
-    })
-    .catch((error) => {
-      console.log("Request failed", error);
     });
 }
 
@@ -98,6 +95,7 @@ function playMessageUD(
 }
 
 function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
+  console.log(`syntehsize_UDTSS_chunk> c=${chunk} v=${voice}`);
   // https://uberduck.readme.io/reference/generate_speech_synchronously_speak_synchronous_post
   const options = {
     method: 'POST',
@@ -106,20 +104,22 @@ function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
       'Content-Type': 'application/json',
       Authorization: 'Basic ' + Buffer.from(process.env.UBERDUCK_API_KEY + ":" + process.env.UBERDUCK_API_SECRET).toString('base64')
     },
-    body: JSON.stringify({voice: voice, speech: chunk})
+    body: JSON.stringify({
+      voice: voice, 
+      speech: chunk
+    })
   };
 
   return fetch('https://api.uberduck.ai/speak-synchronous', options)
-    // .then(json)
+    .then(json)
     .then(data => {
-      console.log(JSON.stringify(data));
+      console.log(data);
       fs.writeFileSync(
         filename,
-        Buffer.from(data, "base64"),
+        data,
         "binary"
       );
-    })
-    .catch(err => console.error(err));
+    });
 }
 
 function splitMessageToChunks(message, maxChunkLength) {
