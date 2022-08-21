@@ -2,9 +2,6 @@ const fs = require("fs");
 const fetch = require("node-fetch");
 const { escapeJsonValue, json } = require("./utils");
 
-const uberduckSdk = require('api')('@uberduck/v1.2#7pucwt1ql6jnykd4');
-uberduckSdk.auth(process.env.UBERDUCK_API_KEY, process.env.UBERDUCK_API_SECRET);
-
 const languageCodeRegex = /([a-z]{2}-[A-Z]{2})-.+/i;
 
 /**
@@ -101,10 +98,19 @@ function playMessageUD(
 
 function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
   // https://uberduck.readme.io/reference/generate_speech_synchronously_speak_synchronous_post
-  return uberduckSdk.generate_speech_synchronously_speak_synchronous_post({
-    voice: voice.toLowerCase(), // voice can be specified by providing either voice + model_type, or voicemodel_uuid
-    speech: chunk
-  }, {'uberduck-id': 'aipd'})
+  const options = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'uberduck-id': 'aipd',
+      'Content-Type': 'application/json',
+      Authorization: 'Basic ' + Buffer.from(process.env.UBERDUCK_API_KEY + ":" + process.env.UBERDUCK_API_SECRET).toString('base64')
+    },
+    body: JSON.stringify({voice: voice, speech: chunk})
+  };
+
+  return fetch('https://api.uberduck.ai/speak-synchronous', options)
+    .then(response => response.json())
     .then(data => {
       fs.writeFileSync(
         filename,
