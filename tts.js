@@ -42,7 +42,7 @@ function syntehsize_GCTTS_chunk(chunk, voice, languageCode, filename) {
   const requestUrl =
     "https://texttospeech.googleapis.com/v1/text:synthesize?alt=json&key=" +
     apiKey;
-  var postData = {
+  const postData = {
     input: {
       text: escapeJsonValue(chunk),
     },
@@ -95,10 +95,9 @@ function playMessageUD(
 }
 
 function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
-  console.log(`syntehsize_UDTSS_chunk> c=${chunk} v=${voice}`);
   // https://uberduck.readme.io/reference/generate_speech_synchronously_speak_synchronous_post
   const options = {
-    method: 'POST',
+    method: "post",
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -106,14 +105,13 @@ function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
     },
     body: JSON.stringify({
       voice: voice, 
-      speech: chunk
+      speech: escapeJsonValue(chunk)
     })
   };
 
   return fetch('https://api.uberduck.ai/speak-synchronous', options)
     .then(json)
     .then(data => {
-      console.log(data);
       fs.writeFileSync(
         filename,
         data,
