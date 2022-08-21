@@ -21,10 +21,9 @@ module.exports = class TTSQueue {
     this._subscription = null;
   }
 
-  play(audio_file, close_callback = () => {}) {
-    const resource = createAudioResource(createReadStream(join(__dirname, audio_file)), {
-      inputType: StreamType.OggOpus,
-    });
+  async play(audio_file, close_callback = () => {}) {
+    const resource = await this.probeAndCreateResource(createReadStream(join(__dirname, audio_file)));
+    
     this._player.once(AudioPlayerStatus.Playing, () => {
       // console.log("audio player entered playing state");
       
@@ -141,9 +140,9 @@ module.exports = class TTSQueue {
             this._next.message.languageCode,
             this._next.message.filename
           )
-          .then((audio_data) => {
+          .then(async (audio_data) => {
             console.log(`> playing: ${this._next.message.text}`);
-            this.play(this._next.message.filename, this._next.callback);
+            await this.play(this._next.message.filename, this._next.callback);
           })
           .catch((err) => {
             console.log(err);

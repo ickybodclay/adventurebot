@@ -92,7 +92,7 @@ function playMessageUD(
     languageCode = languageCode;
   }
   
-  // chunk size based on quota limit https://cloud.google.com/text-to-speech/quotas
+  // FIXME: determine actual chunk size
   const chunks = splitMessageToChunks(message, 5000);
   chunks.forEach((chunk) =>
     queue.queue(
@@ -109,9 +109,9 @@ function playMessageUD(
 
 function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
   uberduckSdk.generate_speech_synchronously_speak_synchronous_post({
-    voice: 'lj',
+    voice: voice,
     pace: 1,
-    speech: 'hello world'
+    speech: chunk
   }, {'uberduck-id': 'aipd'})
     .then(data => {
       fs.writeFileSync(
@@ -141,4 +141,4 @@ function splitMessageToChunks(message, maxChunkLength) {
   return chunkedMsgArray;
 }
 
-module.exports = { playMessage };
+module.exports = { playMessage, playMessageUD };
