@@ -71,7 +71,7 @@ const { koboldGenerate } = require("./kobold");
 
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
 const botName = "K9000"; // Discord bot alias
-var botVoice = "glados";
+var botVoice = "demoman"; // en-US-Wavenet-C
 var channel;
 
 // When the client is ready, run this code (only once)
@@ -369,4 +369,4 @@ function start() {
   // setupPubsub();
 }
 
-start();
+// start();
