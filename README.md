@@ -56,3 +56,5 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 `!!qstop` - Stop TTS queue
 
 `!!setbotvoice` - change the TTS voice for K9000
+
+`!!clear` - clear user flags (useful if there was an error during TTS and user is not able talk to K9000)

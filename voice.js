@@ -243,6 +243,8 @@ twitch.on("message", (channel, userstate, message, self) => {
       queue.stop();
     } else if (command === "setbotvoice") {
       botVoice = argument;
+    } else if (command === "clear") {
+      usersInQueue = {};
     }
     
     return;
