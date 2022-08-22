@@ -98,9 +98,8 @@ discord.on('interactionCreate', async interaction => {
       const username = interaction.user.username;
       const prompt = interaction.options.getString('input');
       playMessage(queue, `${username}: ${prompt}`);
-      // const response = await generate(username, prompt); // FIXME: disabled for testing
-      const response = "Boom shakalaka!";
-      playMessageUD(queue, `${botName}: ${response}`);
+      const response = await generate(username, prompt);
+      matchVoiceAndPlay(queue, `${botName}: ${response}`, botVoice);
       await interaction.reply(`${botName}: ${response}`);
       await wait(1000);
       await interaction.deleteReply();
@@ -112,7 +111,7 @@ discord.on('interactionCreate', async interaction => {
       await interaction.reply('TTS queue resumed');
     } else if (interaction.commandName === 'k9tts') {
       const message = interaction.options.getString('message');
-      playMessageUD(queue, message, botVoice);
+      matchVoiceAndPlay(queue, message, botVoice);
       await interaction.reply(`Message added to TTS queue.`);
       await wait(1000);
       await interaction.deleteReply();
@@ -283,7 +282,7 @@ twitch.on("message", (channel, userstate, message, self) => {
         }
 
         playMessage(queue, `${user}: ${cleanMessage}`, userVoice);
-        playMessageUD(queue, `${botName}: ${cleanResposne}`, botVoice);
+        matchVoiceAndPlay(queue, `${botName}: ${cleanResposne}`, botVoice);
         queue.addBreak(() => { 
           usersInQueue[user] = false; 
           twitch.say(channel, `@${user} ${cleanResposne}`);
@@ -298,7 +297,7 @@ twitch.on("message", (channel, userstate, message, self) => {
 
 const googleVoiceRegex = /^[a-z]{2,3}-[a-z]{2,3}-/i
 function matchVoiceAndPlay(queue, message, voice) {
-  if (voice.matches(googleVoiceRegex)) {
+  if (voice.match(googleVoiceRegex)) {
     playMessage(queue, message, voice);
   } else {
     playMessageUD(queue, message, voice);
