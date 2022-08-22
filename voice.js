@@ -296,6 +296,15 @@ twitch.on("message", (channel, userstate, message, self) => {
   }
 });
 
+const googleVoiceRegex = /^[a-z]{2,3}-[a-z]{2,3}-/i
+function matchVoiceAndPlay(queue, message, voice) {
+  if (voice.matches(googleVoiceRegex)) {
+    playMessage(queue, message, voice);
+  } else {
+    playMessageUD(queue, message, voice);
+  }
+}
+
 function mapUserToVoice(user, voices) {
   var index = 0;
   for (let i = 0; i < user.length; i++) {
