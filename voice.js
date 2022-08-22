@@ -266,7 +266,7 @@ twitch.on("message", (channel, userstate, message, self) => {
     usersInQueue[user] = true;
     
     var chatPrompt = "";
-    chatPrompt += `${botName} is a friendly AI dog talking to a human named ${user}. ${botName} is wacky, weird, and likes to use a lot of flowery words.\n\n`;
+    chatPrompt += `${botName} is a friendly AI dog talking to a human named ${user}. ${botName} responds like a pirate.\n\n`;
     chatPrompt += `${user}: ${cleanMessage}\n${botName}:`;
 
     // fakeGenerate(user, message); // for testing only
