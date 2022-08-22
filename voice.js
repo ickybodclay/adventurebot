@@ -297,6 +297,9 @@ twitch.on("message", (channel, userstate, message, self) => {
 });
 
 const googleVoiceRegex = /^[a-z]{2,3}-[a-z]{2,3}-/i
+/**
+ * Wrapper function to determine correct TTS service to use for the provided voice.
+ */
 function matchVoiceAndPlay(queue, message, voice) {
   if (voice.match(googleVoiceRegex)) {
     playMessage(queue, message, voice);
