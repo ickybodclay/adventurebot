@@ -71,6 +71,7 @@ const { koboldGenerate } = require("./kobold");
 
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
 const botName = "K9000"; // Discord bot alias
+const botNamePhonetic = "Kay 9000";
 var botVoice = "demoman"; // en-US-Wavenet-C
 var channel;
 
@@ -282,7 +283,7 @@ twitch.on("message", (channel, userstate, message, self) => {
         }
 
         playMessage(queue, `${user}: ${cleanMessage}`, userVoice);
-        matchVoiceAndPlay(queue, `${botName}: ${cleanResposne}`, botVoice);
+        matchVoiceAndPlay(queue, `${botNamePhonetic}: ${cleanResposne}`, botVoice);
         queue.addBreak(() => { 
           usersInQueue[user] = false; 
           twitch.say(channel, `@${user} ${cleanResposne}`);
