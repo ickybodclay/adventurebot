@@ -67,7 +67,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 const { gooseGenerate } = require("./goose");
-const { koboldGenerate } = require("./kobold");
+const { koboldGenerate, koboldStoryAdd } = require("./kobold");
 
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
 const botName = "K9000"; // Discord bot alias
@@ -287,7 +287,9 @@ twitch.on("message", (channel, userstate, message, self) => {
         queue.addBreak(() => { 
           usersInQueue[user] = false; 
           twitch.say(channel, `@${user} ${cleanResposne}`);
-        });  
+        });
+      
+        // koboldStoryAdd(`${user}: ${cleanMessage}\n${botName}: ${cleanResposne}\n`);
       })
       .catch((err) => {
         console.error(err);

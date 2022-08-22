@@ -37,4 +37,27 @@ function koboldGenerate(user, bot, prompt) {
     });
 }
 
-module.exports = { koboldGenerate };
+function koboldStoryAdd(action) {
+  const requestUrl = `${baseUrl}/api/v1/story/end`;
+  const postData = {
+    prompt: escapeJsonValue(action)
+  }
+  return fetch(requestUrl, {
+    method: "post",
+    body: JSON.stringify(postData),
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    }
+  })
+    .catch((ex) => {
+      console.error(`koboldai story add error ${ex.name}: ${ex.message}`);
+      if (ex.response) {
+        console.error(ex.response.data);
+      } else {
+        console.error(ex.stack);
+      }
+    });
+}
+
+module.exports = { koboldGenerate, koboldStoryAdd };
