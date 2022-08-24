@@ -2,7 +2,6 @@
 // console.log(generateDependencyReport());
 
 const wait = require('node:timers/promises').setTimeout;
-const { Configuration, OpenAIApi } = require('openai');
 const { Client: DiscordClient, GatewayIntentBits } = require('discord.js');
 const { 
     createAudioPlayer, 
@@ -11,25 +10,11 @@ const {
     VoiceConnectionStatus
 } = require('@discordjs/voice');
 const { Client: TwitchClient } = require("tmi.js");
-const { CensorSensor } = require("censor-sensor");
-// https://www.npmjs.com/package/@twurple/pubsub
-// const { PubSubClient } = require("@twurple/pubsub");
-// const { StaticAuthProvider } = require("@twurple/auth");
-
-// https://twitchapps.com/tmi/ - changed scope to 'channel:read:redemptions'
-// const accessToken = process.env.TWITCH_PUBSUB_OAUTH_TOKEN;
-// const authProvider = new StaticAuthProvider("", accessToken);
-// const pubSubClient = new PubSubClient();
-
-// const IGNORE_REWARDS = [
-//   "Highlight My Message"
-// ];
-
-const { playMessage, playMessageUD } = require("./tts");
-const { escapeJsonValue } = require("./utils");
-const TTSQueue = require("./tts-queue");
+const express = require("express");
+const app = express();
 
 // https://github.com/seiyria/censor-sensor
+const { CensorSensor } = require("censor-sensor");
 const censor = new CensorSensor();
 censor.disableTier(2);
 censor.disableTier(3);
@@ -38,6 +23,17 @@ censor.addWord("rape");
 censor.addWord("raping");
 censor.addWord("rapist");
 
+const { Configuration, OpenAIApi } = require('openai');
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY
+});
+const openai = new OpenAIApi(configuration);
+const { gooseGenerate } = require("./goose");
+const { koboldGenerate, koboldStoryAdd } = require("./kobold");
+
+const { playMessage, playMessageUD } = require("./tts");
+const { escapeJsonValue } = require("./utils");
+const TTSQueue = require("./tts-queue");
 const queue = new TTSQueue();
 queue.processQueue();
 
@@ -61,13 +57,18 @@ const twitch = new TwitchClient({
   channels: [process.env.TWITCH_CHANNEL],
 });
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY
-});
-const openai = new OpenAIApi(configuration);
+// https://www.npmjs.com/package/@twurple/pubsub
+// const { PubSubClient } = require("@twurple/pubsub");
+// const { StaticAuthProvider } = require("@twurple/auth");
 
-const { gooseGenerate } = require("./goose");
-const { koboldGenerate, koboldStoryAdd } = require("./kobold");
+// https://twitchapps.com/tmi/ - changed scope to 'channel:read:redemptions'
+// const accessToken = process.env.TWITCH_PUBSUB_OAUTH_TOKEN;
+// const authProvider = new StaticAuthProvider("", accessToken);
+// const pubSubClient = new PubSubClient();
+
+// const IGNORE_REWARDS = [
+//   "Highlight My Message"
+// ];
 
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
 const botName = "K9000"; // Discord bot alias
@@ -75,7 +76,9 @@ const botNamePhonetic = "Kay 9000";
 var botVoice = "en-US-Wavenet-C";
 var channel;
 
-// When the client is ready, run this code (only once)
+/**
+ * DISCORD
+ */
 discord.once('ready', () => {
 	console.log('Ready!');
 });
@@ -200,6 +203,9 @@ const queueMax = 6;
 const usersInQueue = {};
 const voiceOverride = {};
 
+/**
+ * TWITCH
+ */
 twitch.on("message", (channel, userstate, message, self) => {
   // ignore echoed messages & commands
   if (self) return;
@@ -300,55 +306,6 @@ twitch.on("message", (channel, userstate, message, self) => {
   }
 });
 
-const googleVoiceRegex = /^[a-z]{2,3}-[a-z]{2,3}-/i
-/**
- * Wrapper function to determine correct TTS service to use for the provided voice.
- */
-function matchVoiceAndPlay(queue, message, voice) {
-  if (voice.match(googleVoiceRegex)) {
-    playMessage(queue, message, voice);
-  } else {
-    playMessageUD(queue, message, voice);
-  }
-}
-
-function mapUserToVoice(user, voices) {
-  var index = 0;
-  for (let i = 0; i < user.length; i++) {
-    index += user.charCodeAt(i)
-  }
-  return voices[index % voices.length];
-}
-
-async function generate(user, bot, prompt) {  
-  try {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-002",
-      prompt: escapeJsonValue(prompt),
-      temperature: 0.9,
-      max_tokens: 100,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
-      stop: [` ${user}:`, ` ${bot}:`]
-    });
-    return completion.data.choices[0].text;
-  } catch (ex) {
-    console.error(`openai generate error ${ex.name}: ${ex.message}`);
-    if (ex.response) {
-      console.error(ex.response.data);
-    } else {
-      console.error(ex.stack);
-    }
-  }
-  
-  return null;
-}
-
-async function fakeGenerate(username, prompt) {
-  return `Squak! ${username} says ${prompt}`;
-}
-
 /**
  * Initializes Twitch pubsub listener.
  */
@@ -380,6 +337,78 @@ async function fakeGenerate(username, prompt) {
 //     }
 //   });
 // }
+
+
+/**
+ * TTS
+ */
+const googleVoiceRegex = /^[a-z]{2,3}-[a-z]{2,3}-/i
+/**
+ * Wrapper function to determine correct TTS service to use for the provided voice.
+ */
+function matchVoiceAndPlay(queue, message, voice) {
+  if (voice.match(googleVoiceRegex)) {
+    playMessage(queue, message, voice);
+  } else {
+    playMessageUD(queue, message, voice);
+  }
+}
+
+function mapUserToVoice(user, voices) {
+  var index = 0;
+  for (let i = 0; i < user.length; i++) {
+    index += user.charCodeAt(i)
+  }
+  return voices[index % voices.length];
+}
+
+/**
+ * OPENAI
+ */
+async function generate(user, bot, prompt) {  
+  try {
+    const completion = await openai.createCompletion({
+      model: "text-davinci-002",
+      prompt: escapeJsonValue(prompt),
+      temperature: 0.9,
+      max_tokens: 100,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+      stop: [` ${user}:`, ` ${bot}:`]
+    });
+    return completion.data.choices[0].text;
+  } catch (ex) {
+    console.error(`openai generate error ${ex.name}: ${ex.message}`);
+    if (ex.response) {
+      console.error(ex.response.data);
+    } else {
+      console.error(ex.stack);
+    }
+  }
+  
+  return null;
+}
+
+async function fakeGenerate(username, prompt) {
+  return `Squak! ${username} says ${prompt}`;
+}
+
+/**
+ * EXPRESS
+ */
+app.get("/queue/users", (request, response) => {
+  const 
+  for (const [user, isInQueue] of Object.entries(usersInQueue)) {
+    
+  }
+  response.json([]);
+});
+
+// listen for requests :)
+const listener = app.listen(process.env.PORT, () => {
+  console.log("Your app is listening on port " + listener.address().port);
+});
 
 function start() {
   console.log("Starting hular hoops bot...");
