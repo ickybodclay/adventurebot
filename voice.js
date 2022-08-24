@@ -200,7 +200,7 @@ const VOICES_MAP = [
 ];
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 const queueMax = 6;
-const usersInQueue = {};
+const usersInQueue = [];
 const voiceOverride = {};
 
 /**
@@ -250,7 +250,7 @@ twitch.on("message", (channel, userstate, message, self) => {
     } else if (command === "setbotvoice") {
       botVoice = argument;
     } else if (command === "clear") {
-      usersInQueue = {};
+      usersInQueue.splice(0, usersInQueue.length);
     }
     
     return;
@@ -266,12 +266,12 @@ twitch.on("message", (channel, userstate, message, self) => {
       twitch.say(channel, `@${user} K9000 chat queue is full, please wait & try again.`);
       return;
     }
-    if (usersInQueue[user]) {
+    if (usersInQueue.includes(user)) {
       twitch.say(channel, `@${user} already has chat pending for K9000, please wait for K9000 to respond.`);
       return;
     }
     
-    usersInQueue[user] = true;
+    usersInQueue.push(user);
     
     var chatPrompt = "";
     chatPrompt += `${botName} is a friendly AI dog talking to a human named ${user}. ${botName} talks like a Southern belle.\n\n`;
@@ -293,7 +293,7 @@ twitch.on("message", (channel, userstate, message, self) => {
         playMessage(queue, `${user}: ${cleanMessage}`, userVoice);
         matchVoiceAndPlay(queue, `${botNamePhonetic}: ${cleanResposne}`, botVoice);
         queue.addBreak(() => { 
-          usersInQueue[user] = false; 
+          usersInQueue.shift();
           twitch.say(channel, `@${user} ${cleanResposne}`);
         });
       
@@ -301,7 +301,7 @@ twitch.on("message", (channel, userstate, message, self) => {
       })
       .catch((err) => {
         console.error(err);
-        usersInQueue[user] = false;
+        usersInQueue.shift();
       });
   }
 });
@@ -398,16 +398,7 @@ async function fakeGenerate(username, prompt) {
  * EXPRESS
  */
 app.get("/queue/users", (request, response) => {
-  const 
-  for (const [user, isInQueue] of Object.entries(usersInQueue)) {
-    
-  }
-  response.json([]);
-});
-
-// listen for requests :)
-const listener = app.listen(process.env.PORT, () => {
-  console.log("Your app is listening on port " + listener.address().port);
+  response.json(usersInQueue);
 });
 
 function start() {
@@ -416,6 +407,9 @@ function start() {
   discord.login();
   twitch.connect();
   // setupPubsub();
+  const listener = app.listen(process.env.PORT, () => {
+    console.log("Your app is listening on port " + listener.address().port);
+  });
 }
 
 // start();
