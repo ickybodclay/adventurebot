@@ -278,9 +278,9 @@ twitch.on("message", (channel, userstate, message, self) => {
     chatPrompt += `${user}: ${cleanMessage}\n${botName}:`;
 
     // fakeGenerate(user, message); // for testing only
-    gooseGenerate(user, botName, chatPrompt)
+    // gooseGenerate(user, botName, chatPrompt)
     // koboldGenerate(user, botName, chatPrompt)
-    // generate(user, botName, chatPrompt)
+    generate(user, botName, chatPrompt)
       .then((response) => {
         if (!response) return;
         const cleanResposne = censor.cleanProfanity(response.trim());
@@ -368,7 +368,7 @@ function mapUserToVoice(user, voices) {
 async function generate(user, bot, prompt) {  
   try {
     const completion = await openai.createCompletion({
-      model: "text-davinci-002",
+      model: "text-curie-001", //"text-davinci-002",
       prompt: escapeJsonValue(prompt),
       temperature: 0.9,
       max_tokens: 100,
