@@ -9,10 +9,11 @@ function gooseGenerate(user, bot, prompt) {
   const stopTokenRegex = new RegExp(`(${user}:|${bot}:)$`, "im");
   const postData = {
     prompt: escapeJsonValue(prompt),
-    temperature: 0.45, // [0, 1.0]
-    presence_penalty: 0, // [-2.0, 2.0]
-    frequency_penalty: 0, // [-2.0, 2.0]
-    repetition_penalty: 1.0, // [0, 8.0]
+    temperature: 0.5, // [0, 1.0]
+    // top_p: 0.3, // [0, 1.0]
+    // presence_penalty: 0, // [-2.0, 2.0]
+    // frequency_penalty: 0, // [-2.0, 2.0]
+    // repetition_penalty: 1.0, // [0, 8.0]
     min_tokens: 1,
     max_tokens: 150,
     stop: [` ${user}:`, ` ${bot}:`, `\n${user}:`, `\n${bot}:`, "<|endoftext|>"]
