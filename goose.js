@@ -6,7 +6,7 @@ const engineId = "gpt-neo-20b"; //"gpt-j-6b"; //"gpt-neo-2-7b"; //"fairseq-13b";
 
 function gooseGenerate(user, bot, prompt) {
   const requestUrl = `https://api.goose.ai/v1/engines/${engineId}/completions`;
-  const stopTokenRegex = new RegExp(`(${user}:|${bot}:)$`, "im");
+  const stopTokenRegex = new RegExp(`(${user}:|${bot}:|"<|endoftext|>")$`, "im");
   const postData = {
     prompt: escapeJsonValue(prompt),
     temperature: 0.5, // [0, 1.0]
