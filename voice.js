@@ -73,7 +73,7 @@ const twitch = new TwitchClient({
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
 const botName = "K9000"; // Discord bot alias
 const botNamePhonetic = "Kay 9000";
-var botVoice = "en-US-Wavenet-C";
+var botVoice = "glados-p2"; //"en-US-Wavenet-C";
 var channel;
 
 /**
