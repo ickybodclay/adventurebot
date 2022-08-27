@@ -39,7 +39,7 @@ And that should be it!
 
 ### Twitch commands
 
-`!!setvoice [1-23]` - changes the TTS voice for the user
+`!!setvoice [1-24]` - changes the TTS voice for the user
 
 Note: for the following Twitch commands, must be channel owner or moderator.
 
