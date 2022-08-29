@@ -258,8 +258,7 @@ twitch.on("message", (channel, userstate, message, self) => {
   
   if (message.startsWith("!")) return;
   
-  if (queue.isConnected() && 
-      message.startsWith("$")) {
+  if (queue.isConnected() && message.startsWith("$")) {
     talkToK9000(queue, channel, user, message.substring(1).trim());
   }
 });
@@ -299,7 +298,7 @@ function talkToK9000(queue, channel, user, message) {
       matchVoiceAndPlay(queue, `${botNamePhonetic}: ${cleanResposne}`, botVoice);
       queue.addBreak(() => { 
         usersInQueue.shift();
-        twitch.say(channel, `@${user} ${cleanResposne}`);
+        if (channel) twitch.say(channel, `@${user} ${cleanResposne}`);
       });
 
       // koboldStoryAdd(`${user}: ${cleanMessage}\n${botName}: ${cleanResposne}\n`);
@@ -313,21 +312,21 @@ function talkToK9000(queue, channel, user, message) {
 /**
  * Initializes Twitch pubsub listener.
  */
-async function setupPubsub() {
-  console.log("twitch-pubsub listening for channel point redemptions...");
-  const userId = await pubSubClient.registerUserListener(authProvider);
-  const redeemListener = await pubSubClient.onRedemption(userId, (message) => {
-    if (IGNORE_REWARDS.indexOf(message.rewardTitle) > -1) return;
-    console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId})`);
-    // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
-    if (message.rewardTitle === "Talk to K9000" && message.status === "FULFILLED") {
-      if (!queue.isConnected()) return;
-      const user = message.userName;
-      const message = message.rewardPrompt.trim();
-      talkToK9000()
-    }
-  });
-}
+// async function setupPubsub() {
+//   console.log("twitch-pubsub listening for channel point redemptions...");
+//   const userId = await pubSubClient.registerUserListener(authProvider);
+//   const redeemListener = await pubSubClient.onRedemption(userId, (message) => {
+//     if (IGNORE_REWARDS.indexOf(message.rewardTitle) > -1) return;
+//     console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId})`);
+//     // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
+//     if (message.rewardTitle === "Talk to K9000" && message.status === "FULFILLED") {
+//       if (!queue.isConnected()) return;
+//       const user = message.userDisplayName;
+//       const message = message.rewardPrompt.trim();
+//       talkToK9000(queue, null, user, message);
+//     }
+//   });
+// }
 
 
 /**
