@@ -320,18 +320,14 @@ async function setupPubsub() {
     if (IGNORE_REWARDS.indexOf(message.rewardTitle) > -1) return;
     console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId} status=${message.status} channelId=${message.channelId} userId=${userId})`);
     // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
-    if (message.rewardTitle === "Talk to K9000" && message.status === "FULFILLED") {
-      console.log(`Talk to K9000 reward approved for ${message.userDisplayName}`);
+    if (message.rewardTitle === "Talk to K9000") {
+      console.log(`Talk to K9000 reward for ${message.userDisplayName}`);
       if (!queue.isConnected()) return;
       const user = message.userDisplayName;
-      const message = message.rewardPrompt.trim();
-      talkToK9000(queue, `#${twitchChannel}`, user, message);
+      const prompt = message.message.trim();
+      talkToK9000(queue, `#${twitchChannel}`, user, prompt);
     }
   });
-  
-  const customListener = await pubSubClient.onCustomTopic(userId, `channel-points-channel-v1`, (message) => {
-    console.log(`custom listener message = ${JSON.stringify(message.data)}`)
-  }, null, userId);
 }
 
 
