@@ -404,4 +404,4 @@ function start() {
   });
 }
 
-start();
+// start();
