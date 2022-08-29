@@ -318,7 +318,7 @@ async function setupPubsub() {
   const userId = await pubSubClient.registerUserListener(authProvider);
   const redeemListener = await pubSubClient.onRedemption(userId, (message) => {
     if (IGNORE_REWARDS.indexOf(message.rewardTitle) > -1) return;
-    console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId} status=${message.status} channelId=${message.channelId})`);
+    console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId} status=${message.status} channelId=${message.channelId} userId=${userId})`);
     // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
     if (message.rewardTitle === "Talk to K9000" && message.status === "FULFILLED") {
       console.log(`Talk to K9000 reward approved for ${message.userDisplayName}`);
@@ -329,9 +329,9 @@ async function setupPubsub() {
     }
   });
   
-  const customListener = await pubSubClient.onCustomTopic(userId, `channel-points-channel-v1.32155601`, (message) => {
+  const customListener = await pubSubClient.onCustomTopic(userId, `channel-points-channel-v1`, (message) => {
     console.log(`custom listener message = ${JSON.stringify(message.data)}`)
-  });
+  }, null, userId);
 }
 
 
