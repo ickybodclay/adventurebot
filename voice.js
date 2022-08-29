@@ -260,83 +260,74 @@ twitch.on("message", (channel, userstate, message, self) => {
   
   if (queue.isConnected() && 
       message.startsWith("$")) {
-    const cleanMessage = censor.cleanProfanity(message.substring(1).trim());
-    if (cleanMessage.length == 0) return;
-    if (queue.size > queueMax) {
-      twitch.say(channel, `@${user} K9000 chat queue is full, please wait & try again.`);
-      return;
-    }
-    if (usersInQueue.includes(user)) {
-      twitch.say(channel, `@${user} already has chat pending for K9000, please wait for K9000 to respond.`);
-      return;
-    }
-    
-    usersInQueue.push(user);
-    
-    var chatPrompt = "";
-    chatPrompt += `${botName} is a friendly AI dog talking to a Twitch user named ${user}. ${botName} talks like Arnold Schwarzenegger.\n\n`;
-    chatPrompt += `${user}: ${cleanMessage}\n${botName}:`;
-
-    // fakeGenerate(user, message); // for testing only
-    // gooseGenerate(user, botName, chatPrompt)
-    // koboldGenerate(user, botName, chatPrompt)
-    generate(user, botName, chatPrompt)
-      .then((response) => {
-        if (!response) return;
-        const cleanResposne = censor.cleanProfanity(response.trim());
-      
-        var userVoice = mapUserToVoice(user, VOICES_MAP);
-        if (voiceOverride[user]) {
-          userVoice = VOICES_MAP[voiceOverride[user]];
-        }
-
-        playMessage(queue, `${user}: ${cleanMessage}`, userVoice);
-        matchVoiceAndPlay(queue, `${botNamePhonetic}: ${cleanResposne}`, botVoice);
-        queue.addBreak(() => { 
-          usersInQueue.shift();
-          twitch.say(channel, `@${user} ${cleanResposne}`);
-        });
-      
-        // koboldStoryAdd(`${user}: ${cleanMessage}\n${botName}: ${cleanResposne}\n`);
-      })
-      .catch((err) => {
-        console.error(err);
-        usersInQueue.shift();
-      });
+    talkToK9000(queue, channel, user, message.substring(1).trim());
   }
 });
+
+function talkToK9000(queue, channel, user, message) {
+  const cleanMessage = censor.cleanProfanity(message);
+  if (cleanMessage.length == 0) return;
+  if (queue.size > queueMax) {
+    twitch.say(channel, `@${user} K9000 chat queue is full, please wait & try again.`);
+    return;
+  }
+  if (usersInQueue.includes(user)) {
+    twitch.say(channel, `@${user} already has chat pending for K9000, please wait for K9000 to respond.`);
+    return;
+  }
+
+  usersInQueue.push(user);
+
+  var chatPrompt = "";
+  chatPrompt += `${botName} is a friendly AI dog talking to a Twitch user named ${user}. ${botName} talks like Arnold Schwarzenegger.\n\n`;
+  chatPrompt += `${user}: ${cleanMessage}\n${botName}:`;
+
+  // fakeGenerate(user, message); // for testing only
+  // gooseGenerate(user, botName, chatPrompt)
+  // koboldGenerate(user, botName, chatPrompt)
+  generate(user, botName, chatPrompt)
+    .then((response) => {
+      if (!response) return;
+      const cleanResposne = censor.cleanProfanity(response.trim());
+
+      var userVoice = mapUserToVoice(user, VOICES_MAP);
+      if (voiceOverride[user]) {
+        userVoice = VOICES_MAP[voiceOverride[user]];
+      }
+
+      playMessage(queue, `${user}: ${cleanMessage}`, userVoice);
+      matchVoiceAndPlay(queue, `${botNamePhonetic}: ${cleanResposne}`, botVoice);
+      queue.addBreak(() => { 
+        usersInQueue.shift();
+        twitch.say(channel, `@${user} ${cleanResposne}`);
+      });
+
+      // koboldStoryAdd(`${user}: ${cleanMessage}\n${botName}: ${cleanResposne}\n`);
+    })
+    .catch((err) => {
+      console.error(err);
+      usersInQueue.shift();
+    });
+}
 
 /**
  * Initializes Twitch pubsub listener.
  */
-// async function setupPubsub() {
-//   console.log("twitch-pubsub listening for channel point redemptions...");
-//   const userId = await pubSubClient.registerUserListener(authProvider);
-//   const redeemListener = await pubSubClient.onRedemption(userId, (message) => {
-//     if (IGNORE_REWARDS.indexOf(message.rewardTitle) > -1) return;
-//     console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId})`);
-//     // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
-//     if (message.rewardTitle === "Talk to K9000") {
-//       if (!queue.isConnected()) return;
-//       const user = message.userName;
-//       const formattedMessage = censor.cleanProfanity(message.rewardPrompt.trim());
-//       if (formattedMessage.length == 0) return;
-//       usersInQueue[user] = true;
-//       // fakeGenerate(user, message); // for testing only
-//       generate(user, formattedMessage)
-//         .then((response) => {
-//           const cleanResposne = censor.cleanProfanity(response.trim());
-//           var userVoice = mapUserToVoice(user, VOICES_MAP);
-//           if (voiceOverride[user]) {
-//             userVoice = VOICES_MAP[voiceOverride[user]];
-//           }
-//           playMessage(queue, `${user}: ${formattedMessage}`, userVoice);
-//           playMessage(queue, `${botName}: ${cleanResposne}`, BOT_VOICE);
-//           queue.addBreak();
-//         });
-//     }
-//   });
-// }
+async function setupPubsub() {
+  console.log("twitch-pubsub listening for channel point redemptions...");
+  const userId = await pubSubClient.registerUserListener(authProvider);
+  const redeemListener = await pubSubClient.onRedemption(userId, (message) => {
+    if (IGNORE_REWARDS.indexOf(message.rewardTitle) > -1) return;
+    console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId})`);
+    // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
+    if (message.rewardTitle === "Talk to K9000" && message.status === "FULFILLED") {
+      if (!queue.isConnected()) return;
+      const user = message.userName;
+      const message = message.rewardPrompt.trim();
+      talkToK9000()
+    }
+  });
+}
 
 
 /**
