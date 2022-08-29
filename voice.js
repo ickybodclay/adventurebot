@@ -44,6 +44,7 @@ const discord = new DiscordClient({
   ] 
 });
 
+const twitchChannel = process.env.TWITCH_CHANNEL;
 const twitch = new TwitchClient({
   // options: { debug: true },
   connection: {
@@ -54,21 +55,21 @@ const twitch = new TwitchClient({
     username: process.env.TWITCH_BOT_USERNAME,
     password: process.env.TWITCH_BOT_TOKEN,
   },
-  channels: [process.env.TWITCH_CHANNEL],
+  channels: [ twitchChannel ],
 });
 
 // https://www.npmjs.com/package/@twurple/pubsub
-// const { PubSubClient } = require("@twurple/pubsub");
-// const { StaticAuthProvider } = require("@twurple/auth");
+const { PubSubClient } = require("@twurple/pubsub");
+const { StaticAuthProvider } = require("@twurple/auth");
 
 // https://twitchapps.com/tmi/ - changed scope to 'channel:read:redemptions'
-// const accessToken = process.env.TWITCH_PUBSUB_OAUTH_TOKEN;
-// const authProvider = new StaticAuthProvider("", accessToken);
-// const pubSubClient = new PubSubClient();
+const twitchPubsubAccessToken = process.env.TWITCH_PUBSUB_OAUTH_TOKEN;
+const authProvider = new StaticAuthProvider("", twitchPubsubAccessToken);
+const pubSubClient = new PubSubClient();
 
-// const IGNORE_REWARDS = [
-//   "Highlight My Message"
-// ];
+const IGNORE_REWARDS = [
+  "Highlight My Message"
+];
 
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
 const botName = "K9000"; // Discord bot alias
@@ -259,7 +260,7 @@ twitch.on("message", (channel, userstate, message, self) => {
   if (message.startsWith("!")) return;
   
   if (queue.isConnected() && message.startsWith("$")) {
-    talkToK9000(queue, channel, user, message.substring(1).trim());
+    // talkToK9000(queue, channel, user, message.substring(1).trim());
   }
 });
 
@@ -312,21 +313,22 @@ function talkToK9000(queue, channel, user, message) {
 /**
  * Initializes Twitch pubsub listener.
  */
-// async function setupPubsub() {
-//   console.log("twitch-pubsub listening for channel point redemptions...");
-//   const userId = await pubSubClient.registerUserListener(authProvider);
-//   const redeemListener = await pubSubClient.onRedemption(userId, (message) => {
-//     if (IGNORE_REWARDS.indexOf(message.rewardTitle) > -1) return;
-//     console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId})`);
-//     // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
-//     if (message.rewardTitle === "Talk to K9000" && message.status === "FULFILLED") {
-//       if (!queue.isConnected()) return;
-//       const user = message.userDisplayName;
-//       const message = message.rewardPrompt.trim();
-//       talkToK9000(queue, null, user, message);
-//     }
-//   });
-// }
+async function setupPubsub() {
+  console.log("twitch-pubsub listening for channel point redemptions...");
+  const userId = await pubSubClient.registerUserListener(authProvider);
+  const redeemListener = await pubSubClient.onRedemption(userId, (message) => {
+    if (IGNORE_REWARDS.indexOf(message.rewardTitle) > -1) return;
+    console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId})`);
+    // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
+    if (message.rewardTitle === "Talk to K9000" && message.status === "FULFILLED") {
+      console.log(`Talk to K9000 reward approved for ${message.userDisplayName}`);
+      if (!queue.isConnected()) return;
+      const user = message.userDisplayName;
+      const message = message.rewardPrompt.trim();
+      talkToK9000(queue, `#${twitchChannel}`, user, message);
+    }
+  });
+}
 
 
 /**
@@ -396,10 +398,10 @@ function start() {
   console.log(`# of voices available: ${VOICES_MAP.length}`);
   discord.login();
   twitch.connect();
-  // setupPubsub();
+  setupPubsub();
   const listener = app.listen(process.env.PORT, () => {
     console.log("Your app is listening on port " + listener.address().port);
   });
 }
 
-// start();
+start();
