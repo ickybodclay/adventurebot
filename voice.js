@@ -318,9 +318,9 @@ async function setupPubsub() {
   const userId = await pubSubClient.registerUserListener(authProvider);
   const redeemListener = await pubSubClient.onRedemption(userId, (message) => {
     if (IGNORE_REWARDS.indexOf(message.rewardTitle) > -1) return;
-    console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId})`);
+    console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId} status=${message.status})`);
     // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
-    if (message.rewardTitle === "Talk to K9000" && message.status === "FULFILLED") {
+    if (message.rewardTitle === "Talk to K9000" && message.status === "ACTION_TAKEN") {
       console.log(`Talk to K9000 reward approved for ${message.userDisplayName}`);
       if (!queue.isConnected()) return;
       const user = message.userDisplayName;
