@@ -8,9 +8,7 @@ module.exports = class KoboldAIClient {
     this.baseUrl = process.env.KOBOLDAI_BASE_URL;
     this.story = [];
     this.prompts = [];
-    this._prompt_users = {};
     this.votes = [];
-    this._vote_users = {};
   }
   
   newStory() {
@@ -32,22 +30,22 @@ module.exports = class KoboldAIClient {
   }
   
   addPrompt(user, prompt) {
-    if (this._prompt_users[user]) return;
+    if (this.promps.map((item) => item.user).indexOf(user) != -1) return;
     
     this.prompts.push({user: user, prompt: prompt});
   }
   
   addVote(user, vote) {
-    if (this._vote_users[user]) return;
+    if (this.votes.map((item) => item.user).indexOf(user) != -1) return;
     
     this.votes.push({user: user, vote: vote});
   }
   
-  generate(user, bot, promt) {
+  generate(user, bot, prompt) {
     const requestUrl = `${this.baseUrl}/api/v1/generate`;
-    this.story.push(prompt);
+    this.story.push({user: user, prompt: prompt});
     const postData = {
-      prompt: escapeJsonValue(this.story.join('\n')),
+      prompt: escapeJsonValue(this.story.map((item) => item.prompt).join('\n')),
       temperature: 0.9, // [0, 1.0]
       rep_pen: 1.0, // [1,]
       max_length: 100,
@@ -65,7 +63,9 @@ module.exports = class KoboldAIClient {
       .then(json)
       .then((data) => {
         console.log(`KOBOLD> ${JSON.stringify(data)}`);
-        return data.results[0].text;
+        const response = data.results[0].text;
+        this.story.push({user: bot, prompt: response});
+        return response;
       })
       .catch((ex) => {
         console.error(`koboldai generate error ${ex.name}: ${ex.message}`);
