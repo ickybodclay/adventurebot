@@ -61,4 +61,4 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 ### KoboldAI commands (if running)
 
-`!!newstory` - start a new story 
+`!!newstory` - start a new story (saves previous story to txt file)

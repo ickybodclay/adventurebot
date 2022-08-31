@@ -234,6 +234,22 @@ twitch.on("message", (channel, userstate, message, self) => {
       voiceOverride[user] = voiceIndex - 1;
       twitch.say(channel, `@${user} your TTS voice has been set to ${VOICES_MAP[voiceOverride[user]]}`);
     }
+    // KOBOLDAI ADVENTURE BOT COMMANDS
+    else if (command === "prompt") {
+      const prompt = argument;
+      // TODO save first 5 unique prompts (limit to 3 min), limit 1 per user
+      // TODO if prompts, move to vote
+      // TODO if 1 prompt, skip vote and generate
+      // TODO if no prompts, reset time and stay in prompt round
+      
+      // TODO add mod command to remove i
+    }
+    else if (command === "vote") {
+      const voteIndex = parseInt(argument);
+      if (isNaN(voteIndex)) return;
+      // TODO record votes based on prompts
+      // after 2 minutes
+    }
     
     if (!isOwner && !isMod) return;
     
@@ -254,7 +270,7 @@ twitch.on("message", (channel, userstate, message, self) => {
     } else if (command === "clear") {
       usersInQueue.splice(0, usersInQueue.length);
     } 
-    // KOBOLDAI COMMANDS
+    // KOBOLDAI ADVENTURE BOT MOD COMMANDS
     else if (command === "newstory") {
       koboldai.newStory();
     }
