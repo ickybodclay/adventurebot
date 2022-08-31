@@ -1,11 +1,27 @@
 const fetch = require("node-fetch");
 const { escapeJsonValue, json } = require("./utils");
+const fs = require('fs');
 
 module.exports = class KoboldAIClient {
   constructor() {
     // please make sure you are using KoboldAI United version for API
     this.baseUrl = process.env.KOBOLDAI_BASE_URL;
     this.story = [];
+  }
+  
+  newStory(callback = () => {}) {
+    if (this.story.length > 0) {
+      fs.writeFile(
+        `.stories/${Date.now().toUTCString()}.txt`, 
+        this.story.join('\n'),
+        (err) => {
+          if (err) console.error(err);
+          
+          this.stories.splice(0, this.stories.length);
+          if ()
+        }
+      );
+    }
   }
   
   generate(user, bot, promt) {
