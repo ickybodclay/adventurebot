@@ -9,16 +9,19 @@ module.exports = class KoboldAIClient {
     this.story = [];
   }
   
-  newStory(callback = () => {}) {
+  newStory() {
+    console.log("starting new story...");
     if (this.story.length > 0) {
+      console.log("saving previous story...");
+      const save = `.stories/${Date.now().toUTCString()}.txt`;
       fs.writeFile(
-        `.stories/${Date.now().toUTCString()}.txt`, 
+        save, 
         this.story.join('\n'),
         (err) => {
           if (err) console.error(err);
           
           this.stories.splice(0, this.stories.length);
-          if ()
+          console.log("previous story saved to " + save);
         }
       );
     }
@@ -50,29 +53,6 @@ module.exports = class KoboldAIClient {
       })
       .catch((ex) => {
         console.error(`koboldai generate error ${ex.name}: ${ex.message}`);
-        if (ex.response) {
-          console.error(ex.response.data);
-        } else {
-          console.error(ex.stack);
-        }
-      });
-  }
-  
-  storyAdd(action) {
-    const requestUrl = `${this.baseUrl}/api/v1/story/end`;
-    const postData = {
-      prompt: escapeJsonValue(action)
-    }
-    return fetch(requestUrl, {
-      method: "post",
-      body: JSON.stringify(postData),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-      .catch((ex) => {
-        console.error(`koboldai story add error ${ex.name}: ${ex.message}`);
         if (ex.response) {
           console.error(ex.response.data);
         } else {

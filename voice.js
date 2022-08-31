@@ -253,6 +253,10 @@ twitch.on("message", (channel, userstate, message, self) => {
       botVoice = argument;
     } else if (command === "clear") {
       usersInQueue.splice(0, usersInQueue.length);
+    } 
+    // KOBOLDAI COMMANDS
+    else if (command === "newstory") {
+      koboldai.newStory();
     }
     
     return;
