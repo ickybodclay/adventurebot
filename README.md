@@ -68,3 +68,15 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 Note: for the following Twitch commands, must be channel owner or moderator.
 
 `!!newstory` - start a new story (saves previous story to txt file)
+
+## Endpoints
+
+Hular Hoops Bot provides optional endpoint to hook into for setting up stream labels or whatever!
+
+### K9000
+
+`/queue/users` - list of users currently in queue to talk to K9000
+
+### Adventure Bot
+
+`/adventurebot/round` - get story info and current round of adventurebot

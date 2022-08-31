@@ -412,8 +412,20 @@ async function fakeGenerate(username, prompt) {
 /**
  * EXPRESS
  */
+// K9000 Endpoints
 app.get("/queue/users", (request, response) => {
   response.json(usersInQueue);
+});
+
+// KoboldAI Adventure Bot Endpoints
+app.get("/adventurebot/round", (request, response) => {
+  response.json({
+    // TODO send current round (PROMPT, VOTE, GENERATE, RESPONSE)
+    round: "PROMPT",
+    story: koboldai.story,
+    prompts: koboldai.prompts,
+    votes: koboldai.votes
+  });
 });
 
 function start() {

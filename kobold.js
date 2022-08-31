@@ -40,7 +40,7 @@ module.exports = class KoboldAIClient {
   addVote(user, vote) {
     if (this._vote_users[user]) return;
     
-    this.votes
+    this.votes.push({user: user, vote: vote});
   }
   
   generate(user, bot, promt) {
