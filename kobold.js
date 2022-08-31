@@ -7,6 +7,10 @@ module.exports = class KoboldAIClient {
     // please make sure you are using KoboldAI United version for API
     this.baseUrl = process.env.KOBOLDAI_BASE_URL;
     this.story = [];
+    this.prompts = [];
+    this._prompt_users = {};
+    this.votes = [];
+    this._vote_users = {};
   }
   
   newStory() {
@@ -25,6 +29,18 @@ module.exports = class KoboldAIClient {
         }
       );
     }
+  }
+  
+  addPrompt(user, prompt) {
+    if (this._prompt_users[user]) return;
+    
+    this.prompts.push({user: user, prompt: prompt});
+  }
+  
+  addVote(user, vote) {
+    if (this._vote_users[user]) return;
+    
+    this.votes
   }
   
   generate(user, bot, promt) {

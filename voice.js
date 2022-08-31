@@ -242,13 +242,15 @@ twitch.on("message", (channel, userstate, message, self) => {
       // TODO if 1 prompt, skip vote and generate
       // TODO if no prompts, reset time and stay in prompt round
       
-      // TODO add mod command to remove i
+      // TODO add mod command to remove bad prompt
     }
     else if (command === "vote") {
       const voteIndex = parseInt(argument);
       if (isNaN(voteIndex)) return;
       // TODO record votes based on prompts
-      // after 2 minutes
+      // TODO after 2 minutes, end vote
+      // TODO after end vote, take top voted prompt to generate
+      // TODO if tie, randomly select top prompt, send to generate
     }
     
     if (!isOwner && !isMod) return;

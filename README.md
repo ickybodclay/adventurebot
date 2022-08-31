@@ -61,4 +61,10 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 ### KoboldAI commands (if running)
 
+`!!prompt PROMPT` - submit prompt (only valid during prompt round)
+
+`!!vote NUMBER` - vote for prompt (only valid during vote round, must be valid integer)
+
+Note: for the following Twitch commands, must be channel owner or moderator.
+
 `!!newstory` - start a new story (saves previous story to txt file)
