@@ -29,7 +29,8 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 const { gooseGenerate } = require("./goose");
-const { koboldGenerate, koboldStoryAdd } = require("./kobold");
+const KoboldAIClient = require("./kobold");
+const koboldai = new KoboldAIClient();
 
 const { playMessage, playMessageUD } = require("./tts");
 const { escapeJsonValue } = require("./utils");
@@ -284,7 +285,7 @@ function talkToK9000(queue, channel, user, message) {
 
   // fakeGenerate(user, message); // for testing only
   // gooseGenerate(user, botName, chatPrompt)
-  // koboldGenerate(user, botName, chatPrompt)
+  // koboldai.generate(user, botName, chatPrompt)
   generate(user, botName, chatPrompt)
     .then((response) => {
       if (!response) return;
