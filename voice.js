@@ -273,7 +273,7 @@ twitch.on("message", (channel, userstate, message, self) => {
     else if (command === "abstop") {
       koboldai.stopAdvetnureBot();
     }
-    else if (command === "newstory") {
+    else if (command === "abnewstory") {
       koboldai.newStory();
     }
     
@@ -441,4 +441,4 @@ function start() {
   });
 }
 
-// start();
+start();

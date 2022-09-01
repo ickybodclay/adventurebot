@@ -59,7 +59,7 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 `!!clear` - clear user flags (useful if there was an error during TTS and user is not able talk to K9000)
 
-### KoboldAI commands (if running)
+### Adventure Bot commands (if running)
 
 `!!prompt PROMPT` - submit prompt (only valid during prompt round)
 
@@ -67,7 +67,11 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 Note: for the following Twitch commands, must be channel owner or moderator.
 
-`!!newstory` - start a new story (saves previous story to txt file)
+`!!abnewstory` - start a new story (saves previous story to txt file)
+
+`!!abstart` - start adventure bot
+
+`!!abstop` - stop adventure bot
 
 ## Endpoints
 
