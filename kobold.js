@@ -9,7 +9,11 @@ module.exports = class KoboldAIClient {
     this.story = [];
     this.prompts = [];
     this.votes = [];
-    this.round = "NEWSTORY"; // NEWSTORY, PROMPT, VOTE, GENERATE
+    this.round = "PROMPT"; // PROMPT, VOTE, GENERATE
+    this.roundStartTime = Date.now();
+    this.promptRoundTimeInMs = 3*60*1000; // 3 minutes
+    this.voteRoundTimeInMs = 2*60*1000; // 2 minutes
+    this.generateRoundTimeInMs = 3*60*1000; // 3 minutes
   }
   
   newStory() {
@@ -33,8 +37,11 @@ module.exports = class KoboldAIClient {
   get round() { return this.round; }
   
   set round(newRound) {
-    if (newRound !== "NEWSTORY" || )
-    
+    if (
+      newRound !== "PROMPT" ||
+      newRound !== "VOTE" ||
+      newRound !== "GENERATE"
+    ) return;
     
     this.round = newRound;
   }
@@ -95,5 +102,19 @@ module.exports = class KoboldAIClient {
           console.error(ex.stack);
         }
       });
+  }
+  
+  async startAdventureBot() {
+    const tickTime = Date.now();
+    
+    if (this.round === "PROMPT") {
+      
+    } else if (this.round === "VOTE") {
+      
+    } else if (this.round === "GENERATE") {
+      
+    }
+
+    setTimeout(this.startAdventureBot.bind(this), 100);
   }
 };
