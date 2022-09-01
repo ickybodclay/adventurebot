@@ -107,10 +107,14 @@ module.exports = class KoboldAIClient {
   }
   
   calculateWinningPrompt() {
+    const voteTotals = this.prompts.map((item) => 0);
+    for (let i=0; i<this.votes.length; i++) {
+      voteTotals[this.votes[i].vote]++;
+    }
     // TODO tabulate votes
     // TODO break tie with random
     // TODO return winning prompt
-    return {user: "test", prompt: "hello world"};
+    return {user: "test", prompt: "hello world", votes: 9};
   }
   
   async startAdventureBot() {
