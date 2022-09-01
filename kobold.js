@@ -10,10 +10,10 @@ module.exports = class KoboldAIClient {
     this.prompts = [];
     this.votes = [];
     this.round = "PROMPT"; // PROMPT, VOTE, GENERATE
-    this.roundStartTime = Date.now();
+    this.roundStartTime = null;
     this.promptRoundTimeInMs = 3*60*1000; // 3 minutes
     this.voteRoundTimeInMs = 2*60*1000; // 2 minutes
-    this.generateRoundTimeInMs = 3*60*1000; // 3 minutes
+    this.generateRoundTimeInMs = 2*60*1000; // 2 minutes
   }
   
   newStory() {
@@ -105,14 +105,33 @@ module.exports = class KoboldAIClient {
   }
   
   async startAdventureBot() {
+    if (!this.roundStartTime) this.roundStartTime = Date.now();
+    
     const tickTime = Date.now();
+    const deltaInMs = tickTime.getTime() - this.roundStartTime.getTime();
     
     if (this.round === "PROMPT") {
       
+      if (deltaInMs > this.promptRoundTimeInMs) {
+        // only go to vote round if there are any prompts
+        if (this.prompts.length > 0) {
+          this.round = "VOTE";
+        }
+        
+        this.roundStartTime = null;
+      }
     } else if (this.round === "VOTE") {
       
+      if (deltaInMs > this.voteRoundTimeInMs) {
+        this.round = "GENERATE";
+        this.roundStartTime = null;
+      }
     } else if (this.round === "GENERATE") {
       
+      if (deltaInMs > this.generateRoundTimeInMs) {
+        this.round = "PROMPT";
+        this.roundStartTime = null;
+      }
     }
 
     setTimeout(this.startAdventureBot.bind(this), 100);
