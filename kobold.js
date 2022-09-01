@@ -9,6 +9,7 @@ module.exports = class KoboldAIClient {
     this.story = [];
     this.prompts = [];
     this.votes = [];
+    this.round = "NEWSTORY"; // NEWSTORY, PROMPT, VOTE, GENERATE
   }
   
   newStory() {
@@ -35,10 +36,20 @@ module.exports = class KoboldAIClient {
     this.prompts.push({user: user, prompt: prompt});
   }
   
+  clearPrompts() {
+    this.prompts.splice(0, this.prompts.length);
+    console.log("cleared prompts");
+  }
+  
   addVote(user, vote) {
     if (this.votes.map((item) => item.user).indexOf(user) != -1) return;
     
     this.votes.push({user: user, vote: vote});
+  }
+  
+  clearVotes() {
+    this.votes.splice(0, this.votes.length);
+    console.log("cleared votes");
   }
   
   generate(user, bot, prompt) {
@@ -48,7 +59,7 @@ module.exports = class KoboldAIClient {
       prompt: escapeJsonValue(this.story.map((item) => item.prompt).join('\n')),
       temperature: 0.9, // [0, 1.0]
       rep_pen: 1.0, // [1,]
-      max_length: 100,
+      max_length: 200,
       use_story: true,
       use_memory: true,
     };
