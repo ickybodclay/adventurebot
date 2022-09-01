@@ -287,10 +287,10 @@ twitch.on("message", (channel, userstate, message, self) => {
   }
 });
 
-function talkToK9000(queue, channel, user, message) {
+function talkToK9000(queue, channel, user, message, enforceMax=true) {
   const cleanMessage = censor.cleanProfanity(message);
   if (cleanMessage.length == 0) return;
-  if (queue.size > queueMax) {
+  if (enforceMax && queue.size > queueMax) {
     twitch.say(channel, `@${user} K9000 chat queue is full, please wait & try again.`);
     return;
   }
@@ -302,7 +302,7 @@ function talkToK9000(queue, channel, user, message) {
   usersInQueue.push(user);
 
   var chatPrompt = "";
-  chatPrompt += `${botName} is a friendly AI dog talking to a Twitch user named ${user}. ${botName} talks like Arnold Schwarzenegger.\n\n`;
+  chatPrompt += `${botName} is a friendly AI dog talking to a Twitch user named ${user}. ${botName} talks like a drunken sailor.\n\n`;
   chatPrompt += `${user}: ${cleanMessage}\n${botName}:`;
 
   // fakeGenerate(user, message); // for testing only
@@ -348,7 +348,7 @@ async function setupPubsub() {
       if (!queue.isConnected()) return;
       const user = message.userDisplayName;
       const prompt = message.message.trim();
-      talkToK9000(queue, `#${twitchChannel}`, user, prompt);
+      talkToK9000(queue, `#${twitchChannel}`, user, prompt, false);
     }
   });
 }
