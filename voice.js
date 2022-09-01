@@ -283,7 +283,7 @@ twitch.on("message", (channel, userstate, message, self) => {
   if (message.startsWith("!")) return;
   
   if (queue.isConnected() && message.startsWith("$")) {
-    // talkToK9000(queue, channel, user, message.substring(1).trim());
+    talkToK9000(queue, channel, user, message.substring(1).trim());
   }
 });
 
@@ -435,10 +435,10 @@ function start() {
   console.log(`# of voices available: ${VOICES_MAP.length}`);
   discord.login();
   twitch.connect();
-  setupPubsub();
+  // setupPubsub();
   const listener = app.listen(process.env.PORT, () => {
     console.log("Your app is listening on port " + listener.address().port);
   });
 }
 
-start();
+// start();
