@@ -125,6 +125,8 @@ module.exports = class KoboldAIClient {
       if (deltaInMs > this.voteRoundTimeInMs) {
         this.round = "GENERATE";
         this.roundStartTime = null;
+        
+        // TODO calculate vote winner and send to generate
       }
     } else if (this.round === "GENERATE") {
       
