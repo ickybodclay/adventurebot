@@ -16,6 +16,17 @@ module.exports = class KoboldAIClient {
     this.generateRoundTimeInMs = 2*60*1000; // 2 minutes
     this.winningPrompt = null;
     this.botResponse = null;
+    this.running = false;
+  }
+  
+  startAdventureBot() {
+    this.running = true;
+    this.runAdventureBot();
+  }
+
+  stopAdvetnureBot() {
+    this.running = false;
+    this.roundStartTime = null;
   }
   
   newStory() {
@@ -131,7 +142,8 @@ module.exports = class KoboldAIClient {
     return {user: "test", prompt: "hello world", votes: 9};
   }
   
-  async startAdventureBot() {
+  async runAdventureBot() {
+    if (!this.running) return;
     if (!this.roundStartTime) this.roundStartTime = Date.now();
     
     const tickTime = Date.now();
@@ -167,6 +179,6 @@ module.exports = class KoboldAIClient {
       }
     }
 
-    setTimeout(this.startAdventureBot.bind(this), 100);
+    setTimeout(this.runAdventureBot.bind(this), 100);
   }
 };

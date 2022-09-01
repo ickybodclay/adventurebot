@@ -267,6 +267,12 @@ twitch.on("message", (channel, userstate, message, self) => {
       usersInQueue.splice(0, usersInQueue.length);
     } 
     // KOBOLDAI ADVENTURE BOT MOD COMMANDS
+    else if (command === "abstart") {
+      koboldai.startAdventureBot();
+    }
+    else if (command === "abstop") {
+      koboldai.stopAdvetnureBot();
+    }
     else if (command === "newstory") {
       koboldai.newStory();
     }
