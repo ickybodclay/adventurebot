@@ -30,6 +30,15 @@ module.exports = class KoboldAIClient {
     }
   }
   
+  get round() { return this.round; }
+  
+  set round(newRound) {
+    if (newRound !== "NEWSTORY" || )
+    
+    
+    this.round = newRound;
+  }
+  
   addPrompt(user, prompt) {
     if (this.promps.map((item) => item.user).indexOf(user) != -1) return;
     
