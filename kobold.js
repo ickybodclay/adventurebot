@@ -14,8 +14,8 @@ module.exports = class KoboldAIClient {
     this.promptRoundTimeInMs = 3*60*1000; // 3 minutes
     this.voteRoundTimeInMs = 2*60*1000; // 2 minutes
     this.generateRoundTimeInMs = 2*60*1000; // 2 minutes
-    this.winningPrompt = "";
-    this.botResponse = "";
+    this.winningPrompt = null;
+    this.botResponse = null;
   }
   
   newStory() {
@@ -106,6 +106,13 @@ module.exports = class KoboldAIClient {
       });
   }
   
+  calculateWinningPrompt() {
+    // TODO tabulate votes
+    // TODO break tie with random
+    // TODO return winning prompt
+    return {user: "test", prompt: "hello world"};
+  }
+  
   async startAdventureBot() {
     if (!this.roundStartTime) this.roundStartTime = Date.now();
     
@@ -121,16 +128,20 @@ module.exports = class KoboldAIClient {
         }
         
         this.roundStartTime = null;
+        this.winningPromnpt = null;
+        this.botResponse = null;
       }
     } else if (this.round === "VOTE") {
       
       if (deltaInMs > this.voteRoundTimeInMs) {
         this.round = "GENERATE";
         this.roundStartTime = null;
-        
-        // TODO calculate vote winner and send to generate
+        this.winningPrompt = this.calculateWinningPrompt();
       }
     } else if (this.round === "GENERATE") {
+      if (!this.botResponse) {
+        this.botResponse = await this.generate(this.winningPrompt.user, "bot", this.winningPrompt.prompt);
+      }
       
       if (deltaInMs > this.generateRoundTimeInMs) {
         this.round = "PROMPT";
