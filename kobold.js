@@ -29,11 +29,21 @@ module.exports = class KoboldAIClient {
         (err) => {
           if (err) console.error(err);
           
-          this.stories.splice(0, this.stories.length);
+          this.reset();
           console.log("previous story saved to " + save);
         }
       );
     }
+  }
+  
+  reset() {
+    this.clearStory();
+    this.clearPrompts();
+    this.clearVotes();
+    this.winningPromnpt = null;
+    this.botResponse = null;
+    this.roundStartTime = null;
+    this.round = "PROMPT";
   }
   
   get round() { return this.round; }
@@ -46,6 +56,10 @@ module.exports = class KoboldAIClient {
     ) return;
     
     this.round = newRound;
+  }
+  
+  clearStory() {
+    this.stories.splice(0, this.stories.length);
   }
   
   addPrompt(user, prompt) {
