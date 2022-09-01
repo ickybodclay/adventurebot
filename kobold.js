@@ -14,6 +14,8 @@ module.exports = class KoboldAIClient {
     this.promptRoundTimeInMs = 3*60*1000; // 3 minutes
     this.voteRoundTimeInMs = 2*60*1000; // 2 minutes
     this.generateRoundTimeInMs = 2*60*1000; // 2 minutes
+    this.winningPrompt = "";
+    this.botResponse = "";
   }
   
   newStory() {

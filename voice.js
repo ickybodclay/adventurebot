@@ -237,10 +237,7 @@ twitch.on("message", (channel, userstate, message, self) => {
     // KOBOLDAI ADVENTURE BOT COMMANDS
     else if (command === "prompt" && koboldai.round === "PROMPT") {
       const prompt = argument;
-      // TODO save first 5 unique prompts (limit to 3 min), limit 1 per user
-      // TODO if prompts, move to vote
-      // TODO if 1 prompt, skip vote and generate
-      // TODO if no prompts, reset time and stay in prompt round
+      koboldai.addPrompt(user, prompt);
       
       // TODO add mod command to remove bad prompt
     }
@@ -417,11 +414,13 @@ app.get("/queue/users", (request, response) => {
 // KoboldAI Adventure Bot Endpoints
 app.get("/adventurebot/round", (request, response) => {
   response.json({
-    // TODO send current round (PROMPT, VOTE, GENERATE, RESPONSE)
-    round: "PROMPT",
+    round: koboldai.round,
+    roundStartTime: koboldai.roundStartTime.getTime(),
     story: koboldai.story,
     prompts: koboldai.prompts,
-    votes: koboldai.votes
+    votes: koboldai.votes,
+    winningPrompt: koboldai.winningPrompt,
+    botResponse: koboldai.botResponse
   });
 });
 
