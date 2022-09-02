@@ -102,7 +102,7 @@ module.exports = class KoboldAIClient {
   }
   
   addPrompt(user, prompt) {
-    if (this.promps.map((item) => item.user).indexOf(user) != -1) return;
+    if (this.prompts.map((item) => item.user).indexOf(user) != -1) return;
     
     this.prompts.push({user: user, prompt: prompt});
   }
@@ -194,7 +194,7 @@ module.exports = class KoboldAIClient {
     }
     
     const tickTime = Date.now();
-    const deltaInMs = tickTime.getTime() - this.roundStartTime.getTime();
+    const deltaInMs = tickTime - this.roundStartTime;
     
     if (this.round === "PROMPT") {
       

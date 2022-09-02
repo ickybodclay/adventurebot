@@ -428,7 +428,7 @@ app.get("/queue/users", (request, response) => {
 // KoboldAI Adventure Bot Endpoints
 app.get("/adventurebot/round", (request, response) => {
   var roundStartTime = null;
-  if (koboldai.roundStartTime) roundStartTime = koboldai.roundStartTime.getTime();
+  if (koboldai.roundStartTime) roundStartTime = koboldai.roundStartTime;
   response.json({
     round: koboldai.round,
     roundStartTime: roundStartTime,
