@@ -274,7 +274,7 @@ twitch.on("message", (channel, userstate, message, self) => {
       koboldai.stopAdvetnureBot();
     } else if (command === "abnewstory") {
       koboldai.newStory();
-    } else if (command === "abremove") {
+    } else if (command === "abremove" && koboldai.round === "PROMPT") {
       const promptIndex = parseInt(argument);
       if (isNaN(promptIndex) || promptIndex < 1 || promptIndex > koboldai.prompts.length) return;
       koboldai.removePrompt(promptIndex - 1);
