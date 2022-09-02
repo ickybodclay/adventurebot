@@ -236,16 +236,16 @@ twitch.on("message", (channel, userstate, message, self) => {
       twitch.say(channel, `@${user} your TTS voice has been set to ${VOICES_MAP[voiceOverride[user]]}`);
     }
     // KOBOLDAI ADVENTURE BOT COMMANDS
-    else if (command === "prompt" && koboldai.round === "PROMPT") {
+    else if (koboldai.running && command === "prompt" && koboldai.round === "PROMPT") {
       const prompt = argument;
       if (koboldai.prompts.length > 5) {
-        twitch.say(channel, `@${user} sorry, prompts queue at maximum`);
+        twitch.say(channel, `@${user} sorry, prompts queue currently at maximum`);
       } else {
         koboldai.addPrompt(user, prompt);
-        twitch.say(channel, `@${user} sorry, prompts queue at maximum`);
+        twitch.say(channel, `@${user} prompt added!`);
       }
     }
-    else if (command === "vote" && koboldai.round === "VOTE") {
+    else if (koboldai.running && command === "vote" && koboldai.round === "VOTE") {
       const voteIndex = parseInt(argument);
       if (isNaN(voteIndex) || voteIndex < 1 || voteIndex > koboldai.prompts.length) return;
       koboldai.addVote(user, voteIndex - 1);
@@ -277,6 +277,8 @@ twitch.on("message", (channel, userstate, message, self) => {
       koboldai.stopAdvetnureBot();
     } else if (command === "abnewstory") {
       koboldai.newStory();
+    } else if (command === "absave") {
+      koboldai.saveStory();
     } else if (command === "abremove" && koboldai.round === "PROMPT") {
       const promptIndex = parseInt(argument);
       if (isNaN(promptIndex) || promptIndex < 1 || promptIndex > koboldai.prompts.length) return;

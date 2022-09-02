@@ -43,9 +43,25 @@ module.exports = class KoboldAIClient {
         this.story.join('\n'),
         (err) => {
           if (err) console.error(err);
-          
-          this.reset();
-          console.log("previous story saved to " + save);
+          else {
+            this.reset();
+            console.log("previous story saved to " + save);
+          }
+        }
+      );
+    }
+  }
+  
+  saveStory() {
+    console.log("saving current story...");
+    if (this.story.length > 0) {
+      const save = `.stories/${Date.now().toUTCString()}.txt`;
+      fs.writeFile(
+        save, 
+        this.story.join('\n'),
+        (err) => {
+          if (err) console.error(err);
+          else console.log("story saved to " + save);
         }
       );
     }

@@ -73,7 +73,7 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 `!!abstop` - stop adventure bot
 
-`!!abremove NUMBER` - remove prompt (only able to do during prompt round)
+`!!abremove NUMBER` - remove prompt (only valid during prompt round, must be valid integer)
 
 ## Endpoints
 
