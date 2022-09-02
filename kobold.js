@@ -81,12 +81,12 @@ module.exports = class KoboldAIClient {
   
   set round(newRound) {
     if (
-      newRound !== "PROMPT" ||
-      newRound !== "VOTE" ||
-      newRound !== "GENERATE"
-    ) return;
-    
-    this._round = newRound;
+      newRound === "PROMPT" ||
+      newRound === "VOTE" ||
+      newRound === "GENERATE"
+    ) {
+      this._round = newRound;
+    }
   }
   
   /**
