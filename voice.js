@@ -238,9 +238,12 @@ twitch.on("message", (channel, userstate, message, self) => {
     // KOBOLDAI ADVENTURE BOT COMMANDS
     else if (command === "prompt" && koboldai.round === "PROMPT") {
       const prompt = argument;
-      koboldai.addPrompt(user, prompt);
-      
-      // TODO add mod command to remove bad prompt
+      if (koboldai.prompts.length > 5) {
+        twitch.say(channel, `@${user} sorry, prompts queue at maximum`);
+      } else {
+        koboldai.addPrompt(user, prompt);
+        twitch.say(channel, `@${user} sorry, prompts queue at maximum`);
+      }
     }
     else if (command === "vote" && koboldai.round === "VOTE") {
       const voteIndex = parseInt(argument);
