@@ -451,4 +451,4 @@ function start() {
   });
 }
 
-start();
+// start();

@@ -218,7 +218,7 @@ module.exports = class KoboldAIClient {
         this.round = "GENERATE";
         this.roundStartTime = null;
         this.winningPrompt = this.calculateWinningPrompt();
-        if (this._queue) playMessage(this._queue, this.winningPromnpt.prompt, this.voice);
+        if (this._queue) playMessage(this._queue, this.winningPrompt.prompt, this.voice);
       }
     } else if (this.round === "GENERATE") {
       if (!this.botResponse) {
