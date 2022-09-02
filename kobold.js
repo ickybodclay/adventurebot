@@ -1,6 +1,8 @@
 const fetch = require("node-fetch");
-const { escapeJsonValue, json } = require("./utils");
 const fs = require('fs');
+const { playMessage } = require("./tts");
+const TTSQueue = require("./tts-queue");
+const { escapeJsonValue, json } = require("./utils");
 
 module.exports = class KoboldAIClient {
   constructor() {
@@ -17,6 +19,8 @@ module.exports = class KoboldAIClient {
     this.winningPrompt = null;
     this.botResponse = null;
     this.running = false;
+    this._queue = null;
+    this.voice = "en-US-Wavenet-C";
   }
   
   startAdventureBot() {
@@ -67,6 +71,14 @@ module.exports = class KoboldAIClient {
     ) return;
     
     this.round = newRound;
+  }
+  
+  /**
+   * Set the TTS queue to use for adventure bot.
+   * @param {!TTSQueue} newQueue text-to-speech queue to use for adventure bot
+   */
+  set queue(newQueue) {
+    this._queue = newQueue;
   }
   
   clearStory() {
@@ -133,18 +145,32 @@ module.exports = class KoboldAIClient {
   
   calculateWinningPrompt() {
     const voteTotals = this.prompts.map((item) => 0);
-    for (let i=0; i<this.votes.length; i++) {
+    for (let i=0; i<this.votes.length; ++i) {
       voteTotals[this.votes[i].vote]++;
     }
-    // TODO tabulate votes
-    // TODO break tie with random
-    // TODO return winning prompt
-    return {user: "test", prompt: "hello world", votes: 9};
+    var topPromptIndex;
+    var maxVote = -1;
+    for (let i=0; i<this.voteTotals.length; ++i) {
+      if (voteTotals[i] > maxVote) {
+        topPromptIndex = i;
+        maxVote = voteTotals[i];
+      }
+    }
+    const winningPromnpt = this.prompts[topPromptIndex];
+    return {user: winningPromnpt.user, prompt: winningPromnpt.prompt, votes: maxVote};
   }
   
   async runAdventureBot() {
     if (!this.running) return;
-    if (!this.roundStartTime) this.roundStartTime = Date.now();
+    if (!this.roundStartTime) { // start of a new round
+      this.roundStartTime = Date.now();
+
+      if (this._queue) { // round start announcements
+        if (this.round === "PROMPT") playMessage(this._queue, "Submit your prompts!", this.voice);
+        else if (this.round === "VOTE") playMessage(this._queue, "Vote for your favorite prompt!", this.voice);
+        else if (this.round === "GENERATE") playMessage(this._queue, "Generating response...", this.voice);
+      }
+    }
     
     const tickTime = Date.now();
     const deltaInMs = tickTime.getTime() - this.roundStartTime.getTime();
@@ -155,6 +181,9 @@ module.exports = class KoboldAIClient {
         // only go to vote round if there are any prompts
         if (this.prompts.length > 0) {
           this.round = "VOTE";
+        } else if (this.prompts.length == 1) { // skip vote if only 1 prompt
+          this.round = "GENERATE";
+          this.winningPrompt = this.calculateWinningPrompt();
         }
         
         this.roundStartTime = null;
@@ -167,10 +196,12 @@ module.exports = class KoboldAIClient {
         this.round = "GENERATE";
         this.roundStartTime = null;
         this.winningPrompt = this.calculateWinningPrompt();
+        if (this._queue) playMessage(this._queue, this.winningPromnpt.prompt, this.voice);
       }
     } else if (this.round === "GENERATE") {
       if (!this.botResponse) {
         this.botResponse = await this.generate(this.winningPrompt.user, "bot", this.winningPrompt.prompt);
+        if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
       }
       
       if (deltaInMs > this.generateRoundTimeInMs) {

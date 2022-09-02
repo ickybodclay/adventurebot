@@ -36,6 +36,7 @@ const { playMessage, playMessageUD } = require("./tts");
 const { escapeJsonValue } = require("./utils");
 const TTSQueue = require("./tts-queue");
 const queue = new TTSQueue();
+koboldai.queue = queue;
 queue.processQueue();
 
 const discord = new DiscordClient({ 
@@ -244,7 +245,7 @@ twitch.on("message", (channel, userstate, message, self) => {
     else if (command === "vote" && koboldai.round === "VOTE") {
       const voteIndex = parseInt(argument);
       if (isNaN(voteIndex) || voteIndex < 1 || voteIndex > koboldai.prompts.length) return;
-      koboldai.addVote(user, voteIndex);
+      koboldai.addVote(user, voteIndex - 1);
     }
     
     if (!isOwner && !isMod) return;
