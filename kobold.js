@@ -209,7 +209,7 @@ module.exports = class KoboldAIClient {
         } 
         
         this.roundStartTime = null;
-        this.winningPromnpt = null;
+        this.winningPrompt = null;
         this.botResponse = null;
       }
     } else if (this.round === "VOTE") {
