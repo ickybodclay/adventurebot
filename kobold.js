@@ -183,6 +183,7 @@ module.exports = class KoboldAIClient {
   
   async runAdventureBot() {
     if (!this.running) return;
+    
     if (!this.roundStartTime) { // start of a new round
       this.roundStartTime = Date.now();
 
@@ -200,12 +201,12 @@ module.exports = class KoboldAIClient {
       
       if (deltaInMs > this.promptRoundTimeInMs) {
         // only go to vote round if there are any prompts
-        if (this.prompts.length > 0) {
-          this.round = "VOTE";
-        } else if (this.prompts.length == 1) { // skip vote if only 1 prompt
+        if (this.prompts.length == 1) { // skip vote if only 1 prompt
           this.round = "GENERATE";
           this.winningPrompt = this.calculateWinningPrompt();
-        }
+        } else if (this.prompts.length > 1) {
+          this.round = "VOTE";
+        } 
         
         this.roundStartTime = null;
         this.winningPromnpt = null;
