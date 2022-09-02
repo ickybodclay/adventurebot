@@ -241,14 +241,15 @@ twitch.on("message", (channel, userstate, message, self) => {
       if (koboldai.prompts.length > 5) {
         twitch.say(channel, `@${user} sorry, prompts queue currently at maximum`);
       } else {
-        koboldai.addPrompt(user, prompt);
-        twitch.say(channel, `@${user} prompt added!`);
+        const success = koboldai.addPrompt(user, prompt);
+        if (success) twitch.say(channel, `@${user} prompt added!`);
       }
     }
     else if (koboldai.running && command === "vote" && koboldai.round === "VOTE") {
       const voteIndex = parseInt(argument);
       if (isNaN(voteIndex) || voteIndex < 1 || voteIndex > koboldai.prompts.length) return;
-      koboldai.addVote(user, voteIndex - 1);
+      const success = koboldai.addVote(user, voteIndex - 1);
+      if (success) twitch.say(channel, `@${user} vote added!`);
     }
     
     if (!isOwner && !isMod) return;

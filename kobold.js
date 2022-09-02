@@ -71,7 +71,7 @@ module.exports = class KoboldAIClient {
     this.clearStory();
     this.clearPrompts();
     this.clearVotes();
-    this.winningPromnpt = null;
+    this.winningPrompt = null;
     this.botResponse = null;
     this.roundStartTime = null;
     this.round = "PROMPT";
@@ -102,9 +102,9 @@ module.exports = class KoboldAIClient {
   }
   
   addPrompt(user, prompt) {
-    if (this.prompts.map((item) => item.user).indexOf(user) != -1) return;
-    
+    if (this.prompts.map((item) => item.user).indexOf(user) != -1) return false;
     this.prompts.push({user: user, prompt: prompt});
+    return true;
   }
   
   removePrompt(promptIndex) {
@@ -118,9 +118,9 @@ module.exports = class KoboldAIClient {
   }
   
   addVote(user, vote) {
-    if (this.votes.map((item) => item.user).indexOf(user) != -1) return;
-    
+    if (this.votes.map((item) => item.user).indexOf(user) != -1) return false;
     this.votes.push({user: user, vote: vote});
+    return true;
   }
   
   clearVotes() {
@@ -138,6 +138,7 @@ module.exports = class KoboldAIClient {
       max_length: 200,
       use_story: true,
       use_memory: true,
+      use_authors_note: true
     };
     return fetch(requestUrl, {
       method: "post",
@@ -177,8 +178,8 @@ module.exports = class KoboldAIClient {
         maxVote = voteTotals[i];
       }
     }
-    const winningPromnpt = this.prompts[topPromptIndex];
-    return {user: winningPromnpt.user, prompt: winningPromnpt.prompt, votes: maxVote};
+    const topPrompt = this.prompts[topPromptIndex];
+    return {user: topPrompt.user, prompt: topPrompt.prompt, votes: maxVote};
   }
   
   async runAdventureBot() {
@@ -198,7 +199,6 @@ module.exports = class KoboldAIClient {
     const deltaInMs = tickTime - this.roundStartTime;
     
     if (this.round === "PROMPT") {
-      
       if (deltaInMs > this.promptRoundTimeInMs) {
         // only go to vote round if there are any prompts
         if (this.prompts.length == 1) { // skip vote if only 1 prompt
@@ -213,7 +213,6 @@ module.exports = class KoboldAIClient {
         this.botResponse = null;
       }
     } else if (this.round === "VOTE") {
-      
       if (deltaInMs > this.voteRoundTimeInMs) {
         this.round = "GENERATE";
         this.roundStartTime = null;
