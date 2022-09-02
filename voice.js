@@ -270,12 +270,14 @@ twitch.on("message", (channel, userstate, message, self) => {
     // KOBOLDAI ADVENTURE BOT MOD COMMANDS
     else if (command === "abstart") {
       koboldai.startAdventureBot();
-    }
-    else if (command === "abstop") {
+    } else if (command === "abstop") {
       koboldai.stopAdvetnureBot();
-    }
-    else if (command === "abnewstory") {
+    } else if (command === "abnewstory") {
       koboldai.newStory();
+    } else if (command === "abremove") {
+      const promptIndex = parseInt(argument);
+      if (isNaN(promptIndex) || promptIndex < 1 || promptIndex > koboldai.prompts.length) return;
+      koboldai.removePrompt(promptIndex - 1);
     }
     
     return;
@@ -283,9 +285,9 @@ twitch.on("message", (channel, userstate, message, self) => {
   
   if (message.startsWith("!")) return;
   
-  if (queue.isConnected() && message.startsWith("$")) {
-    talkToK9000(queue, channel, user, message.substring(1).trim());
-  }
+  // if (queue.isConnected() && message.startsWith("$")) {
+  //   talkToK9000(queue, channel, user, message.substring(1).trim());
+  // }
 });
 
 function talkToK9000(queue, channel, user, message, enforceMax=true) {

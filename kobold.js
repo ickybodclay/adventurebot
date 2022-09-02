@@ -91,6 +91,11 @@ module.exports = class KoboldAIClient {
     this.prompts.push({user: user, prompt: prompt});
   }
   
+  removePrompt(promptIndex) {
+    this.prompts.splice(promptIndex, 1);
+    console.log(`removed prompt ${promptIndex}`);
+  }
+  
   clearPrompts() {
     this.prompts.splice(0, this.prompts.length);
     console.log("cleared prompts");
