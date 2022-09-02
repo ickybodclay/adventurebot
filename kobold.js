@@ -11,7 +11,7 @@ module.exports = class KoboldAIClient {
     this.story = [];
     this.prompts = [];
     this.votes = [];
-    this.round = "PROMPT"; // PROMPT, VOTE, GENERATE
+    this._round = "PROMPT"; // PROMPT, VOTE, GENERATE
     this.roundStartTime = null;
     this.promptRoundTimeInMs = 3*60*1000; // 3 minutes
     this.voteRoundTimeInMs = 2*60*1000; // 2 minutes
@@ -77,7 +77,7 @@ module.exports = class KoboldAIClient {
     this.round = "PROMPT";
   }
   
-  get round() { return this.round; }
+  get round() { return this._round; }
   
   set round(newRound) {
     if (
@@ -86,7 +86,7 @@ module.exports = class KoboldAIClient {
       newRound !== "GENERATE"
     ) return;
     
-    this.round = newRound;
+    this._round = newRound;
   }
   
   /**
