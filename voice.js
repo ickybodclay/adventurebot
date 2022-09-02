@@ -449,4 +449,4 @@ function start() {
   });
 }
 
-// start();
+start();
