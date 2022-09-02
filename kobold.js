@@ -150,7 +150,7 @@ module.exports = class KoboldAIClient {
     }
     var topPromptIndex;
     var maxVote = -1;
-    for (let i=0; i<this.voteTotals.length; ++i) {
+    for (let i=0; i<voteTotals.length; ++i) {
       if (voteTotals[i] > maxVote) {
         topPromptIndex = i;
         maxVote = voteTotals[i];
