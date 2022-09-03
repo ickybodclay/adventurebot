@@ -38,7 +38,7 @@ module.exports = class KoboldAIClient {
     console.log("starting new story...");
     if (this.story.length > 0) {
       console.log("saving previous story...");
-      const save = `.stories/${Date.now().toUTCString()}.txt`;
+      const save = `.stories/${Date.now()}.txt`;
       fs.writeFile(
         save, 
         this.story.join('\n'),
@@ -139,7 +139,7 @@ module.exports = class KoboldAIClient {
       prompt: escapeJsonValue(this.story.map((item) => item.prompt).join('\n')),
       temperature: 0.9, // [0, 1.0]
       rep_pen: 1.0, // [1,]
-      max_length: 200,
+      max_length: 100,
       use_story: true,
       use_memory: true,
       use_authors_note: true
@@ -245,6 +245,8 @@ module.exports = class KoboldAIClient {
       if (deltaInMs > this.generateRoundTimeInMs) {
         this.round = "PROMPT";
         this.roundStartTime = null;
+        this.clearPrompts();
+        this.clearVotes();
       }
     }
 
