@@ -230,29 +230,30 @@ module.exports = class KoboldAIClient {
     if (this.round === "PROMPT") {
       if (deltaInMs > this.promptRoundTimeInMs) {
         // only go to vote round if there are any prompts
-        if (this.prompts.length == 1) { // skip vote if only 1 prompt
-          this.round = "GENERATE";
-          this.winningPrompt = this.calculateWinningPrompt();
-        } else if (this.prompts.length > 1) {
+        // if (this.prompts.length == 1) { // skip vote if only 1 prompt
+        //   this.round = "GENERATE";
+        //   this.winningPrompt = this.calculateWinningPrompt();
+        // } else 
+        if (this.prompts.length > 1) {
           this.round = "VOTE";
           this.winningPrompt = null;
+          this.botResponse = null;
         } 
         
         this.roundStartTime = null;
-        this.botResponse = null;
       }
     } else if (this.round === "VOTE") {
       if (deltaInMs > this.voteRoundTimeInMs) {
         this.round = "GENERATE";
         this.roundStartTime = null;
         this.winningPrompt = this.calculateWinningPrompt();
-        if (this._twitch) this._twitch.say(`#${this.channel}`, `${this${this.winningPrompt.prompt}'`);
+        if (this._twitch) this._twitch.say(`#${this.channel}`, `${this.winningPrompt.user}: ${this.winningPrompt.prompt}`);
         if (this._queue) playMessage(this._queue, this.winningPrompt.prompt, this.voice);
       }
     } else if (this.round === "GENERATE") {
       if (!this.botResponse) {
         this.botResponse = await this.generate(this.winningPrompt.user, "ai", this.winningPrompt.prompt);
-        if (this._twitch) this._twitch.say(`#${this.channel}`, `Winning prompt is '${this.winningPrompt.prompt}'`);
+        if (this._twitch) this._twitch.say(`#${this.channel}`, `ai:'${this.botResponse}'`);
         if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
       }
       
