@@ -11,7 +11,7 @@ module.exports = class KoboldAIClient {
     this.story = [];
     this.prompts = [];
     this.votes = [];
-    this._round = "PROMPT"; // PROMPT, VOTE, GENERATE
+    this._round = "START"; // START, [PROMPT, VOTE, GENERATE]
     this.roundStartTime = null;
     this.promptRoundTimeInMs = 3*60*1000; // 3 minutes
     this.voteRoundTimeInMs = 2*60*1000; // 2 minutes
@@ -25,6 +25,7 @@ module.exports = class KoboldAIClient {
   
   startAdventureBot() {
     this.running = true;
+    this.round = "PROMPT";
     this.runAdventureBot();
   }
 
@@ -74,13 +75,15 @@ module.exports = class KoboldAIClient {
     this.winningPrompt = null;
     this.botResponse = null;
     this.roundStartTime = null;
-    this.round = "PROMPT";
+    this.round = "START";
+    this.running = false;
   }
   
   get round() { return this._round; }
   
   set round(newRound) {
     if (
+      newRound === "START" ||
       newRound === "PROMPT" ||
       newRound === "VOTE" ||
       newRound === "GENERATE"
@@ -104,6 +107,7 @@ module.exports = class KoboldAIClient {
   addPrompt(user, prompt) {
     if (this.prompts.map((item) => item.user).indexOf(user) != -1) return false;
     this.prompts.push({user: user, prompt: prompt});
+    if (this._queue) playMessage(this._queue, `${user} submitted prompt!`, this.voice);
     return true;
   }
   
@@ -221,7 +225,7 @@ module.exports = class KoboldAIClient {
       }
     } else if (this.round === "GENERATE") {
       if (!this.botResponse) {
-        this.botResponse = await this.generate(this.winningPrompt.user, "bot", this.winningPrompt.prompt);
+        this.botResponse = await this.generate(this.winningPrompt.user, "ai", this.winningPrompt.prompt);
         if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
       }
       
