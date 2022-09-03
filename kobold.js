@@ -13,9 +13,9 @@ module.exports = class KoboldAIClient {
     this.votes = [];
     this._round = "START"; // START, [PROMPT, VOTE, GENERATE]
     this.roundStartTime = null;
-    this.promptRoundTimeInMs = 3*60*1000; // 3 minutes
-    this.voteRoundTimeInMs = 2*60*1000; // 2 minutes
-    this.generateRoundTimeInMs = 2*60*1000; // 2 minutes
+    this.promptRoundTimeInMs = 1*60*1000; // 3 minutes
+    this.voteRoundTimeInMs = 1*60*1000; // 2 minutes
+    this.generateRoundTimeInMs = 1*60*1000; // 2 minutes
     this.winningPrompt = null;
     this.botResponse = null;
     this.running = false;
@@ -174,7 +174,7 @@ module.exports = class KoboldAIClient {
     for (let i=0; i<this.votes.length; ++i) {
       voteTotals[this.votes[i].vote]++;
     }
-    var topPromptIndex;
+    var topPromptIndex = -1;
     var maxVote = -1;
     for (let i=0; i<voteTotals.length; ++i) {
       if (voteTotals[i] > maxVote) {
@@ -182,7 +182,13 @@ module.exports = class KoboldAIClient {
         maxVote = voteTotals[i];
       }
     }
-    const topPrompt = this.prompts[topPromptIndex];
+    var topPrompt; 
+    if (topPromptIndex == -1) {
+      topPrompt = this.prompts[0];
+      maxVote = 0;
+    } else {
+      topPrompt = this.prompts[topPromptIndex];
+    }
     return {user: topPrompt.user, prompt: topPrompt.prompt, votes: maxVote};
   }
   
