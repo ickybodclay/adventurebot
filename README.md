@@ -69,6 +69,8 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 `!!abnewstory` - start a new story (saves previous story to txt file)
 
+`!!absave` - save current story to txt file
+
 `!!abstart` - start adventure bot
 
 `!!abstop` - stop adventure bot

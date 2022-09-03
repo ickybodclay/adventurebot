@@ -41,7 +41,7 @@ module.exports = class KoboldAIClient {
       const save = `.stories/${Date.now()}.txt`;
       fs.writeFile(
         save, 
-        this.story.join('\n'),
+        this.story.map((item) => `${item.user}: ${item.prompt}`).join('\n'),
         (err) => {
           if (err) console.error(err);
           else {
@@ -56,10 +56,10 @@ module.exports = class KoboldAIClient {
   saveStory() {
     console.log("saving current story...");
     if (this.story.length > 0) {
-      const save = `.stories/${Date.now().toUTCString()}.txt`;
+      const save = `.stories/${Date.now()}.txt`;
       fs.writeFile(
         save, 
-        this.story.join('\n'),
+        this.story.map((item) => `${item.user}: ${item.prompt}`).join('\n'),
         (err) => {
           if (err) console.error(err);
           else console.log("story saved to " + save);
@@ -134,7 +134,7 @@ module.exports = class KoboldAIClient {
   
   generate(user, bot, prompt) {
     const requestUrl = `${this.baseUrl}/api/v1/generate`;
-    this.story.push({user: user, prompt: prompt});
+    this.story.push({user: user, prompt: prompt.trim()});
     const postData = {
       prompt: escapeJsonValue(this.story.map((item) => item.prompt).join('\n')),
       temperature: 0.9, // [0, 1.0]
@@ -156,7 +156,7 @@ module.exports = class KoboldAIClient {
       .then((data) => {
         console.log(`KOBOLD> ${JSON.stringify(data)}`);
         const response = data.results[0].text;
-        this.story.push({user: bot, prompt: response});
+        this.story.push({user: bot, prompt: response.trim()});
         return response;
       })
       .catch((ex) => {
