@@ -189,7 +189,14 @@ module.exports = class KoboldAIClient {
     } else {
       topPrompt = this.prompts[topPromptIndex];
     }
-    return {user: topPrompt.user, prompt: topPrompt.prompt, votes: maxVote};
+    console.log(`${JSON.stringify(voteTotals)} | ${JSON.stringify(this.prompts)}`);
+    const response = {
+      user: topPrompt.user, 
+      prompt: topPrompt.prompt, 
+      votes: maxVote
+    }; 
+    console.log(`${JSON.stringify(response)}`);
+    return response;
   }
   
   async runAdventureBot() {
@@ -216,10 +223,10 @@ module.exports = class KoboldAIClient {
           this.winningPrompt = this.calculateWinningPrompt();
         } else if (this.prompts.length > 1) {
           this.round = "VOTE";
+          this.winningPrompt = null;
         } 
         
         this.roundStartTime = null;
-        this.winningPrompt = null;
         this.botResponse = null;
       }
     } else if (this.round === "VOTE") {
