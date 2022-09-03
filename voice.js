@@ -452,4 +452,4 @@ function start() {
   });
 }
 
-start();
+// start();
