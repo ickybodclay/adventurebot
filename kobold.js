@@ -101,7 +101,7 @@ module.exports = class KoboldAIClient {
   }
   
   clearStory() {
-    this.stories.splice(0, this.stories.length);
+    this.story.splice(0, this.story.length);
   }
   
   addPrompt(user, prompt) {
