@@ -59,6 +59,7 @@ const twitch = new TwitchClient({
   },
   channels: [ twitchChannel ],
 });
+koboldai.twitch = twitch;
 
 // https://www.npmjs.com/package/@twurple/pubsub
 const { PubSubClient } = require("@twurple/pubsub");

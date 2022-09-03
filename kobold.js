@@ -21,6 +21,8 @@ module.exports = class KoboldAIClient {
     this.running = false;
     this._queue = null;
     this.voice = "en-US-Wavenet-C";
+    this._twitch = null;
+    this.channel = process.env.TWITCH_CHANNEL;
   }
   
   startAdventureBot() {
@@ -98,6 +100,10 @@ module.exports = class KoboldAIClient {
    */
   set queue(newQueue) {
     this._queue = newQueue;
+  }
+  
+  set twitch(twitchClient) {
+    this._twitch = twitchClient;
   }
   
   clearStory() {
@@ -204,6 +210,12 @@ module.exports = class KoboldAIClient {
     
     if (!this.roundStartTime) { // start of a new round
       this.roundStartTime = Date.now();
+      
+      if (this._twitch) {
+        if (this.round === "PROMPT") this._twitch.say(`#${this.channel}`, "Submit your prompts (ex '!!prompt Your silly prompt here')");
+        else if (this.round === "VOTE") this._twitch.say(`#${this.channel}`, "Vote for your favorite prompt (ex '!!vote 1')");
+        else if (this.round === "GENERATE") this._twitch.say(`#${this.channel}`, "Generating response...");
+      }
 
       if (this._queue) { // round start announcements
         if (this.round === "PROMPT") playMessage(this._queue, "Submit your prompts!", this.voice);
@@ -234,11 +246,13 @@ module.exports = class KoboldAIClient {
         this.round = "GENERATE";
         this.roundStartTime = null;
         this.winningPrompt = this.calculateWinningPrompt();
+        if (this._twitch) this._twitch.say(`#${this.channel}`, `${this${this.winningPrompt.prompt}'`);
         if (this._queue) playMessage(this._queue, this.winningPrompt.prompt, this.voice);
       }
     } else if (this.round === "GENERATE") {
       if (!this.botResponse) {
         this.botResponse = await this.generate(this.winningPrompt.user, "ai", this.winningPrompt.prompt);
+        if (this._twitch) this._twitch.say(`#${this.channel}`, `Winning prompt is '${this.winningPrompt.prompt}'`);
         if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
       }
       
