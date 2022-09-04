@@ -39,6 +39,7 @@ module.exports = class KoboldAIClient {
   newStory() {
     console.log("starting new story...");
     if (this.story.length > 0) {
+      this.saveStoryRemote();
       console.log("saving previous story...");
       const save = `.stories/${Date.now()}.txt`;
       fs.writeFile(
@@ -138,9 +139,12 @@ module.exports = class KoboldAIClient {
     console.log("cleared votes");
   }
   
+  // KoboldAI API Endpoints
+  
   generate(user, bot, prompt) {
     const requestUrl = `${this.baseUrl}/api/v1/generate`;
     this.story.push({user: user, prompt: prompt.trim()});
+    this.addStory(prompt.trim());
     const postData = {
       prompt: escapeJsonValue(this.story.map((item) => item.prompt).join('\n')),
       temperature: 0.9, // [0, 1.0]
@@ -163,6 +167,7 @@ module.exports = class KoboldAIClient {
         console.log(`KOBOLD> ${JSON.stringify(data)}`);
         const response = data.results[0].text;
         this.story.push({user: bot, prompt: response.trim()});
+        this.addStory(response.trim());
         return response;
       })
       .catch((ex) => {
@@ -174,6 +179,54 @@ module.exports = class KoboldAIClient {
         }
       });
   }
+  
+  addStory(prompt) {
+    const requestUrl = `${this.baseUrl}/api/v1/story/end`;
+    const postData = {
+      prompt: escapeJsonValue(prompt)
+    };
+    return fetch(requestUrl, {
+      method: "post",
+      body: JSON.stringify(postData),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+      .catch((ex) => {
+        console.error(`koboldai add story error ${ex.name}: ${ex.message}`);
+        if (ex.response) {
+          console.error(ex.response.data);
+        } else {
+          console.error(ex.stack);
+        }
+      });
+  }
+  
+  saveStory() {
+    const requestUrl = `${this.baseUrl}/api/v1/story/save`;
+    const postData = {
+      name: `AdventureBot-${Date.now()}`
+    };
+    return fetch(requestUrl, {
+      method: "put",
+      body: JSON.stringify(postData),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+      .catch((ex) => {
+        console.error(`koboldai save story error ${ex.name}: ${ex.message}`);
+        if (ex.response) {
+          console.error(ex.response.data);
+        } else {
+          console.error(ex.stack);
+        }
+      });
+  }
+  
+  // ADVENTURE BOT
   
   calculateWinningPrompt() {
     const voteTotals = this.prompts.map((item) => 0);
