@@ -203,7 +203,7 @@ module.exports = class KoboldAIClient {
       });
   }
   
-  saveStory() {
+  saveStoryRemote() {
     const requestUrl = `${this.baseUrl}/api/v1/story/save`;
     const postData = {
       name: `AdventureBot-${Date.now()}`
@@ -283,6 +283,7 @@ module.exports = class KoboldAIClient {
     if (this.round === "PROMPT") {
       if (deltaInMs > this.promptRoundTimeInMs) {
         // only go to vote round if there are any prompts
+        // FOR TESTING
         // if (this.prompts.length == 1) { // skip vote if only 1 prompt
         //   this.round = "GENERATE";
         //   this.winningPrompt = this.calculateWinningPrompt();
