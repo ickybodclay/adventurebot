@@ -423,12 +423,16 @@ async function fakeGenerate(username, prompt) {
  * EXPRESS
  */
 // K9000 Endpoints
-app.get("/queue/users", (request, response) => {
-  response.json(usersInQueue);
-});
+// app.get("/queue/users", (request, response) => {
+//   response.json(usersInQueue);
+// });
 
 // KoboldAI Adventure Bot Endpoints
+const AB_TOKEN = process.env.AB_TOKEN;
 app.get("/adventurebot/round", (request, response) => {
+  if (!request.headers['x-ab-token']) return;
+  if (request.headers['x-ab-token'] !== AB_TOKEN) return;
+  
   var roundStartTime = null;
   if (koboldai.roundStartTime) roundStartTime = koboldai.roundStartTime;
   response.json({
