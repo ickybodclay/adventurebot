@@ -39,43 +39,43 @@ And that should be it!
 
 ### Twitch commands
 
-`!!setvoice [1-24]` - changes the TTS voice for the user
+`.setvoice [1-24]` - changes the TTS voice for the user
 
 Note: for the following Twitch commands, must be channel owner or moderator.
 
-`!!play` - Resume TTS (if audio present)
+`.play` - Resume TTS (if audio present)
 
-`!!pause` - Pause TTS (if audio present)
+`.pause` - Pause TTS (if audio present)
 
-`!!skip` - Skip current TTS (if audio present)
+`.skip` - Skip current TTS (if audio present)
 
-`!!qplay` - Resume TTS queue
+`.qplay` - Resume TTS queue
 
-`!!qpause` - Pause TTS queue
+`.qpause` - Pause TTS queue
 
-`!!qstop` - Stop TTS queue
+`.qstop` - Stop TTS queue
 
-`!!setbotvoice` - change the TTS voice for K9000
+`.setbotvoice` - change the TTS voice for K9000
 
-`!!clear` - clear user flags (useful if there was an error during TTS and user is not able talk to K9000)
+`.clear` - clear user flags (useful if there was an error during TTS and user is not able talk to K9000)
 
 ### Adventure Bot commands (if running)
 
-`!!prompt PROMPT` - submit prompt (only valid during prompt round)
+`.prompt PROMPT` - submit prompt (only valid during prompt round)
 
-`!!vote NUMBER` - vote for prompt (only valid during vote round, must be valid integer)
+`.vote NUMBER` - vote for prompt (only valid during vote round, must be valid integer)
 
 Note: for the following Twitch commands, must be channel owner or moderator.
 
-`!!abnewstory` - start a new story (saves previous story to txt file)
+`.abnewstory` - start a new story (saves previous story to txt file)
 
-`!!absave` - save current story to txt file
+`.absave` - save current story to txt file
 
-`!!abstart` - start adventure bot
+`.abstart` - start adventure bot
 
-`!!abstop` - stop adventure bot
+`.abstop` - stop adventure bot
 
-`!!abremove NUMBER` - remove prompt (only valid during prompt round, must be valid integer)
+`.abremove NUMBER` - remove prompt (only valid during prompt round, must be valid integer)
 
 ## Endpoints
 
