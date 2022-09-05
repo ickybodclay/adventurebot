@@ -430,8 +430,14 @@ async function fakeGenerate(username, prompt) {
 // KoboldAI Adventure Bot Endpoints
 const AB_TOKEN = process.env.AB_TOKEN;
 app.get("/adventurebot/round", (request, response) => {
-  if (!request.headers['x-ab-token']) return;
-  if (request.headers['x-ab-token'] !== AB_TOKEN) return;
+  if (!request.headers['x-ab-token']) {
+    response.status(400).send({ error: 'Bad request' });
+    return;
+  }
+  if (request.headers['x-ab-token'] !== AB_TOKEN) {
+    response.status(403).send({ error: 'Forbidden' });
+    return;
+  }
   
   var roundStartTime = null;
   if (koboldai.roundStartTime) roundStartTime = koboldai.roundStartTime;
