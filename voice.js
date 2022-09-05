@@ -202,7 +202,7 @@ const VOICES_MAP = [
   // "en-IN-Wavenet-A",
   // "en-IN-Wavenet-D",
 ];
-const cmdRegex = new RegExp(/^\.([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
+const cmdRegex = new RegExp(/^.([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 const queueMax = 6;
 const usersInQueue = [];
 const voiceOverride = {};
@@ -459,4 +459,4 @@ function start() {
   });
 }
 
-// start();
+start();
