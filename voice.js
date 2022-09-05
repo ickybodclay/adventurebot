@@ -202,7 +202,7 @@ const VOICES_MAP = [
   // "en-IN-Wavenet-A",
   // "en-IN-Wavenet-D",
 ];
-const cmdRegex = new RegExp(/^.([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
+const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 const queueMax = 6;
 const usersInQueue = [];
 const voiceOverride = {};
@@ -213,7 +213,6 @@ const voiceOverride = {};
 twitch.on("message", (channel, userstate, message, self) => {
   // ignore echoed messages & commands
   if (self) return;
-  if (message.startsWith("!")) return;
   
   const user = userstate.username;
   const isOwner = channel === `#${user}`;
@@ -291,6 +290,8 @@ twitch.on("message", (channel, userstate, message, self) => {
     
     return;
   }
+  
+  if (message.startsWith("!")) return;
   
   // if (queue.isConnected() && message.startsWith("$")) {
   //   talkToK9000(queue, channel, user, message.substring(1).trim());
