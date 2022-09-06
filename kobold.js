@@ -318,10 +318,11 @@ module.exports = class KoboldAIClient {
       if (deltaInMs > this.promptRoundTimeInMs) {
         // only go to vote round if there are any prompts
         // FOR TESTING
-        // if (this.prompts.length == 1) { // skip vote if only 1 prompt
-        //   this.round = "GENERATE";
-        //   this.winningPrompt = this.calculateWinningPrompt();
-        // } else 
+        if (this.prompts.length == 1) { // skip vote if only 1 prompt
+          this.round = "GENERATE";
+          this.winningPrompt = this.calculateWinningPrompt();
+          this.botResponse = null;
+        } else 
         if (this.prompts.length > 1) {
           this.round = "VOTE";
           this.winningPrompt = null;
@@ -346,7 +347,7 @@ module.exports = class KoboldAIClient {
       }
     } else if (this.round === "GENERATE") {
       if (!this.botResponse) {
-        this.botResponse = await this.generate(this.winningPrompt.user, "ai", this.story.map((item) => item.prompt).join(''));
+        this.botResponse = await this.generate(this.winningPrompt.user, "ai", this.winningPrompt.prompt);
         
         this.story.push({user: "ai", prompt: this.botResponse.trim()});
         this.addStoryEnd(this.botResponse.trim());
