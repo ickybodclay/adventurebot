@@ -318,12 +318,7 @@ module.exports = class KoboldAIClient {
       if (deltaInMs > this.promptRoundTimeInMs) {
         if (this.prompts.length == 1) { // skip vote if only 1 prompt
           this.round = "GENERATE";
-          
           this.winningPrompt = this.calculateWinningPrompt();
-          
-          this.story.push({user: this.winningPrompt.user, prompt: this.winningPrompt.prompt.trim()});
-          this.addStoryEnd(this.winningPrompt.prompt.trim());
-          
           this.botResponse = null;
         } else if (this.prompts.length > 1) {
           this.round = "VOTE";
@@ -338,12 +333,7 @@ module.exports = class KoboldAIClient {
         this.round = "GENERATE";
         this.winningPrompt = this.calculateWinningPrompt();
         
-        this.story.push({user: this.winningPrompt.user, prompt: this.winningPrompt.prompt.trim()});
-        this.addStoryEnd(this.winningPrompt.prompt.trim());
-        
         this.roundStartTime = null;
-        
-        console.log(`KoboldAI:vote> ${JSON.stringify(this.story)}`);
         
         if (this._twitch) this._twitch.say(`#${this.channel}`, `${this.winningPrompt.user}: ${this.winningPrompt.prompt}`);
         if (this._queue) playMessage(this._queue, this.winningPrompt.prompt, this.voice);
@@ -352,7 +342,7 @@ module.exports = class KoboldAIClient {
       if (!this.botResponse) {
         this.botResponse = await this.generate(this.winningPrompt.user, "ai", this.winningPrompt.prompt.trim());
         
-        this.story.push({user: "ai", prompt: this.botResponse.trim()});
+        this.addStoryEnd(this.winningPrompt.prompt.trim());
         this.addStoryEnd(this.botResponse.trim());
         
         console.log(`KoboldAI:generate> ${JSON.stringify(this.story)}`);
