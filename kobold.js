@@ -39,7 +39,6 @@ module.exports = class KoboldAIClient {
   newStory() {
     console.log("starting new story...");
     if (this.story.length > 0) {
-      this.saveStoryRemote();
       this.saveStory(() => this.reset());
     }
   }
@@ -47,11 +46,17 @@ module.exports = class KoboldAIClient {
   saveStory(callback = () => {}) {
     console.log("saving current story...");
     if (this.story.length == 0) return;
+    // save locally
     const saveName = `AdventureBot-${new Date(Date.now()).toISOString().replaceAll(':', '-')}`; 
     const save = `.stories/${saveName}.txt`;
     fs.writeFile(
       save, 
-      this.story.map((item) => `${item.user}: ${item.prompt}`).join('\n'),
+      this.story.map((item) => {
+        if(item.hasOwnProperty('votes'))
+          `${item.user} (${item.votes} votes): ${item.prompt}`
+        else
+          `${item.user}: ${item.prompt}`
+      }).join('\n'),
       (err) => {
         if (err) console.error(err);
         else {
@@ -60,6 +65,8 @@ module.exports = class KoboldAIClient {
         }
       }
     );
+    // save to koboldai
+    this.saveStoryRemote();
   }
   
   reset() {
