@@ -147,9 +147,9 @@ module.exports = class KoboldAIClient {
     const requestUrl = `${this.baseUrl}/api/v1/generate`;
     const postData = {
       prompt: escapeJsonValue(prompt),
-      temperature: 0.9, // [0, 1.0]
-      rep_pen: 1.0, // [1,]
-      max_length: 80,
+      // temperature: 0.9, // [0, 1.0]
+      // rep_pen: 1.0, // [1,]
+      // max_length: 80,
       use_story: true,
       use_memory: true,
       use_authors_note: true
@@ -164,7 +164,7 @@ module.exports = class KoboldAIClient {
     })
       .then(json)
       .then((data) => {
-        // console.log(`KOBOLD> ${JSON.stringify(data)}`);
+        console.log(`KoboldAI:generate> ${JSON.stringify(data)}`);
         return data.results[0].text;
       })
       .catch((ex) => {
@@ -291,10 +291,10 @@ module.exports = class KoboldAIClient {
     this.story.pop();
     this.removeStoryEnd();
     
-    this.generate(this.winningPrompt.user, "ai", this.story.map((item) => item.prompt).join('\n'))
+    this.generate(this.winningPrompt.user, "ai", this.story.map((item) => item.prompt).join(''))
       .then((response) => {
         this.botResponse = response;
-        this.roundStartTime = null;
+        this.roundStartTime = Date.now();
       
         this.story.push({user: "ai", prompt: this.botResponse.trim()});
         this.addStoryEnd(this.botResponse.trim());
@@ -360,7 +360,7 @@ module.exports = class KoboldAIClient {
         this.botResponse = await this.generate(
           this.winningPrompt.user, 
           "ai", 
-          this.story.map((item) => item.prompt).join('\n')
+          this.story.map((item) => item.prompt).join('')
         );
         
         this.story.push({user: "ai", prompt: this.botResponse.trim()});
