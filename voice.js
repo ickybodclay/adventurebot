@@ -238,7 +238,7 @@ twitch.on("message", (channel, userstate, message, self) => {
     }
     // KOBOLDAI ADVENTURE BOT COMMANDS
     else if (koboldai.running && command === "prompt" && koboldai.round === "PROMPT") {
-      const prompt = argument.trim();
+      const prompt = censor.cleanProfanity(argument.trim());
       if (prompt === "") return;
       if (koboldai.prompts.length >= 5) {
         twitch.say(channel, `@${user} sorry, prompts queue currently at maximum`);
