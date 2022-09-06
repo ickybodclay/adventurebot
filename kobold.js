@@ -273,13 +273,13 @@ module.exports = class KoboldAIClient {
     } else {
       topPrompt = this.prompts[topPromptIndex];
     }
-    console.log(`${JSON.stringify(voteTotals)} | ${JSON.stringify(this.prompts)}`);
+    // console.log(`${JSON.stringify(voteTotals)} | ${JSON.stringify(this.prompts)}`);
     const response = {
       user: topPrompt.user, 
       prompt: topPrompt.prompt, 
       votes: maxVote
     };
-    console.log(`${JSON.stringify(response)}`);
+    // console.log(`${JSON.stringify(response)}`);
     return response;
   }
   
@@ -316,16 +316,16 @@ module.exports = class KoboldAIClient {
     
     if (this.round === "PROMPT") {
       if (deltaInMs > this.promptRoundTimeInMs) {
-        // only go to vote round if there are any prompts
-        // FOR TESTING
         if (this.prompts.length == 1) { // skip vote if only 1 prompt
           this.round = "GENERATE";
+          
           this.winningPrompt = this.calculateWinningPrompt();
+          
           this.story.push({user: this.winningPrompt.user, prompt: this.winningPrompt.prompt.trim()});
           this.addStoryEnd(this.winningPrompt.prompt.trim());
+          
           this.botResponse = null;
-        } else 
-        if (this.prompts.length > 1) {
+        } else if (this.prompts.length > 1) {
           this.round = "VOTE";
           this.winningPrompt = null;
           this.botResponse = null;
@@ -336,11 +336,12 @@ module.exports = class KoboldAIClient {
     } else if (this.round === "VOTE") {
       if (deltaInMs > this.voteRoundTimeInMs) {
         this.round = "GENERATE";
-        this.roundStartTime = null;
         this.winningPrompt = this.calculateWinningPrompt();
         
         this.story.push({user: this.winningPrompt.user, prompt: this.winningPrompt.prompt.trim()});
         this.addStoryEnd(this.winningPrompt.prompt.trim());
+        
+        this.roundStartTime = null;
         
         console.log(`KoboldAI:vote> ${JSON.stringify(this.story)}`);
         
@@ -349,7 +350,7 @@ module.exports = class KoboldAIClient {
       }
     } else if (this.round === "GENERATE") {
       if (!this.botResponse) {
-        this.botResponse = await this.generate(this.winningPrompt.user, "ai", this.winningPrompt.prompt);
+        this.botResponse = await this.generate(this.winningPrompt.user, "ai", this.winningPrompt.prompt.trim());
         
         this.story.push({user: "ai", prompt: this.botResponse.trim()});
         this.addStoryEnd(this.botResponse.trim());
@@ -362,9 +363,11 @@ module.exports = class KoboldAIClient {
       
       if (deltaInMs > this.generateRoundTimeInMs) {
         this.round = "PROMPT";
-        this.roundStartTime = null;
+        
         this.clearPrompts();
         this.clearVotes();
+        
+        this.roundStartTime = null;
       }
     }
 
