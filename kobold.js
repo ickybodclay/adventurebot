@@ -41,7 +41,8 @@ module.exports = class KoboldAIClient {
     if (this.story.length > 0) {
       this.saveStoryRemote();
       console.log("saving previous story...");
-      const save = `.stories/${Date.now()}.txt`;
+      const saveName = `AdventureBot-${new Date(Date.now()).toISOString().replaceAll(':', '-')}`; 
+      const save = `.stories/${saveName}.txt`;
       fs.writeFile(
         save, 
         this.story.map((item) => `${item.user}: ${item.prompt}`).join('\n'),
@@ -59,7 +60,8 @@ module.exports = class KoboldAIClient {
   saveStory() {
     console.log("saving current story...");
     if (this.story.length > 0) {
-      const save = `.stories/${Date.now()}.txt`;
+      const saveName = `AdventureBot-${new Date(Date.now()).toISOString().replaceAll(':', '-')}`; 
+      const save = `.stories/${saveName}.txt`;
       fs.writeFile(
         save, 
         this.story.map((item) => `${item.user}: ${item.prompt}`).join('\n'),
