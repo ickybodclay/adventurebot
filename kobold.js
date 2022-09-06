@@ -222,7 +222,7 @@ module.exports = class KoboldAIClient {
   saveStoryRemote() {
     const requestUrl = `${this.baseUrl}/api/v1/story/save`;
     const postData = {
-      name: `AdventureBot-${Date.now()}`
+      name: `AdventureBot-${new Date(Date.now()).toISOString().replaceAll(':', '-')}`
     };
     return fetch(requestUrl, {
       method: "put",
