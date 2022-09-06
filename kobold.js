@@ -40,37 +40,26 @@ module.exports = class KoboldAIClient {
     console.log("starting new story...");
     if (this.story.length > 0) {
       this.saveStoryRemote();
-      console.log("saving previous story...");
-      const saveName = `AdventureBot-${new Date(Date.now()).toISOString().replaceAll(':', '-')}`; 
-      const save = `.stories/${saveName}.txt`;
-      fs.writeFile(
-        save, 
-        this.story.map((item) => `${item.user}: ${item.prompt}`).join('\n'),
-        (err) => {
-          if (err) console.error(err);
-          else {
-            this.reset();
-            console.log("previous story saved to " + save);
-          }
-        }
-      );
+      this.saveStory(() => this.reset());
     }
   }
   
-  saveStory() {
+  saveStory(callback = () => {}) {
     console.log("saving current story...");
-    if (this.story.length > 0) {
-      const saveName = `AdventureBot-${new Date(Date.now()).toISOString().replaceAll(':', '-')}`; 
-      const save = `.stories/${saveName}.txt`;
-      fs.writeFile(
-        save, 
-        this.story.map((item) => `${item.user}: ${item.prompt}`).join('\n'),
-        (err) => {
-          if (err) console.error(err);
-          else console.log("story saved to " + save);
+    if (this.story.length == 0) return;
+    const saveName = `AdventureBot-${new Date(Date.now()).toISOString().replaceAll(':', '-')}`; 
+    const save = `.stories/${saveName}.txt`;
+    fs.writeFile(
+      save, 
+      this.story.map((item) => `${item.user}: ${item.prompt}`).join('\n'),
+      (err) => {
+        if (err) console.error(err);
+        else {
+          if (callback) callback();
+          console.log("story saved to " + save);
         }
-      );
-    }
+      }
+    );
   }
   
   reset() {
@@ -174,10 +163,11 @@ module.exports = class KoboldAIClient {
       });
   }
   
-  addStoryEnd(prompt) {
+  addStory(prompt) {
+    this.story.push(prompt);
     const requestUrl = `${this.baseUrl}/api/v1/story/end`;
     const postData = {
-      prompt: escapeJsonValue(prompt)
+      prompt: escapeJsonValue(prompt.prompt)
     };
     return fetch(requestUrl, {
       method: "post",
@@ -201,6 +191,7 @@ module.exports = class KoboldAIClient {
   }
   
   removeStoryEnd() {
+    this.story.pop();
     const requestUrl = `${this.baseUrl}/api/v1/story/end/delete`;
     const postData = {};
     return fetch(requestUrl, {
@@ -285,7 +276,6 @@ module.exports = class KoboldAIClient {
   
   redo() {
     console.log("KoboldAI> redo previous action");
-    this.story.pop();
     this.removeStoryEnd();
     this.botResponse = null;
     this.roundStartTime = Date.now();
@@ -342,8 +332,9 @@ module.exports = class KoboldAIClient {
       if (!this.botResponse) {
         this.botResponse = await this.generate(this.winningPrompt.user, "ai", this.winningPrompt.prompt.trim());
         
-        this.addStoryEnd(this.winningPrompt.prompt.trim());
-        this.addStoryEnd(this.botResponse.trim());
+        this.addStory(this.winningPrompt)
+          .then()
+        ;
         
         console.log(`KoboldAI:generate> ${JSON.stringify(this.story)}`);
         
