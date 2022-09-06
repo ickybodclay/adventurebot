@@ -248,10 +248,10 @@ twitch.on("message", (channel, userstate, message, self) => {
       }
     }
     else if (koboldai.running && command === "vote" && koboldai.round === "VOTE") {
-      const voteIndex = parseInt(argument);
+      const voteIndex = Math.abs(parseInt(argument));
       if (isNaN(voteIndex) || voteIndex < 1 || voteIndex > koboldai.prompts.length) return;
       const success = koboldai.addVote(user, voteIndex - 1);
-      if (success) twitch.say(channel, `@${user} vote added!`);
+      if (success) twitch.say(channel, `@${user} vote added for prompt #${voteIndex}!`);
     }
     
     if (!isOwner && !isMod) return;
