@@ -168,7 +168,7 @@ module.exports = class KoboldAIClient {
         return data.results[0].text;
       })
       .catch((ex) => {
-        console.error(`koboldai generate error ${ex.name}: ${ex.message}`);
+        console.error(`KoboldAI:generate> error ${ex.name}: ${ex.message}`);
         if (ex.response) {
           console.error(ex.response.data);
         } else {
@@ -290,18 +290,8 @@ module.exports = class KoboldAIClient {
     console.log("KoboldAI> redo previous action");
     this.story.pop();
     this.removeStoryEnd();
-    
-    this.generate(this.winningPrompt.user, "ai", this.story.map((item) => item.prompt).join(''))
-      .then((response) => {
-        this.botResponse = response;
-        this.roundStartTime = Date.now();
-      
-        this.story.push({user: "ai", prompt: this.botResponse.trim()});
-        this.addStoryEnd(this.botResponse.trim());
-      
-        if (this._twitch) this._twitch.say(`#${this.channel}`, `ai: ${this.botResponse}`);
-        if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
-      });
+    this.botResponse = null;
+    this.roundStartTime = Date.now();
   }
   
   async runAdventureBot() {
@@ -340,7 +330,6 @@ module.exports = class KoboldAIClient {
           this.botResponse = null;
         } 
         
-        // this.botResponse = null;
         this.roundStartTime = null;
       }
     } else if (this.round === "VOTE") {
@@ -357,11 +346,7 @@ module.exports = class KoboldAIClient {
       }
     } else if (this.round === "GENERATE") {
       if (!this.botResponse) {
-        this.botResponse = await this.generate(
-          this.winningPrompt.user, 
-          "ai", 
-          this.story.map((item) => item.prompt).join('')
-        );
+        this.botResponse = await this.generate(this.winningPrompt.user, "ai", this.story.map((item) => item.prompt).join(''));
         
         this.story.push({user: "ai", prompt: this.botResponse.trim()});
         this.addStoryEnd(this.botResponse.trim());
