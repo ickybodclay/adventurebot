@@ -188,6 +188,9 @@ module.exports = class KoboldAIClient {
         'Content-Type': 'application/json'
       }
     })
+      .then((res) => {
+        console.log("KoboldAI> added story end");
+      })
       .catch((ex) => {
         console.error(`koboldai add story end error ${ex.name}: ${ex.message}`);
         if (ex.response) {
@@ -209,6 +212,9 @@ module.exports = class KoboldAIClient {
         'Content-Type': 'application/json'
       }
     })
+      .then((res) => {
+        console.log("KoboldAI> removed story end");
+      })
       .catch((ex) => {
         console.error(`koboldai remove story end error ${ex.name}: ${ex.message}`);
         if (ex.response) {
@@ -221,8 +227,9 @@ module.exports = class KoboldAIClient {
   
   saveStoryRemote() {
     const requestUrl = `${this.baseUrl}/api/v1/story/save`;
+    const saveName = `AdventureBot-${new Date(Date.now()).toISOString().replaceAll(':', '-')}`; 
     const postData = {
-      name: `AdventureBot-${new Date(Date.now()).toISOString().replaceAll(':', '-')}`
+      name: saveName
     };
     return fetch(requestUrl, {
       method: "put",
@@ -232,6 +239,9 @@ module.exports = class KoboldAIClient {
         'Content-Type': 'application/json'
       }
     })
+      .then((res) => {
+        console.log(`KoboldAI> saved story '${saveName}'`);
+      })
       .catch((ex) => {
         console.error(`koboldai save story error ${ex.name}: ${ex.message}`);
         if (ex.response) {
@@ -275,10 +285,11 @@ module.exports = class KoboldAIClient {
   }
   
   redo() {
+    console.log("KoboldAI> redo previous action");
     this.story.pop();
     this.removeStoryEnd();
     
-    this.generate(this.winningPrompt.user, "ai", this.winningPrompt.prompt)
+    this.generate(this.winningPrompt.user, "ai", this.story.map((item) => item.prompt).join('\n'))
       .then((response) => {
         this.botResponse = response;
         this.roundStartTime = null;
