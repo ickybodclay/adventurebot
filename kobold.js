@@ -321,6 +321,8 @@ module.exports = class KoboldAIClient {
         if (this.prompts.length == 1) { // skip vote if only 1 prompt
           this.round = "GENERATE";
           this.winningPrompt = this.calculateWinningPrompt();
+          this.story.push({user: this.winningPrompt.user, prompt: this.winningPrompt.prompt.trim()});
+          this.addStoryEnd(this.winningPrompt.prompt.trim());
           this.botResponse = null;
         } else 
         if (this.prompts.length > 1) {
