@@ -147,7 +147,7 @@ module.exports = class KoboldAIClient {
       prompt: escapeJsonValue(this.story.map((item) => item.prompt).join('\n')),
       temperature: 0.9, // [0, 1.0]
       rep_pen: 1.0, // [1,]
-      max_length: 100,
+      max_length: 80,
       use_story: true,
       use_memory: true,
       use_authors_note: true
