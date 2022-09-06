@@ -332,9 +332,8 @@ module.exports = class KoboldAIClient {
       if (!this.botResponse) {
         this.botResponse = await this.generate(this.winningPrompt.user, "ai", this.winningPrompt.prompt.trim());
         
-        this.addStory(this.winningPrompt)
-          .then()
-        ;
+        await this.addStory(this.winningPrompt)
+        await this.addStory({user: "ai", prompt: this.botResponse.trim()});
         
         console.log(`KoboldAI:generate> ${JSON.stringify(this.story)}`);
         
