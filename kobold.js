@@ -144,7 +144,7 @@ module.exports = class KoboldAIClient {
   generate(user, bot, prompt) {
     const requestUrl = `${this.baseUrl}/api/v1/generate`;
     const postData = {
-      prompt: escapeJsonValue(this.story.map((item) => item.prompt).join('\n')),
+      prompt: escapeJsonValue(prompt),
       temperature: 0.9, // [0, 1.0]
       rep_pen: 1.0, // [1,]
       max_length: 80,
@@ -344,7 +344,11 @@ module.exports = class KoboldAIClient {
       }
     } else if (this.round === "GENERATE") {
       if (!this.botResponse) {
-        this.botResponse = await this.generate(this.winningPrompt.user, "ai", this.winningPrompt.prompt);
+        this.botResponse = await this.generate(
+          this.winningPrompt.user, 
+          "ai", 
+          this.story.map((item) => item.prompt).join('\n')
+        );
         
         this.story.push({user: "ai", prompt: this.botResponse.trim()});
         this.addStoryEnd(this.botResponse.trim());
