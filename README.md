@@ -77,6 +77,8 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 `!!abremove NUMBER` - remove prompt (only valid during prompt round, must be valid integer)
 
+`!!abredo` - regenerate the last response (only valid during generate round)
+
 ## Endpoints
 
 Hular Hoops Bot provides optional endpoint to hook into for setting up stream labels or whatever!

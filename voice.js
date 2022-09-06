@@ -286,7 +286,9 @@ twitch.on("message", (channel, userstate, message, self) => {
       const promptIndex = parseInt(argument);
       if (isNaN(promptIndex) || promptIndex < 1 || promptIndex > koboldai.prompts.length) return;
       koboldai.removePrompt(promptIndex - 1);
-    }
+    } else if (command === "abredo" && koboldai.round === "GENERATE") {
+      koboldai.redo();
+    } 
     
     return;
   }

@@ -253,9 +253,19 @@ module.exports = class KoboldAIClient {
       user: topPrompt.user, 
       prompt: topPrompt.prompt, 
       votes: maxVote
-    }; 
+    };
     console.log(`${JSON.stringify(response)}`);
     return response;
+  }
+  
+  redo() {
+    this.generate(this.winningPrompt.user, "ai", this.winningPrompt.prompt)
+      .then((response) => {
+        this.botResponse = response;
+        this.roundStartTime = null;
+        if (this._twitch) this._twitch.say(`#${this.channel}`, `ai: ${this.botResponse}`);
+        if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
+      });
   }
   
   async runAdventureBot() {
