@@ -147,9 +147,6 @@ module.exports = class KoboldAIClient {
     const requestUrl = `${this.baseUrl}/api/v1/generate`;
     const postData = {
       prompt: escapeJsonValue(prompt),
-      // temperature: 0.9, // [0, 1.0]
-      // rep_pen: 1.0, // [1,]
-      // max_length: 80,
       use_story: true,
       use_memory: true,
       use_authors_note: true
@@ -292,6 +289,7 @@ module.exports = class KoboldAIClient {
     this.removeStoryEnd();
     this.botResponse = null;
     this.roundStartTime = Date.now();
+    console.log(`KoboldAI:redo> ${JSON.stringify(this.story)}`);
   }
   
   async runAdventureBot() {
@@ -341,6 +339,8 @@ module.exports = class KoboldAIClient {
         this.story.push({user: this.winningPrompt.user, prompt: this.winningPrompt.prompt.trim()});
         this.addStoryEnd(this.winningPrompt.prompt.trim());
         
+        console.log(`KoboldAI:vote> ${JSON.stringify(this.story)}`);
+        
         if (this._twitch) this._twitch.say(`#${this.channel}`, `${this.winningPrompt.user}: ${this.winningPrompt.prompt}`);
         if (this._queue) playMessage(this._queue, this.winningPrompt.prompt, this.voice);
       }
@@ -350,6 +350,8 @@ module.exports = class KoboldAIClient {
         
         this.story.push({user: "ai", prompt: this.botResponse.trim()});
         this.addStoryEnd(this.botResponse.trim());
+        
+        console.log(`KoboldAI:generate> ${JSON.stringify(this.story)}`);
         
         if (this._twitch) this._twitch.say(`#${this.channel}`, `ai: ${this.botResponse}`);
         if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
