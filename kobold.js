@@ -143,8 +143,6 @@ module.exports = class KoboldAIClient {
   
   generate(user, bot, prompt) {
     const requestUrl = `${this.baseUrl}/api/v1/generate`;
-    this.story.push({user: user, prompt: prompt.trim()});
-    this.addStory(prompt.trim());
     const postData = {
       prompt: escapeJsonValue(this.story.map((item) => item.prompt).join('\n')),
       temperature: 0.9, // [0, 1.0]
@@ -164,11 +162,8 @@ module.exports = class KoboldAIClient {
     })
       .then(json)
       .then((data) => {
-        console.log(`KOBOLD> ${JSON.stringify(data)}`);
-        const response = data.results[0].text;
-        this.story.push({user: bot, prompt: response.trim()});
-        this.addStory(response.trim());
-        return response;
+        // console.log(`KOBOLD> ${JSON.stringify(data)}`);
+        return data.results[0].text;
       })
       .catch((ex) => {
         console.error(`koboldai generate error ${ex.name}: ${ex.message}`);
@@ -180,7 +175,7 @@ module.exports = class KoboldAIClient {
       });
   }
   
-  addStory(prompt) {
+  addStoryEnd(prompt) {
     const requestUrl = `${this.baseUrl}/api/v1/story/end`;
     const postData = {
       prompt: escapeJsonValue(prompt)
@@ -194,7 +189,28 @@ module.exports = class KoboldAIClient {
       }
     })
       .catch((ex) => {
-        console.error(`koboldai add story error ${ex.name}: ${ex.message}`);
+        console.error(`koboldai add story end error ${ex.name}: ${ex.message}`);
+        if (ex.response) {
+          console.error(ex.response.data);
+        } else {
+          console.error(ex.stack);
+        }
+      });
+  }
+  
+  removeStoryEnd() {
+    const requestUrl = `${this.baseUrl}/api/v1/story/end/delete`;
+    const postData = {};
+    return fetch(requestUrl, {
+      method: "post",
+      body: JSON.stringify(postData),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+      .catch((ex) => {
+        console.error(`koboldai remove story end error ${ex.name}: ${ex.message}`);
         if (ex.response) {
           console.error(ex.response.data);
         } else {
@@ -259,10 +275,17 @@ module.exports = class KoboldAIClient {
   }
   
   redo() {
+    this.story.pop();
+    this.removeStoryEnd();
+    
     this.generate(this.winningPrompt.user, "ai", this.winningPrompt.prompt)
       .then((response) => {
         this.botResponse = response;
         this.roundStartTime = null;
+      
+        this.story.push({user: "ai", prompt: this.botResponse.trim()});
+        this.addStoryEnd(this.botResponse.trim());
+      
         if (this._twitch) this._twitch.say(`#${this.channel}`, `ai: ${this.botResponse}`);
         if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
       });
@@ -312,12 +335,20 @@ module.exports = class KoboldAIClient {
         this.round = "GENERATE";
         this.roundStartTime = null;
         this.winningPrompt = this.calculateWinningPrompt();
+        
+        this.story.push({user: this.winningPrompt.user, prompt: this.winningPrompt.prompt.trim()});
+        this.addStoryEnd(this.winningPrompt.prompt.trim());
+        
         if (this._twitch) this._twitch.say(`#${this.channel}`, `${this.winningPrompt.user}: ${this.winningPrompt.prompt}`);
         if (this._queue) playMessage(this._queue, this.winningPrompt.prompt, this.voice);
       }
     } else if (this.round === "GENERATE") {
       if (!this.botResponse) {
         this.botResponse = await this.generate(this.winningPrompt.user, "ai", this.winningPrompt.prompt);
+        
+        this.story.push({user: "ai", prompt: this.botResponse.trim()});
+        this.addStoryEnd(this.botResponse.trim());
+        
         if (this._twitch) this._twitch.say(`#${this.channel}`, `ai: ${this.botResponse}`);
         if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
       }
