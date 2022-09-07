@@ -53,9 +53,9 @@ module.exports = class KoboldAIClient {
       save, 
       this.story.map((item) => {
         if(item.hasOwnProperty('votes'))
-          `${item.user} (${item.votes} votes): ${item.prompt}`
+          return `${item.user} (${item.votes} votes): ${item.prompt}`;
         else
-          `${item.user}: ${item.prompt}`
+          return `${item.user}: ${item.prompt}`;
       }).join('\n'),
       (err) => {
         if (err) console.error(err);
