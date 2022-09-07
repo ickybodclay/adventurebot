@@ -159,7 +159,7 @@ module.exports = class KoboldAIClient {
       .then(json)
       .then((data) => {
         console.log(`KoboldAI:generate> ${JSON.stringify(data)}`);
-        if (data.results.length > 0)
+        if (data && data.results && data.results.length > 0)
           return data.results[0].text;
         return "";
       })
