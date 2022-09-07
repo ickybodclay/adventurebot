@@ -283,6 +283,8 @@ module.exports = class KoboldAIClient {
   }
   
   redo() {
+    if (this.round !== "GENERATE") return;
+    
     console.log("KoboldAI> redo previous action");
     this.removeStoryEnd()
       .then(() => {
@@ -319,16 +321,13 @@ module.exports = class KoboldAIClient {
         if (this.prompts.length == 1) { // skip vote if only 1 prompt
           this.round = "GENERATE";
           this.winningPrompt = this.calculateWinningPrompt();
-          
           await this.addStory(this.winningPrompt);
-          
-          this.botResponse = null;
         } else if (this.prompts.length > 1) {
           this.round = "VOTE";
           this.winningPrompt = null;
-          this.botResponse = null;
         } 
         
+        this.botResponse = null;
         this.roundStartTime = null;
       }
     } else if (this.round === "VOTE") {
