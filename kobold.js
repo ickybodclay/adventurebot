@@ -145,7 +145,8 @@ module.exports = class KoboldAIClient {
       prompt: escapeJsonValue(prompt),
       use_story: true,
       use_memory: true,
-      use_authors_note: true
+      use_authors_note: true,
+      disable_output_formatting: false,
     };
     return fetch(requestUrl, {
       method: "post",
@@ -283,10 +284,12 @@ module.exports = class KoboldAIClient {
   
   redo() {
     console.log("KoboldAI> redo previous action");
-    this.removeStoryEnd();
-    this.botResponse = null;
-    this.roundStartTime = Date.now();
-    console.log(`KoboldAI:redo> ${JSON.stringify(this.story)}`);
+    this.removeStoryEnd()
+      .then(() => {
+        this.botResponse = null;
+        this.roundStartTime = Date.now();
+        console.log(`KoboldAI:redo> ${JSON.stringify(this.story)}`);
+      });
   }
   
   async runAdventureBot() {
