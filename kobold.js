@@ -161,7 +161,7 @@ module.exports = class KoboldAIClient {
         console.log(`KoboldAI:generate> ${JSON.stringify(data)}`);
         if (data.results.length > 0)
           return data.results[0].text;
-      
+        return "";
       })
       .catch((ex) => {
         console.error(`KoboldAI:generate> error ${ex.name}: ${ex.message}`);
