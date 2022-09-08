@@ -296,6 +296,10 @@ module.exports = class KoboldAIClient {
       });
   }
   
+  nextRound() {
+    this.roundStartTime = 0;
+  }
+  
   async runAdventureBot() {
     if (!this.running) return;
     

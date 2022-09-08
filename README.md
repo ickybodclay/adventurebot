@@ -79,6 +79,8 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 `!!abredo` - regenerate the last response (only valid during generate round)
 
+`!!abnext` - skip the countdown and advance to the next round
+
 ## Endpoints
 
 Hular Hoops Bot provides optional endpoint to hook into for setting up stream labels or whatever!
