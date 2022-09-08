@@ -460,4 +460,4 @@ function start() {
   });
 }
 
-// start();
+start();
