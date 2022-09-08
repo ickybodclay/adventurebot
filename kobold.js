@@ -360,12 +360,15 @@ module.exports = class KoboldAIClient {
       if (!this.botResponse) {
         this.botResponse = await this.generate(this.winningPrompt.user, "ai", "");
         
-        await this.addStory({user: "ai", prompt: this.botResponse.trim()});
-        
-        console.log(`KoboldAI:generate> ${JSON.stringify(this.story)}`);
-        
-        if (this._twitch) this._twitch.say(`#${this.channel}`, `ai: ${this.botResponse}`);
-        if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
+        if (this.botResponse && this.botResponse !== "") {
+          await this.addStory({user: "ai", prompt: this.botResponse.trim()});
+          console.log(`KoboldAI:generate> ${JSON.stringify(this.story)}`);
+          
+          if (this._twitch) this._twitch.say(`#${this.channel}`, `ai: ${this.botResponse}`);
+          if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
+        } else {
+          console.warn(`KoboldAI:generate> bot response was empty or null`);
+        }
       }
       
       if (deltaInMs > this.generateRoundTimeInMs) {
