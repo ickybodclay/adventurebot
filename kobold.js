@@ -259,13 +259,21 @@ module.exports = class KoboldAIClient {
     for (let i=0; i<this.votes.length; ++i) {
       voteTotals[this.votes[i].vote]++;
     }
-    var topPromptIndex = -1;
+    var topPromptIndexes = [];
     var maxVote = -1;
     for (let i=0; i<voteTotals.length; ++i) {
       if (voteTotals[i] > maxVote) {
-        topPromptIndex = i;
+        topPromptIndexes = [];
+        topPromptIndexes.push(i);
         maxVote = voteTotals[i];
+      } else if (voteTotals[i] == maxVote) {
+        topPromptIndexes.push(i);
       }
+    }
+    var topPromptIndex = -1;
+    if (topPromptIndexes.length > 0) {
+      // random tie breaker
+      topPromptIndex = topPromptIndexes[Math.floor(Math.random() * topPromptIndexes.length)];
     }
     var topPrompt; 
     if (topPromptIndex == -1) {
