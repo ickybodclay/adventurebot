@@ -1,7 +1,3 @@
-// const { generateDependencyReport } = require('@discordjs/voice');
-// console.log(generateDependencyReport());
-
-const wait = require('node:timers/promises').setTimeout;
 const { Client: DiscordClient, GatewayIntentBits } = require('discord.js');
 const { 
     createAudioPlayer, 
@@ -33,7 +29,7 @@ const KoboldAIClient = require("./kobold");
 const koboldai = new KoboldAIClient();
 
 const { playMessage, playMessageUD } = require("./tts");
-const { escapeJsonValue } = require("./utils");
+const { escapeJsonValue, wait } = require("./utils");
 const TTSQueue = require("./tts-queue");
 const queue = new TTSQueue();
 koboldai.queue = queue;

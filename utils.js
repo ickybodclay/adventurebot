@@ -1,3 +1,5 @@
+const wait = require('node:timers/promises').setTimeout;
+
 function escapeJsonValue(unsafe) {
   return unsafe.replace(/'"]/g, function (c) {
     switch (c) {
@@ -13,4 +15,4 @@ function json(response) {
   return response.json();
 }
 
-module.exports = { escapeJsonValue, json };
+module.exports = { escapeJsonValue, json, wait };
