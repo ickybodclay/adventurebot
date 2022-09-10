@@ -312,12 +312,16 @@ module.exports = class KoboldAIClient {
     if (this.round !== "GENERATE") return;
     
     console.log("KoboldAI> redo previous action");
-    this.removeStoryEnd()
-      .then(() => {
-        this.botResponse = null;
-        this.roundStartTime = Date.now();
-        console.log(`KoboldAI:redo> ${JSON.stringify(this.story)}`);
-      });
+    // v1
+    // this.removeStoryEnd()
+    //   .then(() => {
+    //     this.botResponse = null;
+    //     this.roundStartTime = Date.now();
+    //     console.log(`KoboldAI:redo> ${JSON.stringify(this.story)}`);
+    //   });
+    
+    // v2
+    this.clearBotResponses();
   }
   
   nextRound() {
@@ -467,6 +471,6 @@ module.exports = class KoboldAIClient {
       }
     } 
 
-    setTimeout(this.runAdventureBot.bind(this), 100);
+    setTimeout(this.runAdventureBotV2.bind(this), 100);
   }
 };

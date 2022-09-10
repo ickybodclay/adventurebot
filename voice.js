@@ -233,21 +233,17 @@ twitch.on("message", (channel, userstate, message, self) => {
       twitch.say(channel, `@${user} your TTS voice has been set to ${VOICES_MAP[voiceOverride[user]]}`);
     }
     // KOBOLDAI ADVENTURE BOT COMMANDS
-    else if (koboldai.running && command === "prompt" && koboldai.round === "PROMPT") {
-      const prompt = censor.cleanProfanity(argument.trim());
-      if (prompt === "") return;
-      if (koboldai.prompts.length >= 5) {
-        twitch.say(channel, `@${user} sorry, prompts queue currently at maximum`);
-      } else {
-        const success = koboldai.addPrompt(user, prompt);
-        if (success) twitch.say(channel, `@${user} prompt added!`);
-      }
-    }
     else if (koboldai.running && command === "vote" && koboldai.round === "VOTE") {
       const voteIndex = Math.abs(parseInt(argument));
-      if (isNaN(voteIndex) || voteIndex < 1 || voteIndex > koboldai.prompts.length) return;
+      
+      // v1
+      // if (isNaN(voteIndex) || voteIndex < 1 || voteIndex > koboldai.prompts.length) return;
+      
+      // v2
+      if (isNaN(voteIndex) || voteIndex < 1 || voteIndex > koboldai.botResponses.length) return;
+      
       const success = koboldai.addVote(user, voteIndex - 1);
-      if (success) twitch.say(channel, `@${user} vote added for prompt #${voteIndex}!`);
+      if (success) twitch.say(channel, `@${user} vote added for bot response #${voteIndex}!`);
     }
     
     if (!isOwner && !isMod) return;
@@ -286,7 +282,21 @@ twitch.on("message", (channel, userstate, message, self) => {
       koboldai.redo();
     } else if (command === "abnext") {
       koboldai.nextRound();
-    } 
+    } else if (command === "prompt" && koboldai.round === "PROMPT") {
+      const prompt = censor.cleanProfanity(argument.trim());
+      if (prompt === "") return;
+      
+      // v1
+      // if (koboldai.prompts.length >= 5) {
+      //   twitch.say(channel, `@${user} sorry, prompts queue currently at maximum`);
+      // } else {
+      //   const success = koboldai.addPrompt(user, prompt);
+      //   if (success) twitch.say(channel, `@${user} prompt added!`);
+      // }
+      
+      // v2 - only mods and owner can play
+      koboldai.addPrompt(user, prompt);
+    }
     
     return;
   }
@@ -448,6 +458,7 @@ app.get("/adventurebot/round", (request, response) => {
   //   winningPrompt: koboldai.winningPrompt,
   //   botResponse: koboldai.botResponse
   // });
+  
   // v2
   response.json({
     round: koboldai.round,
