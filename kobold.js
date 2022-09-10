@@ -416,7 +416,7 @@ module.exports = class KoboldAIClient {
       }
     } else if (this.round === "GENERATE") {
       if (!this.botResponse) {
-        this.botResponse = await this.generate(this.winningPrompt.user, "ai", "");
+        this.botResponse = await this.generate(this.winningPrompt.user, "ai", "", 5);
         
         if (this.botResponse && this.botResponse !== "") {
           await this.addStory({user: "ai", prompt: this.botResponse.trim()});
