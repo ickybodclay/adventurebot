@@ -29,6 +29,7 @@ module.exports = class KoboldAIClient {
     this.running = true;
     this.round = "PROMPT";
     this.runAdventureBot();
+    // this.runAdventureBotV2();
   }
 
   stopAdvetnureBot() {
@@ -255,10 +256,10 @@ module.exports = class KoboldAIClient {
   
   // ADVENTURE BOT
   
-  calculateWinningPrompt() {
-    const voteTotals = this.prompts.map((item) => 0);
-    for (let i=0; i<this.votes.length; ++i) {
-      voteTotals[this.votes[i].vote]++;
+  calculateWinningPrompt(prompts, votes) {
+    const voteTotals = prompts.map((item) => 0);
+    for (let i=0; i<votes.length; ++i) {
+      voteTotals[votes[i].vote]++;
     }
     var topPromptIndexes = [];
     var maxVote = -1;
@@ -278,10 +279,10 @@ module.exports = class KoboldAIClient {
     }
     var topPrompt; 
     if (topPromptIndex == -1) {
-      topPrompt = this.prompts[0];
+      topPrompt = prompts[0];
       maxVote = 0;
     } else {
-      topPrompt = this.prompts[topPromptIndex];
+      topPrompt = prompts[topPromptIndex];
     }
     // console.log(`${JSON.stringify(voteTotals)} | ${JSON.stringify(this.prompts)}`);
     const response = {
@@ -335,7 +336,7 @@ module.exports = class KoboldAIClient {
       if (deltaInMs > this.promptRoundTimeInMs) {
         if (this.prompts.length == 1) { // skip vote if only 1 prompt
           this.round = "GENERATE";
-          this.winningPrompt = this.calculateWinningPrompt();
+          this.winningPrompt = this.calculateWinningPrompt(this.prompts, this.votes);
           await this.addStory(this.winningPrompt);
         } else if (this.prompts.length > 1) {
           this.round = "VOTE";
