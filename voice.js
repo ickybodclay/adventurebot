@@ -438,14 +438,25 @@ app.get("/adventurebot/round", (request, response) => {
   
   var roundStartTime = null;
   if (koboldai.roundStartTime) roundStartTime = koboldai.roundStartTime;
+  // v1
+  // response.json({
+  //   round: koboldai.round,
+  //   roundStartTime: roundStartTime,
+  //   story: koboldai.story,
+  //   prompts: koboldai.prompts,
+  //   votes: koboldai.votes,
+  //   winningPrompt: koboldai.winningPrompt,
+  //   botResponse: koboldai.botResponse
+  // });
+  // v2
   response.json({
     round: koboldai.round,
     roundStartTime: roundStartTime,
     story: koboldai.story,
-    prompts: koboldai.prompts,
+    currentPrompt: koboldai.currentPrompt,
+    botResponses: koboldai.botResponses,
     votes: koboldai.votes,
-    winningPrompt: koboldai.winningPrompt,
-    botResponse: koboldai.botResponse
+    winningResponse: koboldai.winningResponse,
   });
 });
 

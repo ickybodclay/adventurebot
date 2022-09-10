@@ -23,6 +23,10 @@ module.exports = class KoboldAIClient {
     this.voice = "en-US-Wavenet-C";
     this._twitch = null;
     this.channel = process.env.TWITCH_CHANNEL;
+    // v2
+    this.currentPrompt = null;
+    this.botResponses = [];
+    this.winningResponse = null;
   }
   
   startAdventureBot() {
@@ -72,13 +76,18 @@ module.exports = class KoboldAIClient {
   
   reset() {
     this.clearStory();
-    this.clearPrompts();
+    // this.clearPrompts();
     this.clearVotes();
-    this.winningPrompt = null;
-    this.botResponse = null;
+    // this.winningPrompt = null;
+    // this.botResponse = null;
     this.roundStartTime = null;
     this.round = "START";
     this.running = false;
+    
+    // v2
+    this.clearBotResponses();
+    this.currentPrompt = null;
+    this.winningResponse = null;
   }
   
   get round() { return this._round; }
@@ -136,6 +145,11 @@ module.exports = class KoboldAIClient {
   clearVotes() {
     this.votes.splice(0, this.votes.length);
     console.log("cleared votes");
+  }
+  
+  clearBotResponses() {
+    this.botResponses.splice(0, this.botResponses.length);
+    console.log("cleared bot responses");
   }
   
   // KoboldAI API Endpoints
@@ -349,7 +363,7 @@ module.exports = class KoboldAIClient {
     } else if (this.round === "VOTE") {
       if (deltaInMs > this.voteRoundTimeInMs) {
         this.round = "GENERATE";
-        this.winningPrompt = this.calculateWinningPrompt();
+        this.winningPrompt = this.calculateWinningPrompt(this.prompts, this.votes);
         
         await this.addStory(this.winningPrompt);
         
