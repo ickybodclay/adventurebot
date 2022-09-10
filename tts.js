@@ -1,6 +1,6 @@
 const fs = require("fs");
 const fetch = require("node-fetch");
-const { escapeJsonValue, json } = require("./utils");
+const { json } = require("./utils");
 
 const languageCodeRegex = /([a-z]{2}-[A-Z]{2})-.+/i;
 
@@ -44,7 +44,7 @@ function syntehsize_GCTTS_chunk(chunk, voice, languageCode, filename) {
     apiKey;
   const postData = {
     input: {
-      text: escapeJsonValue(chunk),
+      text: chunk,
     },
     audioConfig: {
       audioEncoding: "OGG_OPUS",
@@ -104,7 +104,7 @@ function syntehsize_UDTSS_chunk(chunk, voice, languageCode, filename) {
     const requestUrl = "https://api.uberduck.ai/speak-synchronous";
     const postData = {
       voice: voice,
-      speech: escapeJsonValue(chunk)
+      speech: chunk
     };
     return fetch(requestUrl, {
       method: "post",

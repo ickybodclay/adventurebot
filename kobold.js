@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 const fs = require('fs');
 const { playMessage } = require("./tts");
 const TTSQueue = require("./tts-queue");
-const { escapeJsonValue, json } = require("./utils");
+const { json } = require("./utils");
 
 module.exports = class KoboldAIClient {
   constructor() {
@@ -157,7 +157,7 @@ module.exports = class KoboldAIClient {
   generate(user, bot, prompt, outputs=1) {
     const requestUrl = `${this.baseUrl}/api/v1/generate`;
     const postData = {
-      prompt: escapeJsonValue(prompt),
+      prompt: prompt,
       use_story: true,
       use_memory: true,
       use_authors_note: true,
@@ -193,7 +193,7 @@ module.exports = class KoboldAIClient {
     this.story.push(prompt);
     const requestUrl = `${this.baseUrl}/api/v1/story/end`;
     const postData = {
-      prompt: escapeJsonValue(prompt.prompt)
+      prompt: prompt.prompt
     };
     return fetch(requestUrl, {
       method: "post",
@@ -321,7 +321,11 @@ module.exports = class KoboldAIClient {
   }
   
   nextRound() {
-    this.roundStartTime = 0;
+    this.roundStartTime = 1;
+  }
+  
+  resetRoundTime() {
+    this.roundStartTime = null;
   }
   
   async runAdventureBot() {
@@ -420,6 +424,7 @@ module.exports = class KoboldAIClient {
     const deltaInMs = tickTime - this.roundStartTime;
     
     if (this.round === "PROMPT") {
+      // no time limit, whenever a prompt is submitted by the DM
       if (this.prompts.length == 1) {
         this.round = "GENERATE";
         this.currentPrompt = this.prompts[0];
@@ -444,7 +449,7 @@ module.exports = class KoboldAIClient {
       if (deltaInMs > this.generateRoundTimeInMs) {
         this.round = "VOTE";
         this.clearVotes();
-        
+        this.winningResponse = null;
         this.roundStartTime = null;
       }
     } else if (this.round === "VOTE") {

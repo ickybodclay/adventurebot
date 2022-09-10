@@ -29,7 +29,7 @@ const KoboldAIClient = require("./kobold");
 const koboldai = new KoboldAIClient();
 
 const { playMessage, playMessageUD } = require("./tts");
-const { escapeJsonValue, wait } = require("./utils");
+const { wait } = require("./utils");
 const TTSQueue = require("./tts-queue");
 const queue = new TTSQueue();
 koboldai.queue = queue;
@@ -395,7 +395,7 @@ async function generate(user, bot, prompt) {
   try {
     const completion = await openai.createCompletion({
       model: "text-curie-001", //"text-davinci-002",
-      prompt: escapeJsonValue(prompt),
+      prompt: prompt,
       temperature: 0.9,
       max_tokens: 100,
       top_p: 1,

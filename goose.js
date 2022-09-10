@@ -1,5 +1,5 @@
 const fetch = require("node-fetch");
-const { escapeJsonValue, json } = require("./utils");
+const { json } = require("./utils");
 
 // https://goose.ai/docs/api/engines
 const engineId = "gpt-neo-20b"; //"gpt-j-6b"; //"gpt-neo-2-7b"; //"fairseq-13b";
@@ -8,7 +8,7 @@ function gooseGenerate(user, bot, prompt) {
   const requestUrl = `https://api.goose.ai/v1/engines/${engineId}/completions`;
   const stopTokenRegex = new RegExp(`(${user}:|${bot}:|"<|endoftext|>")$`, "im");
   const postData = {
-    prompt: escapeJsonValue(prompt),
+    prompt: prompt,
     temperature: 0.5, // [0, 1.0]
     // top_p: 0.3, // [0, 1.0]
     // presence_penalty: 0, // [-2.0, 2.0]
