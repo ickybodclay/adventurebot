@@ -282,6 +282,8 @@ twitch.on("message", (channel, userstate, message, self) => {
       koboldai.redo();
     } else if (command === "abnext") {
       koboldai.nextRound();
+    } else if (command === "abaddtime") {
+      koboldai.resetRoundTime();
     } else if (command === "prompt" && koboldai.round === "PROMPT") {
       const prompt = censor.cleanProfanity(argument.trim());
       if (prompt === "") return;
