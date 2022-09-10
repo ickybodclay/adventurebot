@@ -482,4 +482,4 @@ function start() {
   });
 }
 
-// start();
+start();

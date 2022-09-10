@@ -15,7 +15,7 @@ module.exports = class KoboldAIClient {
     this.roundStartTime = null;
     this.promptRoundTimeInMs = 2*60*1000; // not used in v2
     this.voteRoundTimeInMs = 2*60*1000; // 1 min v1, 2 min v2
-    this.generateRoundTimeInMs = 1*60*1000;
+    this.generateRoundTimeInMs = 1*60*1000; // not used in v2
     this.winningPrompt = null;
     this.botResponse = null;
     this.running = false;
@@ -438,7 +438,7 @@ module.exports = class KoboldAIClient {
         const genResponse = await this.generate(this.currentPrompt.user, "ai", "", 5);
         
         this.botResponses = genResponse.map((item) => {
-          const response = { user: "ai", prompt: item.text};
+          const response = { user: "ai", prompt: item.text.trim()};
           return response;
         });
         
@@ -449,9 +449,7 @@ module.exports = class KoboldAIClient {
         ) {
           console.warn(`KoboldAI:generate> bot response was empty or null`);
         }
-      }
-      
-      if (deltaInMs > this.generateRoundTimeInMs) {
+        
         this.round = "VOTE";
         this.clearVotes();
         this.winningResponse = null;
