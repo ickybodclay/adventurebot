@@ -423,12 +423,12 @@ module.exports = class KoboldAIClient {
       if (this.prompts.length == 1) {
         this.round = "GENERATE";
         this.currentPrompt = this.prompts[0];
-        await this.addStory(this.winningPrompt);
-        this.botResponse = null;
+        await this.addStory(this.currentPrompt);
+        this.clearBotResponses();
         this.roundStartTime = null;
       }
     } else if (this.round === "GENERATE") {
-      if (!this.botResponse) {
+      if (this.botResponses.length == 0) {
         const genResponse = await this.generate(this.winningPrompt.user, "ai", "", 5);
         
         this.botResponses = genResponse.map((item) => {
@@ -443,8 +443,6 @@ module.exports = class KoboldAIClient {
       
       if (deltaInMs > this.generateRoundTimeInMs) {
         this.round = "VOTE";
-        
-        this.clearPrompts();
         this.clearVotes();
         
         this.roundStartTime = null;
@@ -455,6 +453,8 @@ module.exports = class KoboldAIClient {
         this.winningResponse = this.calculateWinningPrompt(this.botResponses, this.votes);
         await this.addStory(this.winningResponse);
         
+        this.currentPrompt = null;
+        this.clearPrompts();
         this.roundStartTime = null;
         
         if (this._twitch) this._twitch.say(`#${this.channel}`, this.winningResponse.prompt);
