@@ -51,7 +51,7 @@ module.exports = class KoboldAIClient {
   saveStory(callback = () => {}) {
     console.log("saving current story...");
     if (this.story.length == 0) return;
-    // save locally
+    // save locally v1
     const saveName = `AdventureBot-${new Date(Date.now()).toISOString().replaceAll(':', '-')}`; 
     const save = `.stories/${saveName}.txt`;
     fs.writeFile(
