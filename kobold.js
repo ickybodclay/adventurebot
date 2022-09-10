@@ -176,8 +176,8 @@ module.exports = class KoboldAIClient {
       .then((data) => {
         console.log(`KoboldAI:generate> ${JSON.stringify(data)}`);
         if (data && data.results && data.results.length > 0)
-          return data.results[0].text;
-        return "";
+          return data.results;
+        return [""];
       })
       .catch((ex) => {
         console.error(`KoboldAI:generate> error ${ex.name}: ${ex.message}`);
@@ -374,7 +374,8 @@ module.exports = class KoboldAIClient {
       }
     } else if (this.round === "GENERATE") {
       if (!this.botResponse) {
-        this.botResponse = await this.generate(this.winningPrompt.user, "ai", "");
+        const genResponse = await this.generate(this.winningPrompt.user, "ai", "");
+        this.botResponse = genResponse[0].text;
         
         if (this.botResponse && this.botResponse !== "") {
           await this.addStory({user: "ai", prompt: this.botResponse.trim()});
@@ -431,21 +432,25 @@ module.exports = class KoboldAIClient {
       }
     } else if (this.round === "GENERATE") {
       if (!this.botResponse) {
-        this.botResponse = await this.generate(this.winningPrompt.user, "ai", "", 5);
+        const genResponse = await this.generate(this.winningPrompt.user, "ai", "", 5);
         
-        if (this.botResponse && this.botResponse !== "") {
-          await this.addStory({user: "ai", prompt: this.botResponse.trim()});
-          console.log(`KoboldAI:generate> ${JSON.stringify(this.story)}`);
-          
-          if (this._twitch) this._twitch.say(`#${this.channel}`, `ai: ${this.botResponse}`);
-          if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
+        this.botResponses = genResponse.map((item) => {
+          const response = { user: "ai", prompt: item.text};
+          return response;
+        });
+        
+        if (this.botResponse && this.botResponse.length > 0) {
+//           await this.addStory({user: "ai", prompt: this.botResponse.trim()});
+//           console.log(`KoboldAI:generate> ${JSON.stringify(this.story)}`);
+//           if (this._twitch) this._twitch.say(`#${this.channel}`, `ai: ${this.botResponse}`);
+//           if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
         } else {
           console.warn(`KoboldAI:generate> bot response was empty or null`);
         }
       }
       
       if (deltaInMs > this.generateRoundTimeInMs) {
-        this.round = "PROMPT";
+        this.round = "VOTE";
         
         this.clearPrompts();
         this.clearVotes();
@@ -454,7 +459,7 @@ module.exports = class KoboldAIClient {
       }
     } else if (this.round === "VOTE") {
       if (deltaInMs > this.voteRoundTimeInMs) {
-        this.round = "GENERATE";
+        this.round = "PROMPT";
         this.winningPrompt = this.calculateWinningPrompt();
         
         await this.addStory(this.winningPrompt);
