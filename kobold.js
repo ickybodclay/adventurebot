@@ -420,13 +420,10 @@ module.exports = class KoboldAIClient {
     const deltaInMs = tickTime - this.roundStartTime;
     
     if (this.round === "PROMPT") {
-      if (deltaInMs > this.promptRoundTimeInMs) {
-        if (this.prompts.length == 1) { // skip vote if only 1 prompt
-          this.round = "GENERATE";
-          this.winningPrompt = this.calculateWinningPrompt();
-          await this.addStory(this.winningPrompt);
-        }
-        
+      if (this.prompts.length == 1) {
+        this.round = "GENERATE";
+        this.currentPrompt = this.prompts[0];
+        await this.addStory(this.winningPrompt);
         this.botResponse = null;
         this.roundStartTime = null;
       }
@@ -439,12 +436,7 @@ module.exports = class KoboldAIClient {
           return response;
         });
         
-        if (this.botResponse && this.botResponse.length > 0) {
-//           await this.addStory({user: "ai", prompt: this.botResponse.trim()});
-//           console.log(`KoboldAI:generate> ${JSON.stringify(this.story)}`);
-//           if (this._twitch) this._twitch.say(`#${this.channel}`, `ai: ${this.botResponse}`);
-//           if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
-        } else {
+        if (!this.botResponse || this.botResponse.length == 0) {
           console.warn(`KoboldAI:generate> bot response was empty or null`);
         }
       }
@@ -460,14 +452,13 @@ module.exports = class KoboldAIClient {
     } else if (this.round === "VOTE") {
       if (deltaInMs > this.voteRoundTimeInMs) {
         this.round = "PROMPT";
-        this.winningPrompt = this.calculateWinningPrompt();
-        
-        await this.addStory(this.winningPrompt);
+        this.winningResponse = this.calculateWinningPrompt(this.botResponses, this.votes);
+        await this.addStory(this.winningResponse);
         
         this.roundStartTime = null;
         
-        if (this._twitch) this._twitch.say(`#${this.channel}`, `${this.winningPrompt.user}: ${this.winningPrompt.prompt}`);
-        if (this._queue) playMessage(this._queue, this.winningPrompt.prompt, this.voice);
+        if (this._twitch) this._twitch.say(`#${this.channel}`, this.winningResponse.prompt);
+        if (this._queue) playMessage(this._queue, this.winningResponse.prompt, this.voice);
       }
     } 
 
