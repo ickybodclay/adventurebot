@@ -13,8 +13,8 @@ module.exports = class KoboldAIClient {
     this.votes = [];
     this._round = "START"; // START, [PROMPT, VOTE, GENERATE]
     this.roundStartTime = null;
-    this.promptRoundTimeInMs = 2*60*1000;
-    this.voteRoundTimeInMs = 1*60*1000;
+    this.promptRoundTimeInMs = 2*60*1000; // not used in v2
+    this.voteRoundTimeInMs = 2*60*1000; // 1 min v1, 2 min v2
     this.generateRoundTimeInMs = 1*60*1000;
     this.winningPrompt = null;
     this.botResponse = null;
@@ -438,14 +438,18 @@ module.exports = class KoboldAIClient {
       }
     } else if (this.round === "GENERATE") {
       if (this.botResponses.length == 0) {
-        const genResponse = await this.generate(this.winningPrompt.user, "ai", "", 5);
+        const genResponse = await this.generate(this.currentPrompt.user, "ai", "", 5);
         
         this.botResponses = genResponse.map((item) => {
           const response = { user: "ai", prompt: item.text};
           return response;
         });
         
-        if (!this.botResponse || this.botResponse.length == 0) {
+        if (
+          !this.botResponses || 
+          this.botResponses.length == 0 ||
+          this.botResponses[0] === ""
+        ) {
           console.warn(`KoboldAI:generate> bot response was empty or null`);
         }
       }
