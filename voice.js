@@ -294,7 +294,7 @@ twitch.on("message", (channel, userstate, message, self) => {
       //   if (success) twitch.say(channel, `@${user} prompt added!`);
       // }
       
-      // v2 - only mods and owner can play
+      // v2 - only mods and owner can submit a prompt
       koboldai.addPrompt(user, prompt);
     }
     
@@ -482,4 +482,4 @@ function start() {
   });
 }
 
-start();
+// start();

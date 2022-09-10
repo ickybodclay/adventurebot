@@ -27,6 +27,7 @@ module.exports = class KoboldAIClient {
     this.currentPrompt = null;
     this.botResponses = [];
     this.winningResponse = null;
+    this.botResponseCount = 3;
   }
   
   startAdventureBot() {
@@ -435,7 +436,7 @@ module.exports = class KoboldAIClient {
       }
     } else if (this.round === "GENERATE") {
       if (this.botResponses.length == 0) {
-        const genResponse = await this.generate(this.currentPrompt.user, "ai", "", 5);
+        const genResponse = await this.generate(this.currentPrompt.user, "ai", "", this.botResponseCount);
         
         this.botResponses = genResponse.map((item) => {
           const response = { user: "ai", prompt: item.text.trim()};
