@@ -1,0 +1,9 @@
+aipd: You are a hippo named Raindrop and you want to replace Hugh Jackman in The Music Man on Broadway.
+ai (1 votes):  You've been trying to find him for years and even wrote a letter to the studio, but to no avail.
+You've been told that he is too old and that he has his own movie projects and that he's not interested in doing musicals.
+aipd: After years of searching, you give up dejected and becoming a regular drunk at a local watering hole. Suddenly Hugh Jackman walks in and
+ai (1 votes):  sees you. He smiles at you and says "Hey there, kid. Still looking for me huh?"
+"Yeah, I am." You reply.
+"Well, I'm still alive and I'm still looking for work. In fact, I'm in town for the weekend. Come with me."
+"What?" You ask.
+aipd: Hugh tells you he is working on a new movie that he is directing, writing, and producing called

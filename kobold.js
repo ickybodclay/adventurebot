@@ -415,12 +415,9 @@ module.exports = class KoboldAIClient {
     if (!this.roundStartTime) { // start of a new round
       this.roundStartTime = Date.now();
       
-      if (this._twitch) { // round start twitch chat announcements
-        if (this.round === "VOTE") this._twitch.say(`#${this.channel}`, "Vote for your favorite AI response (ex '!!vote 1')");
-      }
-
-      if (this._queue) { // round start tts announcements
-        if (this.round === "VOTE") playMessage(this._queue, "Vote for your favorite AI response!", this.voice);
+      if (this.round === "VOTE") {
+        if (this._twitch) this._twitch.say(`#${this.channel}`, "Vote for your favorite AI response (ex '!!vote 1')");
+        if (this._queue) playMessage(this._queue, "Vote for your favorite AI response!", this.voice);
       }
     }
     
