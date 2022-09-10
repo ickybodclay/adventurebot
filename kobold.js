@@ -32,8 +32,8 @@ module.exports = class KoboldAIClient {
   startAdventureBot() {
     this.running = true;
     this.round = "PROMPT";
-    this.runAdventureBot();
-    // this.runAdventureBotV2();
+    // this.runAdventureBot();
+    this.runAdventureBotV2();
   }
 
   stopAdvetnureBot() {
