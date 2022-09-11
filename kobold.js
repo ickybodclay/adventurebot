@@ -178,7 +178,7 @@ module.exports = class KoboldAIClient {
         console.log(`KoboldAI:generate> ${JSON.stringify(data)}`);
         if (data && data.results && data.results.length > 0)
           return data.results;
-        return [""];
+        return [];
       })
       .catch((ex) => {
         console.error(`KoboldAI:generate> error ${ex.name}: ${ex.message}`);
@@ -187,6 +187,7 @@ module.exports = class KoboldAIClient {
         } else {
           console.error(ex.stack);
         }
+        return [];
       });
   }
   
@@ -447,16 +448,20 @@ module.exports = class KoboldAIClient {
           return response;
         });
         
-        if (!this.botResponses || this.botResponses.length == 0) {
-          console.warn(`KoboldAI:generate> bot response was empty or null`);
+        if (this.botResponses.length == 0) {
+          console.warn(`KoboldAI:generate> bot response was empty`);
         } else {
-      
           if (this._queue) {
-            this.botResponses.forEach((item, index) => {
-              playMessage(this._queue, `Option ${index+1}: ${item.prompt}`, this.voice);
-            });
+            // TTS all the bot response options
+            for(let i=0; i<this.botResponses.length; ++i) {
+              playMessage(this._queue, `Option ${i+1}: ${this.botResponses[i].prompt}`, this.voice);
+            }
+            // 1 second break then go to voice round
             this._queue.addBreak(() => {
-              
+              this.round = "VOTE";
+              this.clearVotes();
+              this.winningResponse = null;
+              this.roundStartTime = null;
             });
           }
         }

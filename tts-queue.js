@@ -12,7 +12,7 @@ const {
 module.exports = class TTSQueue {
   constructor() {
     this.mainPlayerQueue = [];
-    this.pauseDelayInMs = 10*1000;
+    this.pauseDelayInMs = 1*1000;
     this._isPlaying = false;
     this._isStopped = false;
     this._next = null;
