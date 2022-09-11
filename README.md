@@ -4,18 +4,19 @@ Discord bot that generates TTS for Twitch chat and occasionally responds with AI
 
 ## Setup
 
-1) Add required secret keys.  You'll need the following:
+1. Add required secret keys. You'll need the following:
 
-    - A Twitch bot (username and oauth token with ability to read and send messages)
-    - A Discord bot (token and client id; make sure token has permission to use voice)
-    - The Twitch channel that you want to observe chat of
-    - The Discord guild id* (server you want bot to join)
-    - The Dicord voice channel id* (voice channel you want bot to join)
-    - An OpenAI API key
+   - A Twitch bot (username and oauth token with ability to read and send messages)
+   - A Discord bot (token and client id; make sure token has permission to use voice)
+   - The Twitch channel that you want to observe chat of
+   - The Discord guild id\* (server you want bot to join)
+   - The Dicord voice channel id\* (voice channel you want bot to join)
+   - An OpenAI API key
 
-    *Note: use Discord developer mode so you can easily right click and "Copy ID" for these values
-2) Invite Discord bot to your server.
-3) Register slash commands by running `node deploy-commands.js` in terminal.
+   \*Note: use Discord developer mode so you can easily right click and "Copy ID" for these values
+
+2. Invite Discord bot to your server.
+3. Register slash commands by running `node deploy-commands.js` in terminal.
 
 And that should be it!
 
@@ -77,7 +78,7 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 `!!abremove NUMBER` - remove prompt (only valid during prompt round, must be valid integer)
 
-`!!abredo` - regenerate the last response (only valid during generate round)
+`!!abredo` - regenerate the last response (only valid during vote round)
 
 `!!abnext` - skip the countdown and advance to the next round
 
