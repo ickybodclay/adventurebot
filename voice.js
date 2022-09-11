@@ -484,4 +484,4 @@ function start() {
   });
 }
 
-start();
+// start();
