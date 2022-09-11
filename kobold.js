@@ -447,18 +447,19 @@ module.exports = class KoboldAIClient {
           return response;
         });
         
-        if (
-          !this.botResponses || 
-          this.botResponses.length == 0 ||
-          this.botResponses[0] === ""
-        ) {
+        if (!this.botResponses || this.botResponses.length == 0) {
           console.warn(`KoboldAI:generate> bot response was empty or null`);
+        } else {
+      
+          if (this._queue) {
+            this.botResponses.forEach((item, index) => {
+              playMessage(this._queue, `Option ${index+1}: ${item.prompt}`, this.voice);
+            });
+            this._queue.addBreak(() => {
+              
+            });
+          }
         }
-        
-        this.round = "VOTE";
-        this.clearVotes();
-        this.winningResponse = null;
-        this.roundStartTime = null;
       }
     } else if (this.round === "VOTE") {
       if (deltaInMs > this.voteRoundTimeInMs) {
