@@ -311,8 +311,9 @@ module.exports = class KoboldAIClient {
   
   redo() {
     console.log("KoboldAI> redo previous action");
+    
     // v1
-    if (this.round !== "GENERATE") return;
+    // if (this.round !== "GENERATE") return;
     // this.removeStoryEnd()
     //   .then(() => {
     //     this.botResponse = null;
@@ -324,6 +325,8 @@ module.exports = class KoboldAIClient {
     if (this.round !== "VOTE") return;
     this.clearBotResponses();
     this.clearVotes();
+    this.round = "GENERATE";
+    this.roundStartTime = null;
   }
   
   nextRound() {
