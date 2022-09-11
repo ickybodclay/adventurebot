@@ -436,7 +436,6 @@ module.exports = class KoboldAIClient {
         this.round = "GENERATE";
         this.currentPrompt = this.prompts[0];
         await this.addStory(this.currentPrompt);
-        this.clearBotResponses();
         this.roundStartTime = null;
       }
     } else if (this.round === "GENERATE") {
@@ -474,6 +473,7 @@ module.exports = class KoboldAIClient {
         
         this.currentPrompt = null;
         this.clearPrompts();
+        this.clearBotResponses();
         this.roundStartTime = null;
         
         if (this._twitch) this._twitch.say(`#${this.channel}`, this.winningResponse.prompt);
