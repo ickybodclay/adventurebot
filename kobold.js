@@ -437,6 +437,8 @@ module.exports = class KoboldAIClient {
         this.currentPrompt = this.prompts[0];
         await this.addStory(this.currentPrompt);
         this.roundStartTime = null;
+        
+        if (this._queue) playMessage(this._queue, this.currentPrompt.prompt, this.voice);
       }
     } else if (this.round === "GENERATE") {
       if (this.botResponses.length == 0) {
