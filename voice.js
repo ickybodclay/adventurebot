@@ -490,4 +490,4 @@ function start() {
   });
 }
 
-start();
+// start();
