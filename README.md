@@ -11,7 +11,7 @@ Discord bot that generates TTS for Twitch chat and occasionally responds with AI
    - The Twitch channel that you want to observe chat of
    - The Discord guild id\* (server you want bot to join)
    - The Dicord voice channel id\* (voice channel you want bot to join)
-   - An OpenAI API key
+   - An OpenAI API key OR KoboldAI Base Url if using Adventure Bot
 
    \*Note: use Discord developer mode so you can easily right click and "Copy ID" for these values
 
@@ -37,6 +37,8 @@ And that should be it!
 `/k9generate INPUT` - Generate AI response from input and then text-to-speech user input & response (test to make sure you've setup OpenAI)
 
 `/k9tts MESSAGE` - Add message directly to the TTS queue for K9000 to say
+
+`/k9seturl URL` - Set the KoboldAI base url (no trailing '/')
 
 ### Twitch commands
 

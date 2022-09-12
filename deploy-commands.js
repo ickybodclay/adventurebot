@@ -27,6 +27,14 @@ const commands = [
         .setDescription('A message for K9000 to say via TTS')
         .setRequired(true)
     ),
+  new SlashCommandBuilder()
+    .setName('k9seturl')
+    .setDescription('Set the KoboldAI base url')
+    .addStringOption(option =>
+      option.setName('url')
+        .setDescription('the new KoboldAI base url (no trailing /)')
+        .setRequired(true)
+    ),
 ]
 	.map(command => command.toJSON());
 
