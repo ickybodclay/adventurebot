@@ -3,6 +3,18 @@ const fetch = require("node-fetch");
 const { json } = require("./utils");
 
 const languageCodeRegex = /([a-z]{2}-[A-Z]{2})-.+/i;
+const googleVoiceRegex = /^[a-z]{2,3}-[a-z]{2,3}-/i
+
+/**
+ * Wrapper function to determine correct TTS service to use for the provided voice.
+ */
+function matchVoiceAndPlay(queue, message, voice) {
+  if (voice.match(googleVoiceRegex)) {
+    playMessage(queue, message, voice);
+  } else {
+    playMessageUD(queue, message, voice);
+  }
+}
 
 /**
  * Add TTS message to queue using Google Cloud TTS.
@@ -139,4 +151,4 @@ function splitMessageToChunks(message, maxChunkLength) {
   return chunkedMsgArray;
 }
 
-module.exports = { playMessage, playMessageUD };
+module.exports = { matchVoiceAndPlay, playMessage, playMessageUD };

@@ -28,7 +28,7 @@ const { gooseGenerate } = require("./goose");
 const KoboldAIClient = require("./kobold");
 const koboldai = new KoboldAIClient();
 
-const { playMessage, playMessageUD } = require("./tts");
+const { matchVoiceAndPlay, playMessage, playMessageUD } = require("./tts");
 const { wait } = require("./utils");
 const TTSQueue = require("./tts-queue");
 const queue = new TTSQueue();
@@ -386,18 +386,6 @@ async function setupPubsub() {
 /**
  * TTS
  */
-const googleVoiceRegex = /^[a-z]{2,3}-[a-z]{2,3}-/i
-/**
- * Wrapper function to determine correct TTS service to use for the provided voice.
- */
-function matchVoiceAndPlay(queue, message, voice) {
-  if (voice.match(googleVoiceRegex)) {
-    playMessage(queue, message, voice);
-  } else {
-    playMessageUD(queue, message, voice);
-  }
-}
-
 function mapUserToVoice(user, voices) {
   var index = 0;
   for (let i = 0; i < user.length; i++) {
