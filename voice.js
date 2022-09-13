@@ -268,6 +268,7 @@ twitch.on("message", (channel, userstate, message, self) => {
       queue.stop();
     } else if (command === "setbotvoice") {
       botVoice = argument;
+      koboldai.voice = argument;
     } else if (command === "clear") {
       usersInQueue.splice(0, usersInQueue.length);
     } 

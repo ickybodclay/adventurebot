@@ -1,6 +1,6 @@
 const fetch = require("node-fetch");
 const fs = require('fs');
-const { playMessage } = require("./tts");
+const { matchVoiceAndPlay } = require("./tts");
 const TTSQueue = require("./tts-queue");
 const { json } = require("./utils");
 
@@ -123,7 +123,7 @@ module.exports = class KoboldAIClient {
   addPrompt(user, prompt) {
     if (this.prompts.map((item) => item.user).indexOf(user) != -1) return false;
     this.prompts.push({user: user, prompt: prompt});
-    if (this._queue) playMessage(this._queue, `${user} submitted prompt!`, this.voice);
+    if (this._queue) matchVoiceAndPlay(this._queue, `${user} submitted prompt!`, this.voice);
     return true;
   }
   
@@ -351,8 +351,8 @@ module.exports = class KoboldAIClient {
       }
 
       if (this._queue) { // round start tts announcements
-        if (this.round === "PROMPT") playMessage(this._queue, "Submit your prompts!", this.voice);
-        else if (this.round === "VOTE") playMessage(this._queue, "Vote for your favorite prompt!", this.voice);
+        if (this.round === "PROMPT") matchVoiceAndPlay(this._queue, "Submit your prompts!", this.voice);
+        else if (this.round === "VOTE") matchVoiceAndPlay(this._queue, "Vote for your favorite prompt!", this.voice);
         // else if (this.round === "GENERATE") playMessage(this._queue, "Generating response...", this.voice);
       }
     }
@@ -384,7 +384,7 @@ module.exports = class KoboldAIClient {
         this.roundStartTime = null;
         
         if (this._twitch) this._twitch.say(`#${this.channel}`, `${this.winningPrompt.user}: ${this.winningPrompt.prompt}`);
-        if (this._queue) playMessage(this._queue, this.winningPrompt.prompt, this.voice);
+        if (this._queue) matchVoiceAndPlay(this._queue, this.winningPrompt.prompt, this.voice);
       }
     } else if (this.round === "GENERATE") {
       if (!this.botResponse) {
@@ -396,7 +396,7 @@ module.exports = class KoboldAIClient {
           console.log(`KoboldAI:generate> ${JSON.stringify(this.story)}`);
           
           if (this._twitch) this._twitch.say(`#${this.channel}`, `ai: ${this.botResponse}`);
-          if (this._queue) playMessage(this._queue, this.botResponse, this.voice);
+          if (this._queue) matchVoiceAndPlay(this._queue, this.botResponse, this.voice);
         } else {
           console.warn(`KoboldAI:generate> bot response was empty or null`);
         }
@@ -423,7 +423,7 @@ module.exports = class KoboldAIClient {
       
       if (this.round === "VOTE") {
         if (this._twitch) this._twitch.say(`#${this.channel}`, "Vote for your favorite AI response (ex '!!vote 1')");
-        if (this._queue) playMessage(this._queue, "Vote for your favorite AI response!", this.voice);
+        if (this._queue) matchVoiceAndPlay(this._queue, "Vote for your favorite AI response!", this.voice);
       }
     }
     
@@ -438,7 +438,7 @@ module.exports = class KoboldAIClient {
         await this.addStory(this.currentPrompt);
         this.roundStartTime = null;
         
-        if (this._queue) playMessage(this._queue, this.currentPrompt.prompt, this.voice);
+        if (this._queue) matchVoiceAndPlay(this._queue, this.currentPrompt.prompt, this.voice);
       }
     } else if (this.round === "GENERATE") {
       if (this.botResponses.length == 0) {
@@ -455,7 +455,7 @@ module.exports = class KoboldAIClient {
           if (this._queue) {
             // TTS all the bot response options
             for(let i=0; i<this.botResponses.length; ++i) {
-              playMessage(this._queue, `Option ${i+1}: ${this.botResponses[i].prompt}`, this.voice);
+              matchVoiceAndPlay(this._queue, `Option ${i+1}: ${this.botResponses[i].prompt}`, this.voice);
             }
             // 1 second break then go to voice round
             this._queue.addBreak(() => {
@@ -479,7 +479,7 @@ module.exports = class KoboldAIClient {
         this.roundStartTime = null;
         
         if (this._twitch) this._twitch.say(`#${this.channel}`, this.winningResponse.prompt);
-        if (this._queue) playMessage(this._queue, this.winningResponse.prompt, this.voice);
+        if (this._queue) matchVoiceAndPlay(this._queue, this.winningResponse.prompt, this.voice);
       }
     } 
 
