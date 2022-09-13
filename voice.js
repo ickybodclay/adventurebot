@@ -479,4 +479,4 @@ function start() {
   });
 }
 
-// start();
+start();
