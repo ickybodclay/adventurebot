@@ -444,18 +444,18 @@ app.get("/adventurebot/events", async (request, response) => {
   });
   response.flushHeaders();
 
-  const eventData = {
-    round: koboldai.round,
-    roundStartTime: koboldai.roundStartTime,
-    story: koboldai.story,
-    currentPrompt: koboldai.currentPrompt,
-    botResponses: koboldai.botResponses,
-    votes: koboldai.votes,
-    winningResponse: koboldai.winningResponse,
-  };
-
   response.write('retry: 5000\n\n');
   const intervalId = setInterval(() => {
+    const eventData = {
+      round: koboldai.round,
+      roundStartTime: koboldai.roundStartTime,
+      story: koboldai.story,
+      currentPrompt: koboldai.currentPrompt,
+      botResponses: koboldai.botResponses,
+      votes: koboldai.votes,
+      winningResponse: koboldai.winningResponse,
+    };
+    
     response.write('event: heartbeat\n');
     response.write(`data: ${JSON.stringify(eventData)}\n\n`);
   }, 200);
