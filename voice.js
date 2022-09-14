@@ -17,16 +17,6 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 
-// https://github.com/seiyria/censor-sensor
-const { CensorSensor } = require("censor-sensor");
-const censor = new CensorSensor();
-censor.disableTier(2);
-censor.disableTier(3);
-censor.disableTier(4);
-censor.addWord("rape");
-censor.addWord("raping");
-censor.addWord("rapist");
-
 const { Configuration, OpenAIApi } = require('openai');
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY
@@ -250,10 +240,6 @@ twitch.on("message", (channel, userstate, message, self) => {
     else if (koboldai.running && command === "vote" && koboldai.round === "VOTE") {
       const voteIndex = Math.abs(parseInt(argument));
       
-      // v1
-      // if (isNaN(voteIndex) || voteIndex < 1 || voteIndex > koboldai.prompts.length) return;
-      
-      // v2
       if (isNaN(voteIndex) || voteIndex < 1 || voteIndex > koboldai.botResponses.length) return;
       
       const success = koboldai.addVote(user, voteIndex - 1);
@@ -300,18 +286,8 @@ twitch.on("message", (channel, userstate, message, self) => {
     } else if (command === "abaddtime") {
       koboldai.resetRoundTime();
     } else if (command === "prompt" && koboldai.round === "PROMPT") {
-      const prompt = censor.cleanProfanity(argument.trim());
+      const prompt = argument.trim();
       if (prompt === "") return;
-      
-      // v1
-      // if (koboldai.prompts.length >= 5) {
-      //   twitch.say(channel, `@${user} sorry, prompts queue currently at maximum`);
-      // } else {
-      //   const success = koboldai.addPrompt(user, prompt);
-      //   if (success) twitch.say(channel, `@${user} prompt added!`);
-      // }
-      
-      // v2 - only mods and owner can submit a prompt
       koboldai.addPrompt(user, prompt);
     }
     
@@ -319,14 +295,10 @@ twitch.on("message", (channel, userstate, message, self) => {
   }
   
   if (message.startsWith("!")) return;
-  
-  // if (queue.isConnected() && message.startsWith("$")) {
-  //   talkToK9000(queue, channel, user, message.substring(1).trim());
-  // }
 });
 
 function talkToK9000(queue, channel, user, message, enforceMax=true) {
-  const cleanMessage = censor.cleanProfanity(message);
+  const cleanMessage = message;
   if (cleanMessage.length == 0) return;
   if (enforceMax && queue.size > queueMax) {
     twitch.say(channel, `@${user} K9000 chat queue is full, please wait & try again.`);
@@ -349,7 +321,7 @@ function talkToK9000(queue, channel, user, message, enforceMax=true) {
   generate(user, botName, chatPrompt)
     .then((response) => {
       if (!response) return;
-      const cleanResposne = censor.cleanProfanity(response.trim());
+      const cleanResposne = response.trim();
 
       var userVoice = mapUserToVoice(user, VOICES_MAP);
       if (voiceOverride[user]) {
@@ -438,12 +410,6 @@ async function fakeGenerate(username, prompt) {
 /**
  * EXPRESS
  */
-// K9000 Endpoints
-// app.get("/queue/users", (request, response) => {
-//   response.json(usersInQueue);
-// });
-
-// KoboldAI Adventure Bot Endpoints
 const AB_TOKEN = process.env.AB_TOKEN;
 app.get("/adventurebot/round", (request, response) => {
   if (!request.headers['x-ab-token'] || request.headers['x-ab-token'] !== AB_TOKEN) {
@@ -453,18 +419,7 @@ app.get("/adventurebot/round", (request, response) => {
   
   var roundStartTime = null;
   if (koboldai.roundStartTime) roundStartTime = koboldai.roundStartTime;
-  // v1
-  // response.json({
-  //   round: koboldai.round,
-  //   roundStartTime: roundStartTime,
-  //   story: koboldai.story,
-  //   prompts: koboldai.prompts,
-  //   votes: koboldai.votes,
-  //   winningPrompt: koboldai.winningPrompt,
-  //   botResponse: koboldai.botResponse
-  // });
   
-  // v2
   response.json({
     round: koboldai.round,
     roundStartTime: roundStartTime,

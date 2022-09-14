@@ -11,7 +11,7 @@ Discord bot that generates TTS for Twitch chat and occasionally responds with AI
    - The Twitch channel that you want to observe chat of
    - The Discord guild id\* (server you want bot to join)
    - The Dicord voice channel id\* (voice channel you want bot to join)
-   - An OpenAI API key OR KoboldAI Base Url if using Adventure Bot
+   - KoboldAI United API Base Url (no trailing '/')
 
    \*Note: use Discord developer mode so you can easily right click and "Copy ID" for these values
 
@@ -88,10 +88,8 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 Hular Hoops Bot provides optional endpoint to hook into for setting up stream labels or whatever!
 
-### K9000
-
-`/queue/users` - list of users currently in queue to talk to K9000
-
 ### Adventure Bot
 
 `/adventurebot/round` - get story info and current round of adventurebot
+
+`/adventurebot/events` - server sent events for story info and current round of adventurebot
