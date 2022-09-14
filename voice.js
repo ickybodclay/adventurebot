@@ -468,6 +468,38 @@ app.get("/adventurebot/round", (request, response) => {
   });
 });
 
+app.get("/adventurebot/events", async (request, response) => {
+  if (!request.query.token || request.query.token !== AB_TOKEN) {
+    response.status(403).send({ error: 'Forbidden' });
+    return;
+  }
+
+  response.set({
+    'Cache-Control': 'no-cache',
+    'Content-Type': 'text/event-stream',
+    'Connection': 'keep-alive'
+  });
+  response.flushHeaders();
+
+  const eventData = {
+    round: koboldai.round,
+    roundStartTime: koboldai.roundStartTime,
+    story: koboldai.story,
+    currentPrompt: koboldai.currentPrompt,
+    botResponses: koboldai.botResponses,
+    votes: koboldai.votes,
+    winningResponse: koboldai.winningResponse,
+  };
+
+  response.write('retry: 5000\n\n');
+  while (true) {
+    response.write('event: heartbeat');
+    response.write(`data: ${JSON.stringify(eventData)}\n\n`);
+    await wait(200);
+  }
+});
+
+
 function start() {
   console.log("Starting hular hoops bot...");
   console.log(`# of voices available: ${VOICES_MAP.length}`);
@@ -479,4 +511,4 @@ function start() {
   });
 }
 
-// start();
+start();
