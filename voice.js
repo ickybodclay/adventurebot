@@ -478,4 +478,4 @@ function start() {
   });
 }
 
-// start();
+start();
