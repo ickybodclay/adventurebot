@@ -461,7 +461,7 @@ app.get("/adventurebot/events", async (request, response) => {
   }, 200);
   
   response.on('close', () => {
-    console.log("AdventureBot> event source closed");
+    console.log("AdventureBot> event source client closed");
     clearInterval(intervalId);
     response.end();
   });
