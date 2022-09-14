@@ -455,11 +455,15 @@ app.get("/adventurebot/events", async (request, response) => {
   };
 
   response.write('retry: 5000\n\n');
-  while (true) {
+  const intervalId = setInterval(() => {
     response.write('event: heartbeat\n');
     response.write(`data: ${JSON.stringify(eventData)}\n\n`);
-    await wait(200);
-  }
+  }, 200);
+  
+  response.on('close', () => {
+    clearInterval(intervalId);
+    response.end();
+  });
 });
 
 
