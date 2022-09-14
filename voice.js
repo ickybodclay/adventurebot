@@ -6,8 +6,16 @@ const {
     VoiceConnectionStatus
 } = require('@discordjs/voice');
 const { Client: TwitchClient } = require("tmi.js");
+const cors = require('cors');
 const express = require("express");
 const app = express();
+
+const corsOptions = {
+  origin: 'https://hular-hoops-stream-overlay.glitch.me',
+  methods: "GET",
+  exposedHeaders: "Authorization",
+}
+app.use(cors(corsOptions));
 
 // https://github.com/seiyria/censor-sensor
 const { CensorSensor } = require("censor-sensor");
