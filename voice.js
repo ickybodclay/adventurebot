@@ -501,7 +501,7 @@ app.get("/adventurebot/events", async (request, response) => {
 
   response.write('retry: 5000\n\n');
   while (true) {
-    response.write('event: heartbeat');
+    response.write('event: heartbeat\n');
     response.write(`data: ${JSON.stringify(eventData)}\n\n`);
     await wait(200);
   }
@@ -519,4 +519,4 @@ function start() {
   });
 }
 
-start();
+// start();
