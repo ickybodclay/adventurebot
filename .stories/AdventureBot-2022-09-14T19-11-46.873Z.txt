@@ -1,0 +1,15 @@
+aipd: Test
+ai (1 votes): ".
+You're met with a barrage of bullets and keep hitting the head until you die.
+aipd: You are reborn as a
+ai (0 votes): new man, but are still not completely human anymore. Your psychic abilities have been severely damaged, but it doesn't seem to bother you at all now.
+aipd: You've lost most of your psychic powers... but you gain the following magic abilities:
+ai (0 votes): * Teleportation (As long as someone is within range)
+  * Healing magic
+  * Magic resistance
+  * "Magic bullet" bullets
+  * Pain magic
+  *
+aipd: You use magic bullet to whip you up a tasty smoothie.
+ai (0 votes): It tastes like fruit, but tastes like pure sugar and has no fruit in it.
+    "Okay! I'm ready! Let's do this!"
