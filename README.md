@@ -86,10 +86,8 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 ## Endpoints
 
-Hular Hoops Bot provides optional endpoint to hook into for setting up stream labels or whatever!
+Hular Hoops Bot provides an optional endpoint to hook into for stream labels or whatever!
 
 ### Adventure Bot
 
-`/adventurebot/round` - get story info and current round of adventurebot
-
-`/adventurebot/events` - server sent events for story info and current round of adventurebot
+`GET /adventurebot/events` - server sent events for story info and current round of adventurebot

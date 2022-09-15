@@ -411,26 +411,6 @@ async function fakeGenerate(username, prompt) {
  * EXPRESS
  */
 const AB_TOKEN = process.env.AB_TOKEN;
-app.get("/adventurebot/round", (request, response) => {
-  if (!request.headers['x-ab-token'] || request.headers['x-ab-token'] !== AB_TOKEN) {
-    response.status(403).send({ error: 'Forbidden' });
-    return;
-  }
-  
-  var roundStartTime = null;
-  if (koboldai.roundStartTime) roundStartTime = koboldai.roundStartTime;
-  
-  response.json({
-    round: koboldai.round,
-    roundStartTime: roundStartTime,
-    story: koboldai.story,
-    currentPrompt: koboldai.currentPrompt,
-    botResponses: koboldai.botResponses,
-    votes: koboldai.votes,
-    winningResponse: koboldai.winningResponse,
-  });
-});
-
 app.get("/adventurebot/events", async (request, response) => {
   if (!request.query.token || request.query.token !== AB_TOKEN) {
     response.status(403).send({ error: 'Forbidden' });
@@ -467,7 +447,9 @@ app.get("/adventurebot/events", async (request, response) => {
   });
 });
 
-
+/**
+ * Starts everything need to run Hular Hoops Bot!
+ */
 function start() {
   console.log("Starting hular hoops bot...");
   console.log(`# of voices available: ${VOICES_MAP.length}`);
