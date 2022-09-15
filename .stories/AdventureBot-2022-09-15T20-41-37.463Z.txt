@@ -1,0 +1,18 @@
+aipd: You are Kenzo Moto, Japan's most incompetent Samurai. In a duel with a dangerous ronin, you accidentally drop your sword and the Ronin slips and falls onto the sword, killing him. A fellow samurai from your clan sees you "winning" the duel and
+ai (2 votes): confronts you about it. You apologize and explain that you were just trying to be a hero! The other Samurai says that he doesn't care and that it was his duty to kill the enemy.
+aipd: The same thing happens to your fellow samurai and he is impaled. You call for help, but are deemed a traitorous swine and run out of the dojo. You must find a way to clear your name and let everyone know it was just an accident!
+ai (2 votes): Your search for a suitable weapon results in a broken shield, which would be a nice touch, but you have no idea where to get one.
+aipd: You find a regular unbroken shield and make it have an "accident". You are now the Samurai with the Broken Shield. You are trying to get that nickname going. You head to a local ramen shop and try to find out what people think happened. You overhear two men talk about you:
+ai (1 votes): One was talking to an older man who gave him a hard time when he saw him.
+aipd: You try to get closer to hear exactly what they are saying, but you trip and fall right on their table knocking over their piping hot ramen into their laps.
+ai (1 votes): One of them is badly hurt and you rush over to stop the bleeding and grab the tongs to try to turn the bowl off.
+aipd: You fail and accidentally turn the bowl to it's hottest setting! This bowl melts right through the old mans lap and continues to melt through the ground. The young man looks up and says, "It's the idiot killer! Someone call the guards!!!"
+ai (3 votes): The two men are arrested for murder and the police come to interrogate you.They ask what happened, but you can't remember. You say you were just trying to be a good Samurai.
+aipd: The Police say, "Good enough for us!" and haul the old man and the young away to jail. Things are really getting out of hand! A member of your clan sees that you were innocent and welcomes you back.
+ai (1 votes): He says that the incident has changed things and that you should be made a Samurai! You are a proud new one! Your clan will always support your actions and will continue to help you in battle.
+aipd: You and you try, but you cannot clear the old man's name. Years pass... no one even remembers the incident anymore... except for you! You decide the only way to get redeem yourself is to break them out of jail.
+ai (1 votes): Your clan has a large debt to pay and the members of your clan are all involved in some sort of business. You decide to rob the bank and take everything.
+aipd: The bank robbery goes poorly almost immediately. You enter the bank and realize you forgot your weapon... and also your underwear!
+ai (1 votes): The teller at the counter is looking at you with disgust and you realize you are not exactly the best dressed person in your clan. The clerk says, "What are you doing here?
+aipd: You look down and says hearnestly, "I have no idea anymore." You march straight to the police station and tell the truth about what happened: everything was an accident and it was your fault.
+ai (1 votes): You are sentenced to death for killing your comrade. You are given the chop to be executed. The executioner chops off your head and drops it into a basket.
