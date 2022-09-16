@@ -118,9 +118,9 @@ module.exports = class KoboldAIClient {
   }
   
   addPrompt(user, prompt) {
-    if (this.prompts.map((item) => item.user).indexOf(user) != -1) return false;
+    if (this.round !== "PROMPT") return false; // only allow new prompts during prompt round
+    if (this.prompts.map((item) => item.user).indexOf(user) != -1) return false; // limit 1 per user
     this.prompts.push({user: user, prompt: prompt});
-    // if (this._queue) matchVoiceAndPlay(this._queue, `${user} submitted prompt!`, this.voice);
     return true;
   }
   
