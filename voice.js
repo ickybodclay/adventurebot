@@ -237,7 +237,7 @@ twitch.on("message", (channel, userstate, message, self) => {
       twitch.say(channel, `@${user} your TTS voice has been set to ${VOICES_MAP[voiceOverride[user]]}`);
     }
     // KOBOLDAI ADVENTURE BOT COMMANDS
-    else if (koboldai.running && command === "vote" && koboldai.round === "VOTE") {
+    else if (koboldai.running && command === "vote" && (koboldai.round === "VOTE" || koboldai.round === "GENERATE")) {
       const voteIndex = Math.abs(parseInt(argument));
       
       if (isNaN(voteIndex) || voteIndex < 1 || voteIndex > koboldai.botResponses.length) return;
@@ -461,4 +461,4 @@ function start() {
   });
 }
 
-start();
+// start();

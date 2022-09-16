@@ -366,7 +366,6 @@ module.exports = class KoboldAIClient {
             // 1 second break then go to voice round
             this._queue.addBreak(() => {
               this.round = "VOTE";
-              this.clearVotes();
               this.winningResponse = null;
               this.roundStartTime = null;
             });
@@ -379,9 +378,10 @@ module.exports = class KoboldAIClient {
         this.winningResponse = this.calculateWinningPrompt(this.botResponses, this.votes);
         await this.addStory(this.winningResponse);
         
-        this.currentPrompt = null;
         this.clearPrompts();
         this.clearBotResponses();
+        this.clearVotes();
+        this.currentPrompt = null;
         this.roundStartTime = null;
         
         if (this._twitch) this._twitch.say(`#${this.channel}`, this.winningResponse.prompt);
