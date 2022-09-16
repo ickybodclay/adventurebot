@@ -14,8 +14,8 @@ module.exports = class KoboldAIClient {
     this._round = "START"; // START, [PROMPT, GENERATE, VOTE]
     this.roundStartTime = null;
     this.voteRoundTimeInMs = 2*60*1000;
-    this.winningPrompt = null;
-    this.botResponse = null;
+    // this.winningPrompt = null;
+    // this.botResponse = null;
     this.running = false;
     this._queue = null;
     this.voice = "en-US-Wavenet-C";
@@ -76,8 +76,6 @@ module.exports = class KoboldAIClient {
     this.clearStory();
     // this.clearPrompts();
     this.clearVotes();
-    // this.winningPrompt = null;
-    // this.botResponse = null;
     this.roundStartTime = null;
     this.round = "START";
     this.running = false;
@@ -119,7 +117,7 @@ module.exports = class KoboldAIClient {
   
   addPrompt(user, prompt) {
     if (this.round !== "PROMPT") return false; // only allow new prompts during prompt round
-    if (this.prompts.map((item) => item.user).indexOf(user) != -1) return false; // limit 1 per user
+    // if (this.prompts.map((item) => item.user).indexOf(user) != -1) return false; // limit 1 per user
     this.prompts.push({user: user, prompt: prompt});
     return true;
   }
