@@ -11,11 +11,9 @@ module.exports = class KoboldAIClient {
     this.story = [];
     this.prompts = [];
     this.votes = [];
-    this._round = "START"; // START, [PROMPT, VOTE, GENERATE]
+    this._round = "START"; // START, [PROMPT, GENERATE, VOTE]
     this.roundStartTime = null;
-    this.promptRoundTimeInMs = 2*60*1000; // not used in v2
-    this.voteRoundTimeInMs = 2*60*1000; // 1 min v1, 2 min v2
-    this.generateRoundTimeInMs = 1*60*1000; // not used in v2
+    this.voteRoundTimeInMs = 2*60*1000;
     this.winningPrompt = null;
     this.botResponse = null;
     this.running = false;
@@ -33,8 +31,7 @@ module.exports = class KoboldAIClient {
   startAdventureBot() {
     this.running = true;
     this.round = "PROMPT";
-    // this.runAdventureBot();
-    this.runAdventureBotV2();
+    this.runAdventureBot();
   }
 
   stopAdvetnureBot() {
@@ -123,7 +120,7 @@ module.exports = class KoboldAIClient {
   addPrompt(user, prompt) {
     if (this.prompts.map((item) => item.user).indexOf(user) != -1) return false;
     this.prompts.push({user: user, prompt: prompt});
-    if (this._queue) matchVoiceAndPlay(this._queue, `${user} submitted prompt!`, this.voice);
+    // if (this._queue) matchVoiceAndPlay(this._queue, `${user} submitted prompt!`, this.voice);
     return true;
   }
   
@@ -300,29 +297,17 @@ module.exports = class KoboldAIClient {
     } else {
       topPrompt = prompts[topPromptIndex];
     }
-    // console.log(`${JSON.stringify(voteTotals)} | ${JSON.stringify(this.prompts)}`);
     const response = {
       user: topPrompt.user, 
       prompt: topPrompt.prompt, 
       votes: maxVote
     };
-    // console.log(`${JSON.stringify(response)}`);
     return response;
   }
   
   redo() {
     console.log("KoboldAI> redo previous action");
     
-    // v1
-    // if (this.round !== "GENERATE") return;
-    // this.removeStoryEnd()
-    //   .then(() => {
-    //     this.botResponse = null;
-    //     this.roundStartTime = Date.now();
-    //     console.log(`KoboldAI:redo> ${JSON.stringify(this.story)}`);
-    //   });
-    
-    // v2
     if (this.round !== "VOTE") return;
     this.clearBotResponses();
     this.clearVotes();
@@ -339,83 +324,6 @@ module.exports = class KoboldAIClient {
   }
   
   async runAdventureBot() {
-    if (!this.running) return;
-    
-    if (!this.roundStartTime) { // start of a new round
-      this.roundStartTime = Date.now();
-      
-      if (this._twitch) { // round start twitch chat announcements
-        if (this.round === "PROMPT") this._twitch.say(`#${this.channel}`, "Submit your prompts (ex '!!prompt Your silly prompt here')");
-        else if (this.round === "VOTE") this._twitch.say(`#${this.channel}`, "Vote for your favorite prompt (ex '!!vote 1')");
-        // else if (this.round === "GENERATE") this._twitch.say(`#${this.channel}`, "Generating response...");
-      }
-
-      if (this._queue) { // round start tts announcements
-        if (this.round === "PROMPT") matchVoiceAndPlay(this._queue, "Submit your prompts!", this.voice);
-        else if (this.round === "VOTE") matchVoiceAndPlay(this._queue, "Vote for your favorite prompt!", this.voice);
-        // else if (this.round === "GENERATE") playMessage(this._queue, "Generating response...", this.voice);
-      }
-    }
-    
-    const tickTime = Date.now();
-    const deltaInMs = tickTime - this.roundStartTime;
-    
-    if (this.round === "PROMPT") {
-      if (deltaInMs > this.promptRoundTimeInMs) {
-        if (this.prompts.length == 1) { // skip vote if only 1 prompt
-          this.round = "GENERATE";
-          this.winningPrompt = this.calculateWinningPrompt(this.prompts, this.votes);
-          await this.addStory(this.winningPrompt);
-        } else if (this.prompts.length > 1) {
-          this.round = "VOTE";
-          this.winningPrompt = null;
-        } 
-        
-        this.botResponse = null;
-        this.roundStartTime = null;
-      }
-    } else if (this.round === "VOTE") {
-      if (deltaInMs > this.voteRoundTimeInMs) {
-        this.round = "GENERATE";
-        this.winningPrompt = this.calculateWinningPrompt(this.prompts, this.votes);
-        
-        await this.addStory(this.winningPrompt);
-        
-        this.roundStartTime = null;
-        
-        if (this._twitch) this._twitch.say(`#${this.channel}`, `${this.winningPrompt.user}: ${this.winningPrompt.prompt}`);
-        if (this._queue) matchVoiceAndPlay(this._queue, this.winningPrompt.prompt, this.voice);
-      }
-    } else if (this.round === "GENERATE") {
-      if (!this.botResponse) {
-        const genResponse = await this.generate(this.winningPrompt.user, "ai", "");
-        this.botResponse = genResponse[0].text;
-        
-        if (this.botResponse && this.botResponse !== "") {
-          await this.addStory({user: "ai", prompt: this.botResponse.trim()});
-          console.log(`KoboldAI:generate> ${JSON.stringify(this.story)}`);
-          
-          if (this._twitch) this._twitch.say(`#${this.channel}`, `ai: ${this.botResponse}`);
-          if (this._queue) matchVoiceAndPlay(this._queue, this.botResponse, this.voice);
-        } else {
-          console.warn(`KoboldAI:generate> bot response was empty or null`);
-        }
-      }
-      
-      if (deltaInMs > this.generateRoundTimeInMs) {
-        this.round = "PROMPT";
-        
-        this.clearPrompts();
-        this.clearVotes();
-        
-        this.roundStartTime = null;
-      }
-    }
-
-    setTimeout(this.runAdventureBot.bind(this), 100);
-  }
-  
-  async runAdventureBotV2() {
     if (!this.running) return;
     
     if (!this.roundStartTime) { // start of a new round
@@ -483,6 +391,6 @@ module.exports = class KoboldAIClient {
       }
     } 
 
-    setTimeout(this.runAdventureBotV2.bind(this), 100);
+    setTimeout(this.runAdventureBot.bind(this), 100);
   }
 };
