@@ -461,4 +461,4 @@ function start() {
   });
 }
 
-// start();
+start();
