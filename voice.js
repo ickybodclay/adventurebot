@@ -117,6 +117,8 @@ discord.on('interactionCreate', async interaction => {
       await interaction.reply(`Message added to TTS queue.`);
       await wait(1000);
       await interaction.deleteReply();
+    } else if (interaction.commandName === 'k9url') {
+      await interaction.reply(`Current KoboldAI Base URL: ${koboldai.baseUrl}`);
     } else if (interaction.commandName === 'k9seturl') {
       const baseUrl = interaction.options.getString('url');
       koboldai.baseUrl = baseUrl;

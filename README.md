@@ -40,6 +40,8 @@ And that should be it!
 
 `/k9seturl URL` - Set the KoboldAI base url (no trailing '/')
 
+`/k9url` - Get the currently KoboldAI base url
+
 ### Twitch commands
 
 `!!setvoice [1-24]` - changes the TTS voice for the user
