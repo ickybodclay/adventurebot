@@ -64,7 +64,7 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 `!!clear` - clear user flags (useful if there was an error during TTS and user is not able talk to K9000)
 
-### Adventure Bot commands (if running)
+### Adventure Bot commands
 
 `!!prompt PROMPT` - submit prompt (only valid during prompt round)
 
