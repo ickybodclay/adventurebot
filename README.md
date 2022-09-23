@@ -34,8 +34,6 @@ And that should be it!
 
 `/k9resume` - Resume TTS queue
 
-`/k9generate INPUT` - Generate AI response from input and then text-to-speech user input & response (test to make sure you've setup OpenAI)
-
 `/k9tts MESSAGE` - Add message directly to the TTS queue for K9000 to say
 
 `/k9seturl URL` - Set the KoboldAI base url (no trailing '/')
@@ -43,8 +41,6 @@ And that should be it!
 `/k9url` - Get the currently KoboldAI base url
 
 ### Twitch commands
-
-`!!setvoice [1-24]` - changes the TTS voice for the user
 
 Note: for the following Twitch commands, must be channel owner or moderator.
 
@@ -61,8 +57,6 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 `!!qstop` - Stop TTS queue
 
 `!!setbotvoice` - change the TTS voice for K9000
-
-`!!clear` - clear user flags (useful if there was an error during TTS and user is not able talk to K9000)
 
 ### Adventure Bot commands
 
@@ -88,7 +82,7 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 ## Endpoints
 
-Hular Hoops Bot provides an optional endpoint to hook into for stream labels or whatever!
+Hular Hoops Bot provides a SSE endpoint to hook into for current story information.
 
 ### Adventure Bot
 

@@ -17,16 +17,11 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 
-const { Configuration, OpenAIApi } = require('openai');
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY
-});
-const openai = new OpenAIApi(configuration);
-const { gooseGenerate } = require("./goose");
+// const { gooseGenerate } = require("./goose");
 const KoboldAIClient = require("./kobold");
 const koboldai = new KoboldAIClient();
 
-const { matchVoiceAndPlay, playMessage, playMessageUD } = require("./tts");
+const { matchVoiceAndPlay, playMessage } = require("./tts");
 const { wait } = require("./utils");
 const TTSQueue = require("./tts-queue");
 const queue = new TTSQueue();
@@ -55,19 +50,6 @@ const twitch = new TwitchClient({
 });
 koboldai.twitch = twitch;
 
-// https://www.npmjs.com/package/@twurple/pubsub
-const { PubSubClient } = require("@twurple/pubsub");
-const { StaticAuthProvider } = require("@twurple/auth");
-
-// https://twitchapps.com/tmi/ - changed scope to 'channel:read:redemptions'
-const twitchPubsubAccessToken = process.env.TWITCH_PUBSUB_OAUTH_TOKEN;
-const authProvider = new StaticAuthProvider("", twitchPubsubAccessToken);
-const pubSubClient = new PubSubClient();
-
-const IGNORE_REWARDS = [
-  "Highlight My Message"
-];
-
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
 const botName = "K9000"; // Discord bot alias
 const botNamePhonetic = "Kay 9000";
@@ -84,9 +66,7 @@ discord.once('ready', () => {
 discord.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
   
-    if (interaction.commandName === 'k9ping') {
-      await interaction.reply('Hoops: Pong!');
-    } else if (interaction.commandName === 'k9join') {
+    if (interaction.commandName === 'k9join') {
       await setupVoice(queue);
       await interaction.reply("Joining voice channel...");
       await wait(1000);
@@ -94,15 +74,6 @@ discord.on('interactionCreate', async interaction => {
     } else if (interaction.commandName === 'k9leave') {
       queue.vdisconnect();
       await interaction.reply("Leaving voice channel...");
-      await wait(1000);
-      await interaction.deleteReply();
-    } else if (interaction.commandName === 'k9generate') {
-      const username = interaction.user.username;
-      const prompt = interaction.options.getString('input');
-      playMessage(queue, `${username}: ${prompt}`);
-      const response = await generate(username, prompt);
-      matchVoiceAndPlay(queue, `${botName}: ${response}`, botVoice);
-      await interaction.reply(`${botName}: ${response}`);
       await wait(1000);
       await interaction.deleteReply();
     } else if (interaction.commandName === 'k9pause') {
@@ -158,9 +129,6 @@ async function setupVoice(queue) {
       console.log(`! Discord voice connection: ${oldState.status} -> ${newState.status}`);
     });
     const player = createAudioPlayer();
-    // player.on('stateChange', (oldState, newState) => {
-    //   console.log(`Audio player transitioned from ${oldState.status} to ${newState.status}`);
-    // });
     player.on('error', error => {
       console.error(error);
     });
@@ -170,39 +138,7 @@ async function setupVoice(queue) {
 }
 
 const IGNORED_USERS = ["nightbot", "streamelements"];
-// Available Google Text-To-Speech Voices
-const VOICES_MAP = [
-  // male voices
-  "en-US-Wavenet-A", // !!setvoice 1
-  "en-US-Wavenet-B",
-  "en-US-Wavenet-D",
-  "en-US-Wavenet-I",
-  "en-US-Wavenet-J",
-  "en-GB-Wavenet-B",
-  "en-GB-Wavenet-D",
-  "en-AU-Wavenet-B",
-  "en-AU-Wavenet-D",
-  "de-DE-Wavenet-D",
-  // female voices
-  "en-US-Neural2-A", 
-  "en-GB-Neural2-A",
-  "en-GB-Neural2-C",
-  "en-AU-Neural2-A",
-  "en-AU-Neural2-C",
-  "en-US-Wavenet-E",
-  "en-US-Wavenet-F",
-  "en-US-Wavenet-G",
-  "en-US-Wavenet-H",
-  "en-GB-Wavenet-A",
-  "en-GB-Wavenet-C",
-  "en-GB-Wavenet-F",
-  "en-AU-Wavenet-A",
-  "en-AU-Wavenet-C",
-];
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
-const queueMax = 6;
-const usersInQueue = [];
-const voiceOverride = {};
 
 /**
  * TWITCH
@@ -252,9 +188,7 @@ twitch.on("message", (channel, userstate, message, self) => {
     } else if (command === "setbotvoice") {
       botVoice = argument;
       koboldai.voice = argument;
-    } else if (command === "clear") {
-      usersInQueue.splice(0, usersInQueue.length);
-    } 
+    }
     // KOBOLDAI ADVENTURE BOT MOD COMMANDS
     else if (command === "abstart") {
       koboldai.startAdventureBot();
@@ -342,7 +276,6 @@ app.get("/adventurebot/events", async (request, response) => {
  */
 function start() {
   console.log("Starting hular hoops bot...");
-  console.log(`# of voices available: ${VOICES_MAP.length}`);
   discord.login();
   twitch.connect();
   const listener = app.listen(process.env.PORT, () => {

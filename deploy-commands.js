@@ -6,19 +6,10 @@ const guildId = process.env.DISCORD_BOT_GUILD_ID;
 const token = process.env.DISCORD_TOKEN;
 
 const commands = [
-	new SlashCommandBuilder().setName('k9ping').setDescription('Replies with pong!'),
   new SlashCommandBuilder().setName('k9join').setDescription('Joins voice channel'),
   new SlashCommandBuilder().setName('k9leave').setDescription('Leavs voice channel'),
   new SlashCommandBuilder().setName('k9pause').setDescription('Pause TTS queue'),
   new SlashCommandBuilder().setName('k9resume').setDescription('Resume TTS queue'),
-  new SlashCommandBuilder()
-    .setName('k9generate')
-    .setDescription('Generate text based on prompt')
-    .addStringOption(option =>
-      option.setName('input')
-        .setDescription('The prompt to send as input to OpenAI')
-        .setRequired(true)
-    ),
   new SlashCommandBuilder()
     .setName('k9tts')
     .setDescription('Adds TTS directly to queue')
