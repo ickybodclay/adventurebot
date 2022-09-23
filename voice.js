@@ -182,8 +182,6 @@ const VOICES_MAP = [
   "en-GB-Wavenet-D",
   "en-AU-Wavenet-B",
   "en-AU-Wavenet-D",
-  // "en-IN-Wavenet-B",
-  // "en-IN-Wavenet-C",
   "de-DE-Wavenet-D",
   // female voices
   "en-US-Neural2-A", 
@@ -191,7 +189,6 @@ const VOICES_MAP = [
   "en-GB-Neural2-C",
   "en-AU-Neural2-A",
   "en-AU-Neural2-C",
-  // "en-US-Wavenet-C",
   "en-US-Wavenet-E",
   "en-US-Wavenet-F",
   "en-US-Wavenet-G",
@@ -200,9 +197,7 @@ const VOICES_MAP = [
   "en-GB-Wavenet-C",
   "en-GB-Wavenet-F",
   "en-AU-Wavenet-A",
-  "en-AU-Wavenet-C", // !!setvoice 24
-  // "en-IN-Wavenet-A",
-  // "en-IN-Wavenet-D",
+  "en-AU-Wavenet-C",
 ];
 const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 const queueMax = 6;
@@ -230,16 +225,8 @@ twitch.on("message", (channel, userstate, message, self) => {
     var [_, command, argument] = cmdFound;
     command = command.toLowerCase();
     
-    if (command === "setvoice") {
-      var voiceIndex = parseInt(argument);
-      if (isNaN(voiceIndex) || voiceIndex < 1 || voiceIndex > VOICES_MAP.length) {
-        voiceIndex = 1;
-      }
-      voiceOverride[user] = voiceIndex - 1;
-      twitch.say(channel, `@${user} your TTS voice has been set to ${VOICES_MAP[voiceOverride[user]]}`);
-    }
     // KOBOLDAI ADVENTURE BOT COMMANDS
-    else if (koboldai.running && command === "vote" && (koboldai.round === "VOTE" || koboldai.round === "GENERATE")) {
+    if (koboldai.running && command === "vote" && (koboldai.round === "VOTE" || koboldai.round === "GENERATE")) {
       const voteIndex = Math.abs(parseInt(argument));
       
       if (isNaN(voteIndex) || voteIndex < 1 || voteIndex > koboldai.botResponses.length) return;
@@ -299,73 +286,6 @@ twitch.on("message", (channel, userstate, message, self) => {
   if (message.startsWith("!")) return;
 });
 
-function talkToK9000(queue, channel, user, message, enforceMax=true) {
-  const cleanMessage = message;
-  if (cleanMessage.length == 0) return;
-  if (enforceMax && queue.size > queueMax) {
-    twitch.say(channel, `@${user} K9000 chat queue is full, please wait & try again.`);
-    return;
-  }
-  if (usersInQueue.includes(user)) {
-    twitch.say(channel, `@${user} already has chat pending for K9000, please wait for K9000 to respond.`);
-    return;
-  }
-
-  usersInQueue.push(user);
-
-  var chatPrompt = "";
-  chatPrompt += `${botName} is a friendly AI dog talking to a Twitch user named ${user}. ${botName} talks like a drunken sailor.\n\n`;
-  chatPrompt += `${user}: ${cleanMessage}\n${botName}:`;
-
-  // fakeGenerate(user, message); // for testing only
-  // gooseGenerate(user, botName, chatPrompt)
-  // koboldai.generate(user, botName, chatPrompt)
-  generate(user, botName, chatPrompt)
-    .then((response) => {
-      if (!response) return;
-      const cleanResposne = response.trim();
-
-      var userVoice = mapUserToVoice(user, VOICES_MAP);
-      if (voiceOverride[user]) {
-        userVoice = VOICES_MAP[voiceOverride[user]];
-      }
-
-      playMessage(queue, `${user}: ${cleanMessage}`, userVoice);
-      matchVoiceAndPlay(queue, `${botNamePhonetic}: ${cleanResposne}`, botVoice);
-      queue.addBreak(() => { 
-        usersInQueue.shift();
-        if (channel) twitch.say(channel, `@${user} ${cleanResposne}`);
-      });
-
-      // koboldStoryAdd(`${user}: ${cleanMessage}\n${botName}: ${cleanResposne}\n`);
-    })
-    .catch((err) => {
-      console.error(err);
-      usersInQueue.shift();
-    });
-}
-
-/**
- * Initializes Twitch pubsub listener.
- */
-async function setupPubsub() {
-  console.log("twitch-pubsub listening for channel point redemptions...");
-  const userId = await pubSubClient.registerUserListener(authProvider);
-  const redeemListener = await pubSubClient.onRedemption(userId, (message) => {
-    if (IGNORE_REWARDS.indexOf(message.rewardTitle) > -1) return;
-    console.log(`${message.userName} redeemed ${message.rewardTitle} (rewardId=${message.rewardId} status=${message.status} channelId=${message.channelId} userId=${userId})`);
-    // https://twurple.js.org/reference/pubsub/classes/PubSubRedemptionMessage.html
-    if (message.rewardTitle === "Talk to K9000") {
-      console.log(`Talk to K9000 reward for ${message.userDisplayName}`);
-      if (!queue.isConnected()) return;
-      const user = message.userDisplayName;
-      const prompt = message.message.trim();
-      talkToK9000(queue, `#${twitchChannel}`, user, prompt, false);
-    }
-  });
-}
-
-
 /**
  * TTS
  */
@@ -375,38 +295,6 @@ function mapUserToVoice(user, voices) {
     index += user.charCodeAt(i)
   }
   return voices[index % voices.length];
-}
-
-/**
- * OPENAI
- */
-async function generate(user, bot, prompt) {  
-  try {
-    const completion = await openai.createCompletion({
-      model: "text-curie-001", //"text-davinci-002",
-      prompt: prompt,
-      temperature: 0.9,
-      max_tokens: 100,
-      top_p: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0,
-      stop: [` ${user}:`, ` ${bot}:`]
-    });
-    return completion.data.choices[0].text;
-  } catch (ex) {
-    console.error(`openai generate error ${ex.name}: ${ex.message}`);
-    if (ex.response) {
-      console.error(ex.response.data);
-    } else {
-      console.error(ex.stack);
-    }
-  }
-  
-  return null;
-}
-
-async function fakeGenerate(username, prompt) {
-  return `Squak! ${username} says ${prompt}`;
 }
 
 /**
@@ -457,7 +345,6 @@ function start() {
   console.log(`# of voices available: ${VOICES_MAP.length}`);
   discord.login();
   twitch.connect();
-  // setupPubsub();
   const listener = app.listen(process.env.PORT, () => {
     console.log("Your app is listening on port " + listener.address().port);
   });
