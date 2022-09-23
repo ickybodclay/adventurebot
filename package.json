@@ -1,7 +1,7 @@
 {
   "name": "hular-hoops-bot",
-  "version": "0.1.0",
-  "description": "Discord bot to TTS Twitch chat and occasionally respond with AI generated text",
+  "version": "0.5.0",
+  "description": "Adventure Bot: An Improvised Choose Your Own Adventure Story by AI & Humans",
   "main": "voice.js",
   "scripts": {
     "start": "node voice.js"
@@ -27,9 +27,10 @@
   "keywords": [
     "node",
     "glitch",
-    "openai",
     "discord",
     "twitch",
+    "tts",
+    "sse",
     "koboldai"
   ]
 }
