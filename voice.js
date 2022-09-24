@@ -143,7 +143,7 @@ async function setupVoice(queue) {
 }
 
 const IGNORED_USERS = ["nightbot", "streamelements"];
-const cmdRegex = new RegExp(/^!!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
+const cmdRegex = new RegExp(/^!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 
 /**
  * TWITCH
@@ -162,67 +162,63 @@ twitch.on("message", (channel, userstate, message, self) => {
   if (IGNORED_USERS.indexOf(user) > -1) return;
   
   const cmdFound = message.match(cmdRegex);
-  if (cmdFound) {
-    var [_, command, argument] = cmdFound;
-    command = command.toLowerCase();
-    
-    // KOBOLDAI ADVENTURE BOT COMMANDS
-    if (koboldai.running && command === "vote" && (koboldai.round === "VOTE" || koboldai.round === "GENERATE")) {
-      const voteIndex = Math.abs(parseInt(argument));
-      
-      if (isNaN(voteIndex) || voteIndex < 1 || voteIndex > koboldai.botResponses.length) return;
-      
-      const success = koboldai.addVote(user, voteIndex - 1);
-      if (success) twitch.say(channel, `@${user} vote added for bot response #${voteIndex}!`);
-    }
-    
-    if (!isOwner && !isMod) return;
-    
-    if (command === "play") {
-      queue.vunpause();
-    } else if (command === "pause") {
-      queue.vpause();
-    } else if (command === "skip") {
-      queue.vstop();
-    } else if (command === "qplay") {
-      queue.resume();
-    } else if (command === "qpause") {
-      queue.pause();
-    } else if (command === "qstop") {
-      queue.stop();
-    } else if (command === "setbotvoice") {
-      botVoice = argument;
-      koboldai.voice = argument;
-    }
-    // KOBOLDAI ADVENTURE BOT MOD COMMANDS
-    else if (command === "abstart") {
-      koboldai.startAdventureBot();
-    } else if (command === "abstop") {
-      koboldai.stopAdvetnureBot();
-    } else if (command === "abnewstory") {
-      koboldai.newStory();
-    } else if (command === "absave") {
-      koboldai.saveStory();
-    } else if (command === "abremove" && koboldai.round === "PROMPT") {
-      const promptIndex = parseInt(argument);
-      if (isNaN(promptIndex) || promptIndex < 1 || promptIndex > koboldai.prompts.length) return;
-      koboldai.removePrompt(promptIndex - 1);
-    } else if (command === "abredo" && koboldai.round === "VOTE") {
-      koboldai.redo();
-    } else if (command === "abnext") {
-      koboldai.nextRound();
-    } else if (command === "abaddtime") {
-      koboldai.resetRoundTime();
-    } else if (command === "prompt" && koboldai.round === "PROMPT") {
-      const prompt = argument.trim();
-      if (prompt === "") return;
-      koboldai.addPrompt(user, prompt);
-    }
-    
-    return;
+  if (!cmdFound) return;
+  var [_, command, argument] = cmdFound;
+  command = command.toLowerCase();
+
+  // ADVENTURE BOT USER COMMANDS
+  if (koboldai.running && command === "vote" && (koboldai.round === "VOTE" || koboldai.round === "GENERATE")) {
+    const voteIndex = Math.abs(parseInt(argument));
+
+    if (isNaN(voteIndex) || voteIndex < 1 || voteIndex > koboldai.botResponses.length) return;
+
+    const success = koboldai.addVote(user, voteIndex - 1);
+    if (success) twitch.say(channel, `@${user} vote added for bot response #${voteIndex}!`);
   }
-  
-  if (message.startsWith("!")) return;
+
+  if (!isOwner && !isMod) return;
+
+  // TTS MOD COMMANDS
+  if (command === "aplay") {
+    queue.vunpause();
+  } else if (command === "apause") {
+    queue.vpause();
+  } else if (command === "askip") {
+    queue.vstop();
+  } else if (command === "qplay") {
+    queue.resume();
+  } else if (command === "qpause") {
+    queue.pause();
+  } else if (command === "qstop") {
+    queue.stop();
+  } else if (command === "setbotvoice") {
+    botVoice = argument;
+    koboldai.voice = argument;
+  }
+  // ADVENTURE BOT MOD COMMANDS
+  else if (command === "abstart") {
+    koboldai.startAdventureBot();
+  } else if (command === "abstop") {
+    koboldai.stopAdvetnureBot();
+  } else if (command === "abnewstory") {
+    koboldai.newStory();
+  } else if (command === "absave") {
+    koboldai.saveStory();
+  } else if (command === "abremove" && koboldai.round === "PROMPT") {
+    const promptIndex = parseInt(argument);
+    if (isNaN(promptIndex) || promptIndex < 1 || promptIndex > koboldai.prompts.length) return;
+    koboldai.removePrompt(promptIndex - 1);
+  } else if (command === "abredo" && koboldai.round === "VOTE") {
+    koboldai.redo();
+  } else if (command === "abnext") {
+    koboldai.nextRound();
+  } else if (command === "abaddtime") {
+    koboldai.resetRoundTime();
+  } else if (command === "prompt" && koboldai.round === "PROMPT") {
+    const prompt = argument.trim();
+    if (prompt === "") return;
+    koboldai.addPrompt(user, prompt);
+  }
 });
 
 /**

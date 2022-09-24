@@ -44,41 +44,41 @@ And that should be it!
 
 Note: for the following Twitch commands, must be channel owner or moderator.
 
-`!!play` - Resume TTS (if audio present)
+`!aplay` - Resume TTS (if audio present)
 
-`!!pause` - Pause TTS (if audio present)
+`!apause` - Pause TTS (if audio present)
 
-`!!skip` - Skip current TTS (if audio present)
+`!askip` - Skip current TTS (if audio present)
 
-`!!qplay` - Resume TTS queue
+`!qplay` - Resume TTS queue
 
-`!!qpause` - Pause TTS queue
+`!qpause` - Pause TTS queue
 
-`!!qstop` - Stop TTS queue
+`!qstop` - Stop TTS queue
 
-`!!setbotvoice` - change the TTS voice for K9000
+`!setbotvoice` - change the TTS voice for K9000
 
 ### Adventure Bot commands
 
-`!!prompt PROMPT` - submit prompt (only valid during prompt round)
+`!prompt PROMPT` - submit prompt (only valid during prompt round)
 
-`!!vote NUMBER` - vote for prompt (only valid during vote round, must be valid integer)
+`!vote NUMBER` - vote for prompt (only valid during vote round, must be valid integer)
 
 Note: for the following Twitch commands, must be channel owner or moderator.
 
-`!!abnewstory` - start a new story (saves previous story to txt file)
+`!abnewstory` - start a new story (saves previous story to txt file)
 
-`!!absave` - save current story to txt file
+`!absave` - save current story to txt file
 
-`!!abstart` - start adventure bot
+`!abstart` - start adventure bot
 
-`!!abstop` - stop adventure bot
+`!abstop` - stop adventure bot
 
-`!!abremove NUMBER` - remove prompt (only valid during prompt round, must be valid integer)
+`!abremove NUMBER` - remove prompt (only valid during prompt round, must be valid integer)
 
-`!!abredo` - regenerate the last response (only valid during vote round)
+`!abredo` - regenerate the last response (only valid during vote round)
 
-`!!abnext` - skip the countdown and advance to the next round
+`!abnext` - skip the countdown and advance to the next round
 
 ## Endpoints
 
