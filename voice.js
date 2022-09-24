@@ -50,6 +50,14 @@ const twitch = new TwitchClient({
 });
 koboldai.twitch = twitch;
 
+const consolere = require("console-remote-client");
+consolere.connect({
+  // server: 'https://console.re', // optional, default: https://console.re
+  channel: process.env.CONSOLERE_CHANNEL, // required
+  redirectDefaultConsoleToRemote: true, // optional, default: false
+  disableDefaultConsoleOutput: true, // optional, default: false
+});
+
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
 const botName = "K9000"; // Discord bot alias
 const botNamePhonetic = "Kay 9000";
@@ -60,7 +68,7 @@ var channel;
  * DISCORD
  */
 discord.once('ready', () => {
-	console.log('Ready!');
+	console.re.log('Ready!');
 });
 
 discord.on('interactionCreate', async interaction => {
@@ -100,12 +108,12 @@ discord.on('interactionCreate', async interaction => {
   });
 
 async function setupVoice(queue) {
-    if(!discord) return console.error("Please connect to client first!");
+    if(!discord) return console.re.error("Please connect to client first!");
 
     channel = await discord.channels.fetch(voiceChannelId);
-    if (!channel) return console.error("The channel does not exist!");
+    if (!channel) return console.re.error("The channel does not exist!");
   
-    console.log(`joining voice channel> channelName = ${channel.name}, channelId = ${channel.id}, guildId = ${channel.guild.id}`);
+    // console.log(`joining voice channel> channelName = ${channel.name}, channelId = ${channel.id}, guildId = ${channel.guild.id}`);
 
     const connection = joinVoiceChannel({
         channelId: `${channel.id}`,
@@ -113,7 +121,7 @@ async function setupVoice(queue) {
         adapterCreator: channel.guild.voiceAdapterCreator,
     });
     connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
-      console.log('Connection is disconnected...');
+      console.re.log('Connection is disconnected...');
       try {
         await Promise.race([
           entersState(connection, VoiceConnectionStatus.Signalling, 5),
@@ -126,11 +134,11 @@ async function setupVoice(queue) {
       }
     });
     connection.on('stateChange', (oldState, newState) => {
-      console.log(`! Discord voice connection: ${oldState.status} -> ${newState.status}`);
+      console.re.log(`! Discord voice connection: ${oldState.status} -> ${newState.status}`);
     });
     const player = createAudioPlayer();
     player.on('error', error => {
-      console.error(error);
+      console.re.error(error);
     });
     queue._connection = connection;
     queue._player = player;
@@ -265,7 +273,7 @@ app.get("/adventurebot/events", async (request, response) => {
   }, 200);
   
   response.on('close', () => {
-    console.log("AdventureBot> event source client closed");
+    console.re.log("AdventureBot> event source client closed");
     clearInterval(intervalId);
     response.end();
   });
@@ -275,11 +283,11 @@ app.get("/adventurebot/events", async (request, response) => {
  * Starts everything need to run Hular Hoops Bot!
  */
 function start() {
-  console.log("Starting hular hoops bot...");
+  console.re.log("Starting hular hoops bot...");
   discord.login();
   twitch.connect();
   const listener = app.listen(process.env.PORT, () => {
-    console.log("Your app is listening on port " + listener.address().port);
+    console.re.log("Your app is listening on port " + listener.address().port);
   });
 }
 
