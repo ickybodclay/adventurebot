@@ -40,14 +40,14 @@ module.exports = class KoboldAIClient {
   }
   
   newStory() {
-    console.log("starting new story...");
+    console.re.log("starting new story...");
     if (this.story.length > 0) {
       this.saveStory(() => this.reset());
     }
   }
   
   saveStory(callback = () => {}) {
-    console.log("saving current story...");
+    console.re.log("saving current story...");
     if (this.story.length == 0) return;
     // save locally v1
     const saveName = `AdventureBot-${new Date(Date.now()).toISOString().replaceAll(':', '-')}`; 
@@ -61,10 +61,10 @@ module.exports = class KoboldAIClient {
           return `${item.user}: ${item.prompt}`;
       }).join('\n'),
       (err) => {
-        if (err) console.error(err);
+        if (err) console.re.error(err);
         else {
           if (callback) callback();
-          console.log("story saved to " + save);
+          console.re.log("story saved to " + save);
         }
       }
     );
@@ -176,11 +176,11 @@ module.exports = class KoboldAIClient {
         return [];
       })
       .catch((ex) => {
-        console.error(`KoboldAI:generate> error ${ex.name}: ${ex.message}`);
+        console.re.error(`KoboldAI:generate> error ${ex.name}: ${ex.message}`);
         if (ex.response) {
-          console.error(ex.response.data);
+          console.re.error(ex.response.data);
         } else {
-          console.error(ex.stack);
+          console.re.error(ex.stack);
         }
         return [];
       });
@@ -201,14 +201,14 @@ module.exports = class KoboldAIClient {
       }
     })
       .then((res) => {
-        console.log("KoboldAI> added story end");
+        console.re.log("KoboldAI> added story end");
       })
       .catch((ex) => {
-        console.error(`koboldai add story end error ${ex.name}: ${ex.message}`);
+        console.re.error(`koboldai add story end error ${ex.name}: ${ex.message}`);
         if (ex.response) {
-          console.error(ex.response.data);
+          console.re.error(ex.response.data);
         } else {
-          console.error(ex.stack);
+          console.re.error(ex.stack);
         }
       });
   }
@@ -226,14 +226,14 @@ module.exports = class KoboldAIClient {
       }
     })
       .then((res) => {
-        console.log("KoboldAI> removed story end");
+        console.re.log("KoboldAI> removed story end");
       })
       .catch((ex) => {
-        console.error(`koboldai remove story end error ${ex.name}: ${ex.message}`);
+        console.re.error(`koboldai remove story end error ${ex.name}: ${ex.message}`);
         if (ex.response) {
-          console.error(ex.response.data);
+          console.re.error(ex.response.data);
         } else {
-          console.error(ex.stack);
+          console.re.error(ex.stack);
         }
       });
   }
@@ -253,14 +253,14 @@ module.exports = class KoboldAIClient {
       }
     })
       .then((res) => {
-        console.log(`KoboldAI> saved story '${saveName}'`);
+        console.re.log(`KoboldAI> saved story '${saveName}'`);
       })
       .catch((ex) => {
-        console.error(`koboldai save story error ${ex.name}: ${ex.message}`);
+        console.re.error(`koboldai save story error ${ex.name}: ${ex.message}`);
         if (ex.response) {
-          console.error(ex.response.data);
+          console.re.error(ex.response.data);
         } else {
-          console.error(ex.stack);
+          console.re.error(ex.stack);
         }
       });
   }
@@ -304,7 +304,7 @@ module.exports = class KoboldAIClient {
   }
   
   redo() {
-    console.log("KoboldAI> redo previous action");
+    console.re.log("KoboldAI> redo previous action");
     
     if (this.round !== "VOTE") return;
     this.clearBotResponses();
@@ -356,7 +356,7 @@ module.exports = class KoboldAIClient {
         });
         
         if (this.botResponses.length == 0) {
-          console.warn(`KoboldAI:generate> bot response was empty`);
+          console.re.warn(`KoboldAI:generate> bot response was empty`);
         } else {
           if (this._queue) {
             // TTS all the bot response options

@@ -33,11 +33,11 @@ function gooseGenerate(user, bot, prompt) {
       return response.replace(stopTokenRegex, ""); // remove trailing stop tokens
     })
     .catch((ex) => {
-      console.error(`gooseai generate error ${ex.name}: ${ex.message}`);
+      console.re.error(`gooseai generate error ${ex.name}: ${ex.message}`);
       if (ex.response) {
-        console.error(ex.response.data);
+        console.re.error(ex.response.data);
       } else {
-        console.error(ex.stack);
+        console.re.error(ex.stack);
       }
     });
 }
