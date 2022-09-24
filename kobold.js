@@ -22,6 +22,8 @@ module.exports = class KoboldAIClient {
     this.botResponses = [];
     this.winningResponse = null;
     this.botResponseCount = 3;
+    this.lastVoteTime = null;
+    this.voteTimeoutInMs = 30*1000;
   }
   
   newStory() {
@@ -101,6 +103,7 @@ module.exports = class KoboldAIClient {
   addVote(user, vote) {
     if (this.votes.map((item) => item.user).indexOf(user) != -1) return false;
     this.votes.push({user: user, vote: vote});
+    this.lastVoteTime = Date.now();
     return true;
   }
   
@@ -337,7 +340,7 @@ module.exports = class KoboldAIClient {
         }
       }
     } else if (this.round === "VOTE") {
-      if (deltaInMs > this.voteRoundTimeInMs) {
+      if (deltaInMs > this.voteRoundTimeInMs || (tickTime - this.lastVoteTime) > this.voteTimeoutInMs) {
         this.round = "PROMPT";
         this.winningResponse = this.calculateWinningPrompt(this.botResponses, this.votes);
         await this.addStory(this.winningResponse);
@@ -347,6 +350,7 @@ module.exports = class KoboldAIClient {
         this.clearVotes();
         this.currentPrompt = null;
         this.roundStartTime = null;
+        this.lastVoteTime = null;
         
         if (this._twitch) this._twitch.say(`#${this.channel}`, this.winningResponse.prompt);
         if (this._queue) matchVoiceAndPlay(this._queue, this.winningResponse.prompt, this.voice);

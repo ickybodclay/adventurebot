@@ -229,17 +229,6 @@ twitch.on("message", (channel, userstate, message, self) => {
 });
 
 /**
- * TTS
- */
-function mapUserToVoice(user, voices) {
-  var index = 0;
-  for (let i = 0; i < user.length; i++) {
-    index += user.charCodeAt(i)
-  }
-  return voices[index % voices.length];
-}
-
-/**
  * EXPRESS
  */
 const AB_TOKEN = process.env.AB_TOKEN;
