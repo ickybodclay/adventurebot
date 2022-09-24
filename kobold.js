@@ -8,20 +8,16 @@ module.exports = class KoboldAIClient {
   constructor() {
     // please make sure you are using KoboldAI United version for API
     this.baseUrl = process.env.KOBOLDAI_BASE_URL;
-    this.story = [];
     this.prompts = [];
     this.votes = [];
     this._round = "START"; // START, [PROMPT, GENERATE, VOTE]
     this.roundStartTime = null;
     this.voteRoundTimeInMs = 2*60*1000;
-    // this.winningPrompt = null;
-    // this.botResponse = null;
     this.running = false;
     this._queue = null;
     this.voice = "en-US-Wavenet-C";
     this._twitch = null;
     this.channel = process.env.TWITCH_CHANNEL;
-    // v2
     this.currentPrompt = null;
     this.botResponses = [];
     this.winningResponse = null;
@@ -39,48 +35,17 @@ module.exports = class KoboldAIClient {
     this.roundStartTime = null;
   }
   
-  newStory() {
-    console.re.log("starting new story...");
-    if (this.story.length > 0) {
-      this.saveStory(() => this.reset());
-    }
-  }
-  
   saveStory(callback = () => {}) {
     console.re.log("saving current story...");
-    if (this.story.length == 0) return;
-    // save locally v1
-    const saveName = `AdventureBot-${new Date(Date.now()).toISOString().replaceAll(':', '-')}`; 
-    const save = `.stories/${saveName}.txt`;
-    fs.writeFile(
-      save, 
-      this.story.map((item) => {
-        if(item.hasOwnProperty('votes'))
-          return `${item.user} (${item.votes} votes): ${item.prompt}`;
-        else
-          return `${item.user}: ${item.prompt}`;
-      }).join('\n'),
-      (err) => {
-        if (err) console.re.error(err);
-        else {
-          if (callback) callback();
-          console.re.log("story saved to " + save);
-        }
-      }
-    );
-    // save to koboldai
     this.saveStoryRemote();
+    if (callback) callback();
   }
   
   reset() {
-    this.clearStory();
-    // this.clearPrompts();
     this.clearVotes();
     this.roundStartTime = null;
     this.round = "START";
     this.running = false;
-    
-    // v2
     this.clearBotResponses();
     this.currentPrompt = null;
     this.winningResponse = null;
@@ -109,10 +74,6 @@ module.exports = class KoboldAIClient {
   
   set twitch(twitchClient) {
     this._twitch = twitchClient;
-  }
-  
-  clearStory() {
-    this.story.splice(0, this.story.length);
   }
   
   addPrompt(user, prompt) {
@@ -187,7 +148,6 @@ module.exports = class KoboldAIClient {
   }
   
   addStory(prompt) {
-    this.story.push(prompt);
     const requestUrl = `${this.baseUrl}/api/v1/story/end`;
     const postData = {
       prompt: prompt.prompt
@@ -214,7 +174,6 @@ module.exports = class KoboldAIClient {
   }
   
   removeStoryEnd() {
-    this.story.pop();
     const requestUrl = `${this.baseUrl}/api/v1/story/end/delete`;
     const postData = {};
     return fetch(requestUrl, {
