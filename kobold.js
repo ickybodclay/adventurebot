@@ -280,6 +280,14 @@ module.exports = class KoboldAIClient {
     this.roundStartTime = null;
   }
   
+  retry() {
+    this.round = "PROMPT";
+    this.clearVotes();
+    this.clearPrompts();
+    this.currentPrompt = null;
+    this.roundStartTime = null;
+  }
+  
   nextRound() {
     this.roundStartTime = 1;
   }
