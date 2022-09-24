@@ -210,7 +210,7 @@ twitch.on("message", (channel, userstate, message, self) => {
     koboldai.removePrompt(promptIndex - 1);
   } else if (command === "abredo" && koboldai.round === "VOTE") {
     koboldai.redo();
-  } else if (command === "abretry") {
+  } else if (command === "abretry" && koboldai.round !== "PROMPT") {
     koboldai.retry();
   } else if (command === "abnext") {
     koboldai.nextRound();
