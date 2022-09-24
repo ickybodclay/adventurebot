@@ -308,7 +308,7 @@ module.exports = class KoboldAIClient {
       this.roundStartTime = Date.now();
       
       if (this.round === "VOTE") {
-        if (this._twitch) this._twitch.say(`#${this.channel}`, "Vote for your favorite AI response (ex '!!vote 1')");
+        if (this._twitch) this._twitch.say(`#${this.channel}`, "Vote for your favorite AI response (ex '!vote 1')");
         if (this._queue) matchVoiceAndPlay(this._queue, "Vote for your favorite AI response!", this.voice);
       }
     }
@@ -353,7 +353,8 @@ module.exports = class KoboldAIClient {
         }
       }
     } else if (this.round === "VOTE") {
-      if (deltaInMs > this.voteRoundTimeInMs || (tickTime - this.lastVoteTime) > this.voteTimeoutInMs) {
+      // || (tickTime - this.lastVoteTime) > this.voteTimeoutInMs
+      if (deltaInMs > this.voteRoundTimeInMs) {
         this.round = "PROMPT";
         this.winningResponse = this.calculateWinningPrompt(this.botResponses, this.votes);
         await this.addStory(this.winningResponse);
