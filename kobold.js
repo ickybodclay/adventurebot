@@ -24,6 +24,11 @@ module.exports = class KoboldAIClient {
     this.botResponseCount = 3;
   }
   
+  newStory() {
+    console.re.log("starting a new story...");
+    this.reset();
+  }
+  
   startAdventureBot() {
     this.running = true;
     this.round = "PROMPT";
@@ -42,13 +47,13 @@ module.exports = class KoboldAIClient {
   }
   
   reset() {
-    this.clearVotes();
-    this.roundStartTime = null;
     this.round = "START";
     this.running = false;
+    this.clearVotes();
     this.clearBotResponses();
     this.currentPrompt = null;
     this.winningResponse = null;
+    this.roundStartTime = null;
   }
   
   get round() { return this._round; }
