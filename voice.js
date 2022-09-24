@@ -17,11 +17,10 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 
-// const { gooseGenerate } = require("./goose");
 const KoboldAIClient = require("./kobold");
 const koboldai = new KoboldAIClient();
 
-const { matchVoiceAndPlay, playMessage } = require("./tts");
+const { matchVoiceAndPlay } = require("./tts");
 const { wait } = require("./utils");
 const TTSQueue = require("./tts-queue");
 const queue = new TTSQueue();
@@ -59,8 +58,6 @@ consolere.connect({
 });
 
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
-const botName = "K9000"; // Discord bot alias
-const botNamePhonetic = "Kay 9000";
 var botVoice = "glados-p2"; //"en-US-Wavenet-C";
 var channel;
 
