@@ -78,6 +78,8 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 `!abredo` - regenerate the last response (only valid during vote round)
 
+`!abretry` - retry entering the last prompt
+
 `!abnext` - skip the countdown and advance to the next round
 
 ## Endpoints

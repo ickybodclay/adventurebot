@@ -281,11 +281,16 @@ module.exports = class KoboldAIClient {
   }
   
   retry() {
-    this.round = "PROMPT";
-    this.clearVotes();
-    this.clearPrompts();
-    this.currentPrompt = null;
-    this.roundStartTime = null;
+    console.re.log("KoboldAI> retry prompt");
+    
+    this.removeStoryEnd()
+      .then(() => {
+        this.round = "PROMPT";
+        this.clearVotes();
+        this.clearPrompts();
+        this.currentPrompt = null;
+        this.roundStartTime = null;
+      });
   }
   
   nextRound() {
