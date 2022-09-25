@@ -120,15 +120,11 @@ module.exports = class KoboldAIClient {
   
   // KoboldAI API Endpoints
   
-  generate(user, bot, prompt, outputs=1) {
+  generate(prompt, options={}) {
     const requestUrl = `${this.baseUrl}/api/v1/generate`;
     const postData = {
       prompt: prompt,
-      use_story: true,
-      use_memory: true,
-      use_authors_note: true,
-      disable_output_formatting: false,
-      n: outputs // number of outputs to generate
+      ...options
     };
     return fetch(requestUrl, {
       method: "post",
@@ -329,7 +325,14 @@ module.exports = class KoboldAIClient {
       }
     } else if (this.round === "GENERATE") {
       if (this.botResponses.length == 0) {
-        const genResponse = await this.generate(this.currentPrompt.user, "ai", "", this.botResponseCount);
+        const genOptions = {
+          use_story: true,
+          use_memory: true,
+          use_authors_note: true,
+          disable_output_formatting: false,
+          n: this.botResponseCount
+        };
+        const genResponse = await this.generate("", genOptions);
         
         this.botResponses = genResponse.map((item) => {
           const response = { user: "ai", prompt: item.text.trim()};
