@@ -51,7 +51,7 @@ koboldai.twitch = twitch;
 
 const consolere = require("console-remote-client");
 consolere.connect({
-  // server: 'https://console.re', // optional, default: https://console.re
+  server: 'https://console.re', // optional, default: https://console.re
   channel: process.env.CONSOLERE_CHANNEL, // required
   redirectDefaultConsoleToRemote: true, // optional, default: false
   disableDefaultConsoleOutput: true, // optional, default: false
