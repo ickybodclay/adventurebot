@@ -354,8 +354,8 @@ module.exports = class KoboldAIClient {
         }
       }
     } else if (this.round === "VOTE") {
-      // || (tickTime - this.lastVoteTime) > this.voteTimeoutInMs
-      if (deltaInMs > this.voteRoundTimeInMs) {
+      const shouldVoteTimeout = this.lastVoteTime && (tickTime - this.lastVoteTime) > this.voteTimeoutInMs;
+      if (deltaInMs > this.voteRoundTimeInMs || shouldVoteTimeout) {
         this.round = "PROMPT";
         this.winningResponse = this.calculateWinningPrompt(this.botResponses, this.votes);
         await this.addStory(this.winningResponse);
