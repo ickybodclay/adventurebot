@@ -275,6 +275,7 @@ module.exports = class KoboldAIClient {
     this.clearVotes();
     this.round = "GENERATE";
     this.roundStartTime = null;
+    this.lastVoteTime = null;
   }
   
   retry() {
@@ -312,7 +313,7 @@ module.exports = class KoboldAIClient {
     }
     
     const tickTime = Date.now();
-    const deltaInMs = tickTime - this.roundStartTime;
+    const timeSinceRoundStartInMs = tickTime - this.roundStartTime;
     
     if (this.round === "PROMPT") {
       // no time limit, whenever a prompt is submitted by the DM
@@ -361,7 +362,7 @@ module.exports = class KoboldAIClient {
     } else if (this.round === "VOTE") {
       if (this.lastVoteTime && this.lastVoteTime < this.roundStartTime) this.lastVotTime = this.roundStartTime;
       const shouldVoteTimeout = this.lastVoteTime && (tickTime - this.lastVoteTime) > this.voteTimeoutInMs;
-      if (deltaInMs > this.voteRoundTimeInMs || shouldVoteTimeout) {
+      if (timeSinceRoundStartInMs > this.voteRoundTimeInMs || shouldVoteTimeout) {
         this.round = "PROMPT";
         this.winningResponse = this.calculateWinningPrompt(this.botResponses, this.votes);
         await this.addStory(this.winningResponse);
