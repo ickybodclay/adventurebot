@@ -320,6 +320,7 @@ module.exports = class KoboldAIClient {
         this.currentPrompt = this.prompts[0];
         await this.addStory(this.currentPrompt);
         this.roundStartTime = null;
+        this.lastVoteTime = null;
         
         if (this._queue) matchVoiceAndPlay(this._queue, this.currentPrompt.prompt, this.voice);
       }
@@ -357,6 +358,7 @@ module.exports = class KoboldAIClient {
         }
       }
     } else if (this.round === "VOTE") {
+      if (this.lastVoteTime && this.lastVoteTime < this.roundStartTime) this.lastVotTime = this.roundStartTime;
       const shouldVoteTimeout = this.lastVoteTime && (tickTime - this.lastVoteTime) > this.voteTimeoutInMs;
       if (deltaInMs > this.voteRoundTimeInMs || shouldVoteTimeout) {
         this.round = "PROMPT";
