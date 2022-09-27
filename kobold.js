@@ -287,6 +287,7 @@ module.exports = class KoboldAIClient {
         this.clearPrompts();
         this.currentPrompt = null;
         this.roundStartTime = null;
+        this.lastVoteTime = null;
       });
   }
   
