@@ -36,6 +36,8 @@ And that should be it!
 
 `/k9tts MESSAGE` - Add message directly to the TTS queue for K9000 to say
 
+`/k9generate PROMPT` - Generates AI response for given prompt 
+
 `/k9seturl URL` - Set the KoboldAI base url (no trailing '/')
 
 `/k9url` - Get the currently KoboldAI base url

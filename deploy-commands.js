@@ -18,6 +18,14 @@ const commands = [
         .setDescription('A message for K9000 to say via TTS')
         .setRequired(true)
     ),
+  new SlashCommandBuilder()
+    .setName('k9generate')
+    .setDescription('Generates AI response for given prompt')
+    .addStringOption(option =>
+      option.setName('prompt')
+        .setDescription('A prompt for the AI')
+        .setRequired(true)
+    ),
   new SlashCommandBuilder().setName('k9url').setDescription('Get the currently KoboldAI base url'),
   new SlashCommandBuilder()
     .setName('k9seturl')

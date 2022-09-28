@@ -93,6 +93,21 @@ discord.on('interactionCreate', async interaction => {
       await interaction.reply(`Message added to TTS queue.`);
       await wait(1000);
       await interaction.deleteReply();
+    } else if (interaction.commandName === 'k9generate') {
+      const prompt = interaction.options.getString('prompt');
+      const genOptions = {
+        temperature: 0.6,
+        top_p: 1.0,
+        max_length: 40, // tokens to generate
+      };
+      const responses = await koboldai.generate(prompt, genOptions);
+      if (responses.length > 0)
+        await interaction.reply(`> ${responses[0]}`);
+      else {
+        await interaction.reply(`Bot response was `);
+        await wait(1000);
+        await interaction.deleteReply();
+      }
     } else if (interaction.commandName === 'k9url') {
       await interaction.reply(`Current KoboldAI Base URL: ${koboldai.baseUrl}`);
     } else if (interaction.commandName === 'k9seturl') {
