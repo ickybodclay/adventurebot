@@ -104,7 +104,7 @@ discord.on('interactionCreate', async interaction => {
       if (responses.length > 0)
         await interaction.reply(`> ${responses[0]}`);
       else {
-        await interaction.reply(`Bot response was `);
+        await interaction.reply(`Bot response was empty`);
         await wait(1000);
         await interaction.deleteReply();
       }
