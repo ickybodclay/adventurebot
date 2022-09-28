@@ -102,7 +102,7 @@ discord.on('interactionCreate', async interaction => {
       };
       const responses = await koboldai.generate(prompt, genOptions);
       if (responses.length > 0)
-        await interaction.reply(`> ${responses[0]}`);
+        await interaction.reply(`> ${responses[0].text}`);
       else {
         await interaction.reply(`Bot response was empty`);
         await wait(1000);
