@@ -98,7 +98,7 @@ discord.on('interactionCreate', async interaction => {
       const genOptions = {
         temperature: 0.6,
         top_p: 1.0,
-        max_length: 40, // tokens to generate
+        max_length: 120, // tokens to generate
       };
       const responses = await koboldai.generate(prompt, genOptions);
       if (responses.length > 0)
