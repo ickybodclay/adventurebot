@@ -58,7 +58,7 @@ consolere.connect({
 });
 
 const voiceChannelId = process.env.DISCORD_VOICE_CHANNEL_ID
-var botVoice = "glados-p2"; //"en-US-Wavenet-C";
+var botVoice = "en-US-Wavenet-C"; //"glados-p2";
 var channel;
 
 /**
