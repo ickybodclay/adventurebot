@@ -86,7 +86,7 @@ module.exports = class KoboldAIClient {
   
   addPrompt(user, prompt) {
     if (this.round !== "PROMPT") return false; // only allow new prompts during prompt round
-    if ()
+    if (!prompt || prompt === "") return false;
     // if (this.prompts.map((item) => item.user).indexOf(user) != -1) return false; // limit 1 per user
     this.prompts.push({user: user, prompt: prompt});
     return true;
