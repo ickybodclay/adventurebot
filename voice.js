@@ -232,6 +232,7 @@ twitch.on("message", (channel, userstate, message, self) => {
   } else if (command === "abaddtime") {
     koboldai.resetRoundTime();
   } else if (command === "prompt" && koboldai.round === "PROMPT") {
+    if (!argument || argument === "") return;
     const prompt = argument.trim();
     if (prompt === "") return;
     koboldai.addPrompt(user, prompt);
