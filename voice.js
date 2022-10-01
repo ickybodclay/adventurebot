@@ -231,6 +231,11 @@ twitch.on("message", (channel, userstate, message, self) => {
     koboldai.nextRound();
   } else if (command === "abaddtime") {
     koboldai.resetRoundTime();
+  } else if (command === "abmodel") {
+    koboldai.getCurrentModel()
+      .then((model) => {
+        twitch.say(channel, `Current KoboldAI model: ${model}`);
+      });
   } else if (command === "prompt" && koboldai.round === "PROMPT") {
     if (!argument || argument === "") return;
     const prompt = argument.trim();

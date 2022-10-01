@@ -7,7 +7,7 @@ const { json } = require("./utils");
 module.exports = class KoboldAIClient {
   constructor() {
     // please make sure you are using KoboldAI United version for API
-    this.baseUrl = this.loadBaseUrl();
+    this.loadBaseUrl();
     this.prompts = [];
     this.votes = [];
     this._round = "START"; // START, [PROMPT, GENERATE, VOTE]
@@ -31,6 +31,7 @@ module.exports = class KoboldAIClient {
       if (err) console.re.error(err);
       else {
         this.baseUrl = data;
+        console.re.log("Loaded KoboldAI base url");
       }
     });
   }
@@ -244,6 +245,29 @@ module.exports = class KoboldAIClient {
         } else {
           console.re.error(ex.stack);
         }
+      });
+  }
+  
+  getCurrentModel() {
+    const requestUrl = `${this.baseUrl}/api/v1/model`;
+    return fetch(requestUrl, {
+      method: "get",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((res) => {
+        return res.result;
+      })
+      .catch((ex) => {
+        console.re.error(`koboldai get model error ${ex.name}: ${ex.message}`);
+        if (ex.response) {
+          console.re.error(ex.response.data);
+        } else {
+          console.re.error(ex.stack);
+        }
+        return "error fetching model name";
       });
   }
   

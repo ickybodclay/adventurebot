@@ -84,6 +84,8 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 `!abnext` - skip the countdown and advance to the next round
 
+`!abmodel` - get the current
+
 ## Endpoints
 
 Hular Hoops Bot provides a SSE endpoint to hook into for current story information.
