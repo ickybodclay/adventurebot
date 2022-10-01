@@ -84,7 +84,7 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 `!abnext` - skip the countdown and advance to the next round
 
-`!abmodel` - get the current
+`!abmodel` - get the current running koboldai model
 
 ## Endpoints
 
