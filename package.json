@@ -7,10 +7,10 @@
     "start": "node voice.js"
   },
   "dependencies": {
-    "discord.js": "^14.4.0",
+    "discord.js": "^14.5.0",
     "@discordjs/voice": "^0.11.0",
     "@discordjs/opus": "^0.8.0",
-    "@discordjs/rest": "^1.1.0",
+    "@discordjs/rest": "^1.2.0",
     "libsodium-wrappers": "^0.7.10",
     "node-fetch": "2.6.7",
     "tmi.js": "^1.8.5",

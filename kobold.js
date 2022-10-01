@@ -30,9 +30,15 @@ module.exports = class KoboldAIClient {
     
   }
   
-  saveBaseUrl(baseUrl) {
+  async saveBaseUrl(baseUrl) {
     this.baseUrl = baseUrl;
-    
+    let filehandle;
+    try {
+      filehandle = await fs.open(".data/kobold_base_url.txt", 'w');
+      filehandle.writeFile(baseUrl);
+    } finally {
+      await filehandle?.close();
+    }
   }
   
   newStory() {
