@@ -1,5 +1,5 @@
 const fetch = require("node-fetch");
-const fs = require('fs');
+const fs = require('node:fs/promises');
 const { matchVoiceAndPlay } = require("./tts");
 const TTSQueue = require("./tts-queue");
 const { json } = require("./utils");
@@ -7,7 +7,7 @@ const { json } = require("./utils");
 module.exports = class KoboldAIClient {
   constructor() {
     // please make sure you are using KoboldAI United version for API
-    this.baseUrl = process.env.KOBOLDAI_BASE_URL;
+    this.baseUrl = this.loadBaseUrl();
     this.prompts = [];
     this.votes = [];
     this._round = "START"; // START, [PROMPT, GENERATE, VOTE]
@@ -24,6 +24,15 @@ module.exports = class KoboldAIClient {
     this.botResponseCount = 3;
     this.lastVoteTime = null;
     this.voteTimeoutInMs = 30*1000;
+  }
+  
+  loadBaseUrl() {
+    
+  }
+  
+  saveBaseUrl(baseUrl) {
+    this.baseUrl = baseUrl;
+    
   }
   
   newStory() {

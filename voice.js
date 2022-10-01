@@ -112,7 +112,7 @@ discord.on('interactionCreate', async interaction => {
       await interaction.reply(`Current KoboldAI Base URL: ${koboldai.baseUrl}`);
     } else if (interaction.commandName === 'k9seturl') {
       const baseUrl = interaction.options.getString('url');
-      koboldai.baseUrl = baseUrl;
+      koboldai.saveBaseUrl(baseUrl);
       await interaction.reply(`KoboldAI Base URL updated!`);
       await wait(1000);
       await interaction.deleteReply();
