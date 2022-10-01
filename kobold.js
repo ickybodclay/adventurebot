@@ -1,5 +1,5 @@
 const fetch = require("node-fetch");
-const fs = require('node:fs/promises');
+const fs = require('fs');
 const { matchVoiceAndPlay } = require("./tts");
 const TTSQueue = require("./tts-queue");
 const { json } = require("./utils");
@@ -27,18 +27,20 @@ module.exports = class KoboldAIClient {
   }
   
   loadBaseUrl() {
-    
+    fs.readFile(".data/kobold_base_url.txt", "utf-8", (err, data) => {
+      if (err) console.re.error(err);
+      else {
+        this.baseUrl = data;
+      }
+    });
   }
   
   async saveBaseUrl(baseUrl) {
     this.baseUrl = baseUrl;
-    let filehandle;
-    try {
-      filehandle = await fs.open(".data/kobold_base_url.txt", 'w');
-      filehandle.writeFile(baseUrl);
-    } finally {
-      await filehandle?.close();
-    }
+    fs.writeFile(".data/kobold_base_url.txt", baseUrl, "utf-8", (err) => {
+      if (err) console.re.error(err);
+      else console.re.log("Saved KoboldAI base url!");
+    });
   }
   
   newStory() {
