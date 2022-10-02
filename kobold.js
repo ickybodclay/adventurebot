@@ -253,11 +253,11 @@ module.exports = class KoboldAIClient {
     return fetch(requestUrl, {
       method: "get",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Accept': 'application/json'
       }
     })
       .then((res) => {
+        console.re.log(JSON.stringify(res));
         return res.result;
       })
       .catch((ex) => {
