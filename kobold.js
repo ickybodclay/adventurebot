@@ -373,7 +373,7 @@ module.exports = class KoboldAIClient {
           disable_output_formatting: false,
           n: this.botResponseCount
         };
-        const genResponse = await this.generate(this.currentPrompt, genOptions);
+        const genResponse = await this.generate(this.currentPrompt.prompt, genOptions);
         
         this.botResponses = genResponse.map((item) => {
           const response = { user: "ai", prompt: item.text.trim()};
