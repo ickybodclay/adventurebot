@@ -323,15 +323,12 @@ module.exports = class KoboldAIClient {
   retry() {
     console.re.log("KoboldAI> retry prompt");
     
-    this.removeStoryEnd()
-      .then(() => {
-        this.round = "PROMPT";
-        this.clearVotes();
-        this.clearPrompts();
-        this.currentPrompt = null;
-        this.roundStartTime = null;
-        this.lastVoteTime = null;
-      });
+    this.round = "PROMPT";
+    this.clearVotes();
+    this.clearPrompts();
+    this.currentPrompt = null;
+    this.roundStartTime = null;
+    this.lastVoteTime = null;
   }
   
   nextRound() {
@@ -362,7 +359,6 @@ module.exports = class KoboldAIClient {
       if (this.prompts.length == 1) {
         this.round = "GENERATE";
         this.currentPrompt = this.prompts[0];
-        await this.addStory(this.currentPrompt);
         this.roundStartTime = null;
         this.lastVoteTime = null;
         
@@ -377,7 +373,7 @@ module.exports = class KoboldAIClient {
           disable_output_formatting: false,
           n: this.botResponseCount
         };
-        const genResponse = await this.generate("", genOptions);
+        const genResponse = await this.generate(this.currentPrompt, genOptions);
         
         this.botResponses = genResponse.map((item) => {
           const response = { user: "ai", prompt: item.text.trim()};
@@ -407,6 +403,7 @@ module.exports = class KoboldAIClient {
       if (timeSinceRoundStartInMs > this.voteRoundTimeInMs || shouldVoteTimeout) {
         this.round = "PROMPT";
         this.winningResponse = this.calculateWinningPrompt(this.botResponses, this.votes);
+        await this.addStory(this.currentPrompt);
         await this.addStory(this.winningResponse);
         
         this.clearPrompts();
