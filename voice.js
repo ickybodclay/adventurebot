@@ -253,6 +253,8 @@ app.get("/adventurebot/events", async (request, response) => {
     response.status(403).send({ error: 'Forbidden' });
     return;
   }
+  
+  console.re.log("AdventureBot> event source client opened");
 
   response.set({
     'Cache-Control': 'no-cache',
@@ -263,6 +265,7 @@ app.get("/adventurebot/events", async (request, response) => {
 
   response.write('retry: 5000\n\n');
   const intervalId = setInterval(() => {
+    console.re.log("AdventureBot> heartbeat");
     const eventData = {
       round: koboldai.round,
       roundStartTime: koboldai.roundStartTime,
@@ -275,6 +278,7 @@ app.get("/adventurebot/events", async (request, response) => {
     
     response.write('event: heartbeat\n');
     response.write(`data: ${JSON.stringify(eventData)}\n\n`);
+    response.flush();
   }, 200);
   
   response.on('close', () => {
