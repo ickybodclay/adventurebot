@@ -15,8 +15,8 @@ const app = express();
 app.use(compression());
 
 const corsOptions = {
-  origin: 'e',
-  methods: "GET"
+  origin: "https://hular-hoops-stream-overlay.glitch.me",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
 }
 app.use(cors(corsOptions));
 
