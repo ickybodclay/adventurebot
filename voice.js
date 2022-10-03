@@ -261,7 +261,7 @@ app.get("/adventurebot/events", async (request, response) => {
   response.set({
     'Cache-Control': 'no-cache',
     'Content-Type': 'text/event-stream;charset=UTF-8',
-    'Connection': 'keep-alive'
+    'Connection': 'keep-alive',
   });
   response.flushHeaders();
 
