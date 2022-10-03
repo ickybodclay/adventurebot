@@ -17,7 +17,7 @@ const corsOptions = {
   allowedHeaders: "Content-Type,Authorization",
   credentials: true,
 }
-app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
 
 const KoboldAIClient = require("./kobold");
 const koboldai = new KoboldAIClient();
