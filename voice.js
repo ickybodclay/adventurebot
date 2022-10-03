@@ -7,16 +7,15 @@ const {
 } = require('@discordjs/voice');
 const { Client: TwitchClient } = require("tmi.js");
 
-const compression = require('compression')
 const cors = require('cors');
 const express = require("express");
 const app = express();
 
-app.use(compression());
-
 const corsOptions = {
   origin: "https://hular-hoops-stream-overlay.glitch.me",
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+  allowedHeaders: "Content-Type,Authorization",
+  credentials: true,
 }
 app.use(cors(corsOptions));
 
@@ -280,8 +279,6 @@ app.get("/adventurebot/events", async (request, response) => {
     
     response.write('event: heartbeat\n');
     response.write(`data: ${JSON.stringify(eventData)}\n\n`);
-    
-    response.flush();
   }, 200);
   
   response.on('close', () => {
