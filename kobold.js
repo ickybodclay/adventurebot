@@ -310,9 +310,10 @@ module.exports = class KoboldAIClient {
   }
   
   redo() {
+    if (this.round !== "VOTE") return;
+    
     console.re.log("KoboldAI> redo previous action");
     
-    if (this.round !== "VOTE") return;
     this.clearBotResponses();
     this.clearVotes();
     this.round = "GENERATE";
@@ -321,13 +322,16 @@ module.exports = class KoboldAIClient {
   }
   
   retry() {
+    if (this.round !== "VOTE") return;
+    
     console.re.log("KoboldAI> retry prompt");
     
     this.round = "PROMPT";
-    this.clearVotes();
     this.clearPrompts();
-    this.currentPrompt = null;
+    this.clearBotResponses();
+    this.clearVotes();
     this.roundStartTime = null;
+    this.currentPrompt = null;
     this.lastVoteTime = null;
   }
   
@@ -400,6 +404,7 @@ module.exports = class KoboldAIClient {
     } else if (this.round === "VOTE") {
       if (this.lastVoteTime && this.lastVoteTime < this.roundStartTime) this.lastVotTime = this.roundStartTime;
       const shouldVoteTimeout = this.lastVoteTime && (tickTime - this.lastVoteTime) > this.voteTimeoutInMs;
+      
       if (timeSinceRoundStartInMs > this.voteRoundTimeInMs || shouldVoteTimeout) {
         this.round = "PROMPT";
         this.winningResponse = this.calculateWinningPrompt(this.botResponses, this.votes);
