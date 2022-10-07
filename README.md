@@ -62,11 +62,13 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 ### Adventure Bot commands
 
-`!prompt PROMPT` - submit prompt (only valid during prompt round)
-
 `!vote NUMBER` - vote for prompt (only valid during vote round, must be valid integer)
 
 Note: for the following Twitch commands, must be channel owner or moderator.
+
+`!prompt PROMPT` - submit prompt (only valid during prompt round)
+
+`!continue` - submit empty prompt to continue story (only valid during prompt round)
 
 `!abnewstory` - start a new story (saves previous story to txt file)
 

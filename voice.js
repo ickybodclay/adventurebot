@@ -243,6 +243,8 @@ twitch.on("message", (channel, userstate, message, self) => {
     const prompt = argument.trim();
     if (prompt === "") return;
     koboldai.addPrompt(user, prompt);
+  } else if (command === "continue" && koboldai.round === "PROMPT") {
+    koboldai.addPrompt(user, "");
   }
 });
 
