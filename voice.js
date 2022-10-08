@@ -12,7 +12,7 @@ const express = require("express");
 const app = express();
 
 const corsOptions = {
-  origin: "https://hular-hoops-stream-overlay.glitch.me",
+  origin: process.env.AB_OVERLAY_ORIGIN,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   allowedHeaders: "Content-Type,Authorization",
   credentials: true,
