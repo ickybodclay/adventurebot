@@ -46,7 +46,8 @@ module.exports = class KoboldAIClient {
   
   newStory() {
     console.re.log("starting a new story...");
-    this.saveStoryRemote();
+    this.saveStoryRemote()
+      .then(this.clearStory());
     this.reset();
   }
   
