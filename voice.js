@@ -14,7 +14,9 @@ const app = express();
 const corsOptions = {
   origin: [ 
     process.env.AB_OVERLAY_ORIGIN,
-    /\.glitch\.me$/
+    /\.glitch\.me$/,
+    "https://codepen.io",
+    "https://cdpn.io"
   ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
 }
@@ -278,6 +280,7 @@ app.get("/adventurebot/events", sseExpress(), (request, response) => {
       event: 'heartbeat',
       data: eventData
     });
+    response.flush();
   }, 200);
   
   response.on('close', () => {
