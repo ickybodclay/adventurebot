@@ -280,7 +280,6 @@ app.get("/adventurebot/events", sseExpress(), (request, response) => {
       event: 'heartbeat',
       data: eventData
     });
-    response.flush();
   }, 200);
   
   response.on('close', () => {
