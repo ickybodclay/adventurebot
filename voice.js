@@ -12,7 +12,10 @@ const express = require("express");
 const app = express();
 
 const corsOptions = {
-  origin: process.env.AB_OVERLAY_ORIGIN,
+  origin: [ 
+    process.env.AB_OVERLAY_ORIGIN,
+    // /\.glitch\.me$/
+  ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
   allowedHeaders: "Content-Type,Authorization",
   credentials: true,
@@ -262,7 +265,7 @@ app.get("/adventurebot/events", async (request, response) => {
 
   response.set({
     'Cache-Control': 'no-cache',
-    'Content-Type': 'text/event-stream;charset=UTF-8',
+    'Content-Type': 'text/event-stream',
     'Connection': 'keep-alive',
   });
   response.flushHeaders();
