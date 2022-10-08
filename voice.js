@@ -17,8 +17,6 @@ const corsOptions = {
     /\.glitch\.me$/
   ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-  allowedHeaders: "Accept,Content-Type,Connection,Authorization",
-  // credentials: true,
 }
 app.use(cors(corsOptions));
 
@@ -71,9 +69,9 @@ var channel;
 /**
  * DISCORD
  */
-discord.once('ready', () => {
-	console.re.log('Ready!');
-});
+// discord.once('ready', () => {
+// 	console.re.log('Ready!');
+// });
 
 discord.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
@@ -264,13 +262,6 @@ app.get("/adventurebot/events", sseExpress(), (request, response) => {
   }
   
   console.re.log("AdventureBot> event source client opened");
-  
-  response.sse({
-        event: 'connected',
-        data: {
-          welcomeMsg: 'Hello world!'
-        }
-    });
 
   const intervalId = setInterval(() => {
     const eventData = {
