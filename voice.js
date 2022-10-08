@@ -14,9 +14,9 @@ const app = express();
 const corsOptions = {
   origin: [ 
     process.env.AB_OVERLAY_ORIGIN,
-    /\.glitch\.me$/,
-    "https://codepen.io",
-    "https://cdpn.io"
+    // /\.glitch\.me$/,
+    // "https://codepen.io",
+    // "https://cdpn.io"
   ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
 }
