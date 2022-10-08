@@ -271,6 +271,25 @@ module.exports = class KoboldAIClient {
       });
   }
   
+  clearStory() {
+    const requestUrl = `${this.baseUrl}/api/v1/story`;
+    return fetch(requestUrl, {
+      method: "delete",
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+      .catch((ex) => {
+        console.re.error(`koboldai clear story error ${ex.name}: ${ex.message}`);
+        if (ex.response) {
+          console.re.error(ex.response.data);
+        } else {
+          console.re.error(ex.stack);
+        }
+        return "error clearing story";
+      });
+  }
+  
   // ADVENTURE BOT
   
   calculateWinningPrompt(prompts, votes) {
