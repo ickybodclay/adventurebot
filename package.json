@@ -14,9 +14,10 @@
     "libsodium-wrappers": "^0.7.10",
     "node-fetch": "2.6.7",
     "tmi.js": "^1.8.5",
-    "express": "^4.18.1",
+    "express": "^4.18.2",
     "cors": "^2.8.5",
-    "console-remote-client": "^2.1.18"
+    "console-remote-client": "^2.1.18",
+    "sse-express": "^2.0.2"
   },
   "engines": {
     "node": "16.14.2"

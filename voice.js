@@ -22,6 +22,8 @@ const corsOptions = {
 }
 app.use(cors(corsOptions));
 
+const sseExpress = require('sse-express');
+
 const KoboldAIClient = require("./kobold");
 const koboldai = new KoboldAIClient();
 
@@ -255,7 +257,7 @@ twitch.on("message", (channel, userstate, message, self) => {
  * EXPRESS
  */
 const AB_TOKEN = process.env.AB_TOKEN;
-app.get("/adventurebot/events", async (request, response) => {
+app.get("/adventurebot/events", sseExpress(), (request, response) => {
   if (!request.query.token || request.query.token !== AB_TOKEN) {
     response.status(403).send({ error: 'Forbidden' });
     return;
@@ -263,14 +265,14 @@ app.get("/adventurebot/events", async (request, response) => {
   
   console.re.log("AdventureBot> event source client opened");
 
-  response.set({
-    'Cache-Control': 'no-cache',
-    'Content-Type': 'text/event-stream',
-    'Connection': 'keep-alive',
-  });
-  response.flushHeaders();
+//   response.set({
+//     'Cache-Control': 'no-cache',
+//     'Content-Type': 'text/event-stream',
+//     'Connection': 'keep-alive',
+//   });
+//   response.flushHeaders();
 
-  response.write('retry: 5000\n\n');
+//   response.write('retry: 5000\n\n');
   const intervalId = setInterval(() => {
     const eventData = {
       round: koboldai.round,
@@ -282,14 +284,18 @@ app.get("/adventurebot/events", async (request, response) => {
       winningResponse: koboldai.winningResponse,
     };
     
-    response.write('event: heartbeat\n');
-    response.write(`data: ${JSON.stringify(eventData)}\n\n`);
+    response.sse({
+      event: 'heartbeat',
+      data: eventData
+    });
+    
+    // response.write('event: heartbeat\n');
+    // response.write(`data: ${JSON.stringify(eventData)}\n\n`);
   }, 200);
   
   response.on('close', () => {
     console.re.log("AdventureBot> event source client closed");
     clearInterval(intervalId);
-    response.end();
   });
 });
 
