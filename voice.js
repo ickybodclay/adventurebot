@@ -14,11 +14,11 @@ const app = express();
 const corsOptions = {
   origin: [ 
     process.env.AB_OVERLAY_ORIGIN,
-    // /\.glitch\.me$/
+    /\.glitch\.me$/
   ],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
-  allowedHeaders: "Content-Type,Authorization",
-  credentials: true,
+  allowedHeaders: "Accept,Content-Type,Connection,Authorization",
+  // credentials: true,
 }
 app.use(cors(corsOptions));
 
@@ -264,15 +264,14 @@ app.get("/adventurebot/events", sseExpress(), (request, response) => {
   }
   
   console.re.log("AdventureBot> event source client opened");
+  
+  response.sse({
+        event: 'connected',
+        data: {
+          welcomeMsg: 'Hello world!'
+        }
+    });
 
-//   response.set({
-//     'Cache-Control': 'no-cache',
-//     'Content-Type': 'text/event-stream',
-//     'Connection': 'keep-alive',
-//   });
-//   response.flushHeaders();
-
-//   response.write('retry: 5000\n\n');
   const intervalId = setInterval(() => {
     const eventData = {
       round: koboldai.round,
@@ -288,9 +287,6 @@ app.get("/adventurebot/events", sseExpress(), (request, response) => {
       event: 'heartbeat',
       data: eventData
     });
-    
-    // response.write('event: heartbeat\n');
-    // response.write(`data: ${JSON.stringify(eventData)}\n\n`);
   }, 200);
   
   response.on('close', () => {
