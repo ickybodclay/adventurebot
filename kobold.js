@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 const fs = require('fs');
 const { matchVoiceAndPlay } = require("./tts");
 const TTSQueue = require("./tts-queue");
-const { json } = require("./utils");
+const { json, wait } = require("./utils");
 
 module.exports = class KoboldAIClient {
   constructor() {
@@ -47,8 +47,9 @@ module.exports = class KoboldAIClient {
   newStory() {
     console.re.log("starting a new story...");
     this.saveStoryRemote()
-      .then(this.clearStory());
-    this.reset();
+      .then(wait(1000))
+      .then(this.clearStory())
+      .then(this.reset());
   }
   
   startAdventureBot() {
