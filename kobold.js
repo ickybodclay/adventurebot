@@ -258,9 +258,9 @@ module.exports = class KoboldAIClient {
         'Accept': 'application/json'
       }
     })
-      .then((res) => {
-        console.re.log(JSON.stringify(res));
-        return res.result;
+      .then(json)
+      .then((data) => {
+        return data.result;
       })
       .catch((ex) => {
         console.re.error(`koboldai get model error ${ex.name}: ${ex.message}`);

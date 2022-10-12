@@ -170,7 +170,7 @@ const cmdRegex = new RegExp(/^!([a-zA-Z0-9]+)(?:\W+)?(.*)?/i);
 /**
  * TWITCH
  */
-twitch.on("message", (channel, userstate, message, self) => {
+twitch.on("message", async (channel, userstate, message, self) => {
   // ignore echoed messages & commands
   if (self) return;
   
@@ -239,10 +239,8 @@ twitch.on("message", (channel, userstate, message, self) => {
   } else if (command === "abaddtime") {
     koboldai.resetRoundTime();
   } else if (command === "abmodel") {
-    koboldai.getCurrentModel()
-      .then((model) => {
-        twitch.say(channel, `Current KoboldAI model: ${model}`);
-      });
+    const model = await koboldai.getCurrentModel();
+    twitch.say(channel, `Current KoboldAI model: ${model}`);
   } else if (command === "prompt" && koboldai.round === "PROMPT") {
     if (!argument || argument === "") return;
     const prompt = argument.trim();
