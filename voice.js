@@ -99,11 +99,11 @@ discord.on('interactionCreate', async interaction => {
     const genOptions = {
       temperature: 0.6,
       top_p: 1.0,
-      max_length: 120, // tokens to generate
+      max_length: 80, // tokens to generate
     };
     const responses = await koboldai.generate(prompt, genOptions);
     if (responses.length > 0)
-      await interaction.reply(`> ${responses[0].text}`);
+      await interaction.reply(`AI: ${responses[0].text}`);
     else {
       await tmpReply(interaction, "Bot response was empty");
     }
