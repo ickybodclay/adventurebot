@@ -44,12 +44,11 @@ module.exports = class KoboldAIClient {
     });
   }
   
-  newStory() {
+  async newStory() {
     console.re.log("starting a new story...");
-    this.saveStoryRemote()
-      .then(wait(1000))
-      .then(this.clearStory())
-      .then(this.reset());
+    await this.saveStoryRemote();
+    await this.clearStory();
+    this.reset();
   }
   
   startAdventureBot() {
@@ -70,6 +69,7 @@ module.exports = class KoboldAIClient {
   }
   
   reset() {
+    console.re.log("resetting adventure bot...");
     this.round = "START";
     this.running = false;
     this.clearVotes();
@@ -281,6 +281,9 @@ module.exports = class KoboldAIClient {
         'Accept': 'application/json'
       }
     })
+      .then((res) => {
+        console.re.log(`KoboldAI> cleared story`);
+      })
       .catch((ex) => {
         console.re.error(`koboldai clear story error ${ex.name}: ${ex.message}`);
         if (ex.response) {
