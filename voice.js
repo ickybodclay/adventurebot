@@ -76,55 +76,83 @@ var channel;
 // });
 
 discord.on('interactionCreate', async interaction => {
-    if (!interaction.isChatInputCommand()) return;
-  
-    if (interaction.commandName === 'k9join') {
-      await setupVoice(queue);
-      await interaction.reply("Joining voice channel...");
-      await wait(1000);
-      await interaction.deleteReply();
-    } else if (interaction.commandName === 'k9leave') {
-      queue.vdisconnect();
-      await interaction.reply("Leaving voice channel...");
-      await wait(1000);
-      await interaction.deleteReply();
-    } else if (interaction.commandName === 'k9pause') {
-      queue.pause();
-      await interaction.reply('TTS queue paused');
-    } else if (interaction.commandName === 'k9resume') {
-      queue.resume();
-      await interaction.reply('TTS queue resumed');
-    } else if (interaction.commandName === 'k9tts') {
-      const message = interaction.options.getString('message');
-      matchVoiceAndPlay(queue, message, botVoice);
-      await interaction.reply(`Message added to TTS queue.`);
-      await wait(1000);
-      await interaction.deleteReply();
-    } else if (interaction.commandName === 'k9generate') {
+  if (!interaction.isChatInputCommand()) return;
+
+  if (interaction.commandName === 'k9join') {
+    await setupVoice(queue);
+    await tmpReply(interaction, "Joining voice channel...");
+  } else if (interaction.commandName === 'k9leave') {
+    queue.vdisconnect();
+    await tmpReply(interaction, "Leaving voice channel...");
+  } else if (interaction.commandName === 'k9pause') {
+    queue.pause();
+    await interaction.reply('TTS queue paused');
+  } else if (interaction.commandName === 'k9resume') {
+    queue.resume();
+    await interaction.reply('TTS queue resumed');
+  } else if (interaction.commandName === 'k9tts') {
+    const message = interaction.options.getString('message');
+    matchVoiceAndPlay(queue, message, botVoice);
+    await tmpReply(interaction, "Message added to TTS queue.");
+  } else if (interaction.commandName === 'k9generate') {
+    const prompt = interaction.options.getString('prompt');
+    const genOptions = {
+      temperature: 0.6,
+      top_p: 1.0,
+      max_length: 120, // tokens to generate
+    };
+    const responses = await koboldai.generate(prompt, genOptions);
+    if (responses.length > 0)
+      await interaction.reply(`> ${responses[0].text}`);
+    else {
+      await tmpReply(interaction, "Bot response was empty");
+    }
+  } else if (interaction.commandName === 'k9url') {
+    await interaction.reply(`Current KoboldAI Base URL: ${koboldai.baseUrl}`);
+  } else if (interaction.commandName === 'k9seturl') {
+    const baseUrl = interaction.options.getString('url');
+    koboldai.saveBaseUrl(baseUrl);
+    await tmpReply(interaction, "KoboldAI Base URL updated!");
+  } else if (interaction.commandName === 'ab') {
+    if (interaction.options.getSubcommand() === 'prompt' && koboldai.round === "PROMPT") {
       const prompt = interaction.options.getString('prompt');
-      const genOptions = {
-        temperature: 0.6,
-        top_p: 1.0,
-        max_length: 120, // tokens to generate
-      };
-      const responses = await koboldai.generate(prompt, genOptions);
-      if (responses.length > 0)
-        await interaction.reply(`> ${responses[0].text}`);
-      else {
-        await interaction.reply(`Bot response was empty`);
-        await wait(1000);
-        await interaction.deleteReply();
-      }
-    } else if (interaction.commandName === 'k9url') {
-      await interaction.reply(`Current KoboldAI Base URL: ${koboldai.baseUrl}`);
-    } else if (interaction.commandName === 'k9seturl') {
-      const baseUrl = interaction.options.getString('url');
-      koboldai.saveBaseUrl(baseUrl);
-      await interaction.reply(`KoboldAI Base URL updated!`);
-      await wait(1000);
-      await interaction.deleteReply();
-    } 
-  });
+      koboldai.addPrompt(interaction.user.username, prompt.trim());
+      await tmpReply(interaction, "Prompt submitted!");
+    } else if (interaction.options.getSubcommand() === 'skip') {
+      queue.vstop();
+      await tmpReply(interaction, "Skipping TTS...");
+    } else if (interaction.options.getSubcommand() === 'redo' && koboldai.round === "VOTE") {
+      koboldai.redo();
+      await tmpReply(interaction, "Regenerated response(s)");
+    } else if (interaction.options.getSubcommand() === 'retry' && koboldai.round === "VOTE") {
+      koboldai.retry();
+      await tmpReply(interaction, "Retrying last action");
+    } else if (interaction.options.getSubcommand() === 'continue' && koboldai.round === "PROMPT") {
+      koboldai.addPrompt(interaction.user.username, "");
+      await tmpReply(interaction, "Continuing...");
+    } else if (interaction.options.getSubcommand() === 'next') {
+      koboldai.nextRound();
+      await tmpReply(interaction, "Advancing to the next round");
+    } else if (interaction.options.getSubcommand() === 'new') {
+      koboldai.newStory();
+      await tmpReply(interaction, "Starting a new story");
+    } else if (interaction.options.getSubcommand() === 'start') {
+      koboldai.startAdventureBot();
+      await tmpReply(interaction, "Starting game loop");
+    } else if (interaction.options.getSubcommand() === 'stop') {
+      koboldai.stopAdvetnureBot();
+      await tmpReply(interaction, "Stopping game loop");
+    } else {
+      await tmpReply(interaction, "Not valid round for that command");
+    }
+  }
+});
+
+async function tmpReply(interaction, message, waitTimeInMs=1000) {
+  await interaction.reply(message);
+  await wait(waitTimeInMs);
+  await interaction.deleteReply();
+}
 
 async function setupVoice(queue) {
     if(!discord) return console.re.error("Please connect to client first!");

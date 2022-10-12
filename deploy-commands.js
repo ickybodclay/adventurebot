@@ -35,6 +35,59 @@ const commands = [
         .setDescription('the new KoboldAI base url (no trailing /)')
         .setRequired(true)
     ),
+  new SlashCommandBuilder()
+    .setName('ab')
+    .setDescription('Adventure Bot commands')
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('prompt')
+        .setDescription('submit prompt (only valid during prompt round)')
+        .addStringOption(option =>
+          option.setName('prompt')
+            .setDescription('A prompt for the AI')
+            .setRequired(true)
+        )
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('skip')
+        .setDescription('Skip current TTS (if audio present)')
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('redo')
+        .setDescription('regenerate the last response(s) (only valid during vote round)')
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('retry')
+        .setDescription('retry entering the last prompt (only valid during vote round)')
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('continue')
+        .setDescription('submit empty prompt to continue story (only valid during prompt round)')
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('next')
+        .setDescription('skip the countdown and advance to the next round')
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('new')
+        .setDescription('start a new story (saves previous story to txt file)')
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('start')
+        .setDescription('start adventure bot game loop')
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('stop')
+        .setDescription('stop adventure bot game loop')
+    )
 ]
 	.map(command => command.toJSON());
 
