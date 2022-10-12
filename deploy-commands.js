@@ -88,6 +88,11 @@ const commands = [
         .setName('stop')
         .setDescription('stop adventure bot game loop')
     )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('model')
+        .setDescription('get the current running koboldai model')
+    )
 ]
 	.map(command => command.toJSON());
 

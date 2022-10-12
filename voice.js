@@ -142,6 +142,9 @@ discord.on('interactionCreate', async interaction => {
     } else if (interaction.options.getSubcommand() === 'stop') {
       koboldai.stopAdvetnureBot();
       await tmpReply(interaction, "Stopping game loop");
+    } else if (interaction.options.getSubcommand() === 'model') {
+      const model = await koboldai.getCurrentModel();
+      await interaction.reply(`Current KoboldAI Base URL: ${model}`);
     } else {
       await tmpReply(interaction, "Not valid round for that command");
     }
