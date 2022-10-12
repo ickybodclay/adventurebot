@@ -101,11 +101,12 @@ discord.on('interactionCreate', async interaction => {
       top_p: 1.0,
       max_length: 80, // tokens to generate
     };
+    await interaction.deferReply();
     const responses = await koboldai.generate(prompt, genOptions);
     if (responses.length > 0)
-      await interaction.reply(`AI: ${responses[0].text}`);
+      await interaction.editReply(responses[0].text);
     else {
-      await tmpReply(interaction, "Bot response was empty");
+      await interaction.editReply("Bot response was empty");
     }
   } else if (interaction.commandName === 'k9url') {
     await interaction.reply(`Current KoboldAI Base URL: ${koboldai.baseUrl}`);
