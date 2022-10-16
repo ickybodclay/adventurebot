@@ -394,6 +394,7 @@ module.exports = class KoboldAIClient {
     };
     if (this._queue) matchVoiceAndPlay(this._queue, this.endPrompt, this.voice);
     this.endResponse = await this.generate(this.endPrompt, genOptions);
+    this.endResponse = censor(this.endResponse);
     if (this._queue) matchVoiceAndPlay(this._queue, this.endResponse, this.voice);
     await this.addStory(this.endPrompt);
     await this.addStory(this.endResponse);

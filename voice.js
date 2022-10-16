@@ -312,6 +312,8 @@ app.get("/adventurebot/events", sseExpress(), (request, response) => {
       botResponses: koboldai.botResponses,
       votes: koboldai.votes,
       winningResponse: koboldai.winningResponse,
+      endPrompt: koboldai.endPrompt,
+      endResponse: koboldai.endResponse
     };
     
     response.sse({
