@@ -6,8 +6,6 @@ const guildId = process.env.DISCORD_BOT_GUILD_ID;
 const token = process.env.DISCORD_TOKEN;
 
 const commands = [
-  new SlashCommandBuilder().setName('k9join').setDescription('Joins voice channel'),
-  new SlashCommandBuilder().setName('k9leave').setDescription('Leavs voice channel'),
   new SlashCommandBuilder().setName('k9pause').setDescription('Pause TTS queue'),
   new SlashCommandBuilder().setName('k9resume').setDescription('Resume TTS queue'),
   new SlashCommandBuilder()
@@ -92,6 +90,26 @@ const commands = [
       subcommand
         .setName('model')
         .setDescription('get the current running koboldai model')
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('join')
+        .setDescription('Joins voice channel')
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('leave')
+        .setDescription('Leaves voice channel')
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('url')
+        .setDescription('submit prompt (only valid during prompt round)')
+        .addStringOption(option =>
+          option.setName('prompt')
+            .setDescription('A prompt for the AI')
+            .setRequired(true)
+        )
     )
 ]
 	.map(command => command.toJSON());
