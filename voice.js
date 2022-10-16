@@ -111,6 +111,12 @@ discord.on('interactionCreate', async interaction => {
     } else if (interaction.options.getSubcommand() === 'new') {
       koboldai.newStory();
       await tmpReply(interaction, "Starting a new story");
+    } else if (interaction.options.getSubcommand() === 'end' && koboldai.round === "PROMPT") {
+      await interaction.deferReply();
+      await koboldai.endStory();
+      await interaction.editReply("Ended the current story");
+      await wait(1000);
+      await interaction.deleteReply();
     } else if (interaction.options.getSubcommand() === 'start') {
       koboldai.startAdventureBot();
       await tmpReply(interaction, "Starting game loop");

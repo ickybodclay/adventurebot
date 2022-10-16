@@ -57,7 +57,12 @@ const commands = [
     .addSubcommand(subcommand =>
       subcommand
         .setName('new')
-        .setDescription('start a new story (saves previous story to txt file)')
+        .setDescription('start a new story (saves previous story)')
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('end')
+        .setDescription('ends the current story & gets a random post-ending (saves story)')
     )
     .addSubcommand(subcommand =>
       subcommand

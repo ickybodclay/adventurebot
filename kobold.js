@@ -11,7 +11,7 @@ module.exports = class KoboldAIClient {
     this.loadBaseUrl();
     this.prompts = [];
     this.votes = [];
-    this._round = "START"; // START, [PROMPT, GENERATE, VOTE]
+    this._round = "START"; // START, [PROMPT, GENERATE, VOTE], END
     this.roundStartTime = null;
     this.voteRoundTimeInMs = 90*1000; // 90 seconds
     this.running = false;
@@ -25,6 +25,8 @@ module.exports = class KoboldAIClient {
     this.botResponseCount = 3;
     this.lastVoteTime = null;
     this.voteTimeoutInMs = 30*1000;
+    this.endPromot = null;
+    this.endResponse = null;
   }
   
   loadBaseUrl() {
@@ -78,6 +80,8 @@ module.exports = class KoboldAIClient {
     this.currentPrompt = null;
     this.winningResponse = null;
     this.roundStartTime = null;
+    this.endPromot = null;
+    this.endResponse = null;
   }
   
   get round() { return this._round; }
@@ -87,7 +91,8 @@ module.exports = class KoboldAIClient {
       newRound === "START" ||
       newRound === "PROMPT" ||
       newRound === "VOTE" ||
-      newRound === "GENERATE"
+      newRound === "GENERATE" ||
+      newRound === "END"
     ) {
       this._round = newRound;
     }
@@ -366,6 +371,33 @@ module.exports = class KoboldAIClient {
   
   resetRoundTime() {
     this.roundStartTime = null;
+  }
+  
+  async endStory() {
+    if (this.round !== "PROMPT") return;
+
+    console.re.log("KoboldAI> ending the story");
+
+    this.round = "END";
+    this.running = false;
+    const endOptions = [
+      "\nThe moral of the story:",
+      "\nEpilogue:",
+      "\nIn the sequel:"
+    ];
+    this.endPrompt = `The end. ${endOptions[Math.floor(Math.random()*endOptions.length)]}`;
+    const genOptions = {
+      use_story: true,
+      use_memory: true,
+      use_authors_note: true,
+      disable_output_formatting: false
+    };
+    if (this._queue) matchVoiceAndPlay(this._queue, this.endPrompt, this.voice);
+    this.endResponse = await this.generate(this.endPrompt, genOptions);
+    if (this._queue) matchVoiceAndPlay(this._queue, this.endResponse, this.voice);
+    await this.addStory(this.endPrompt);
+    await this.addStory(this.endResponse);
+    await this.saveStoryRemote();
   }
   
   async runAdventureBot() {
