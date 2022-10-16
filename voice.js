@@ -88,20 +88,6 @@ discord.on('interactionCreate', async interaction => {
     const message = interaction.options.getString('message');
     matchVoiceAndPlay(queue, message, botVoice);
     await tmpReply(interaction, "Message added to TTS queue.");
-  } else if (interaction.commandName === 'k9generate') {
-    const prompt = interaction.options.getString('prompt');
-    const genOptions = {
-      temperature: 0.6,
-      top_p: 1.0,
-      max_length: 80, // tokens to generate
-    };
-    await interaction.deferReply();
-    const responses = await koboldai.generate(prompt, genOptions);
-    if (responses.length > 0)
-      await interaction.editReply(responses[0].text);
-    else {
-      await interaction.editReply("Bot response was empty");
-    }
   } else if (interaction.commandName === 'ab') {
     if (interaction.options.getSubcommand() === 'prompt' && koboldai.round === "PROMPT") {
       const prompt = interaction.options.getString('prompt');
@@ -142,12 +128,26 @@ discord.on('interactionCreate', async interaction => {
       await tmpReply(interaction, "Leaving voice channel...");
     } else if (interaction.options.getSubcommand() === 'url') {
       const baseUrl = interaction.options.getString('url');
-      koboldai.saveBaseUrl(baseUrl);
-      await interaction.reply("KoboldAI Base URL updated!");
-      await interaction.reply(`Current KoboldAI Base URL: ${koboldai.baseUrl}`);
+      if (baseUrl) {
+        koboldai.saveBaseUrl(baseUrl);
+        await interaction.reply("KoboldAI Base URL updated!");
+      } else {
+        await interaction.reply(`Current KoboldAI Base URL: ${koboldai.baseUrl}`);
+      }
     } else if (interaction.options.getSubcommand() === 'generate') {
-      const model = await koboldai.getCurrentModel();
-      await interaction.reply(`Current KoboldAI Base URL: ${model}`);
+      const prompt = interaction.options.getString('prompt');
+      const genOptions = {
+        temperature: 0.6,
+        top_p: 1.0,
+        max_length: 80, // tokens to generate
+      };
+      await interaction.deferReply();
+      const responses = await koboldai.generate(prompt, genOptions);
+      if (responses.length > 0)
+        await interaction.editReply(responses[0].text);
+      else {
+        await interaction.editReply("Bot response was empty");
+      }
     } else {
       await tmpReply(interaction, "Not valid round for that command");
     }
