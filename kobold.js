@@ -3,6 +3,7 @@ const fs = require('fs');
 const { matchVoiceAndPlay } = require("./tts");
 const TTSQueue = require("./tts-queue");
 const { json } = require("./utils");
+const { censor } = require("./censor");
 
 module.exports = class KoboldAIClient {
   constructor() {
@@ -404,7 +405,7 @@ module.exports = class KoboldAIClient {
         const genResponse = await this.generate(this.currentPrompt.prompt, genOptions);
         
         this.botResponses = genResponse.map((item) => {
-          const response = { user: "ai", prompt: item.text.trim()};
+          const response = { user: "ai", prompt: censor(item.text.trim())};
           return response;
         });
         
