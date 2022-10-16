@@ -24,7 +24,11 @@ And that should be it!
 
 ### Discord commands
 
-`/k9ping` - Sends pong (simple test command for making sure you've setup Discord)
+`/ab prompt PROMPT` - Submit prompt to Adventure Bot for the current story (only valid during prompt round)
+
+`/ab skip` - Skip current TTS (if audio present)
+
+``
 
 `/k9join` - Join voice channel (specified `.env` file)
 
