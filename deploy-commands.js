@@ -17,23 +17,6 @@ const commands = [
         .setRequired(true)
     ),
   new SlashCommandBuilder()
-    .setName('k9generate')
-    .setDescription('Generates AI response for given prompt')
-    .addStringOption(option =>
-      option.setName('prompt')
-        .setDescription('A prompt for the AI')
-        .setRequired(true)
-    ),
-  new SlashCommandBuilder().setName('k9url').setDescription('Get the currently KoboldAI base url'),
-  new SlashCommandBuilder()
-    .setName('k9seturl')
-    .setDescription('Set the KoboldAI base url')
-    .addStringOption(option =>
-      option.setName('url')
-        .setDescription('the new KoboldAI base url (no trailing /)')
-        .setRequired(true)
-    ),
-  new SlashCommandBuilder()
     .setName('ab')
     .setDescription('Adventure Bot commands')
     .addSubcommand(subcommand =>
@@ -104,7 +87,17 @@ const commands = [
     .addSubcommand(subcommand =>
       subcommand
         .setName('url')
-        .setDescription('submit prompt (only valid during prompt round)')
+        .setDescription('Get/set the KoboldAI base url')
+        .addStringOption(option =>
+          option.setName('url')
+            .setDescription('A new KoboldAI base url')
+            .setRequired(false)
+        )
+    )
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('generate')
+        .setDescription('Generates AI response for given prompt')
         .addStringOption(option =>
           option.setName('prompt')
             .setDescription('A prompt for the AI')

@@ -78,13 +78,7 @@ var channel;
 discord.on('interactionCreate', async interaction => {
   if (!interaction.isChatInputCommand()) return;
 
-  if (interaction.commandName === 'k9join') {
-    await setupVoice(queue);
-    await tmpReply(interaction, "Joining voice channel...");
-  } else if (interaction.commandName === 'k9leave') {
-    queue.vdisconnect();
-    await tmpReply(interaction, "Leaving voice channel...");
-  } else if (interaction.commandName === 'k9pause') {
+  if (interaction.commandName === 'k9pause') {
     queue.pause();
     await interaction.reply('TTS queue paused');
   } else if (interaction.commandName === 'k9resume') {
@@ -108,12 +102,6 @@ discord.on('interactionCreate', async interaction => {
     else {
       await interaction.editReply("Bot response was empty");
     }
-  } else if (interaction.commandName === 'k9url') {
-    await interaction.reply(`Current KoboldAI Base URL: ${koboldai.baseUrl}`);
-  } else if (interaction.commandName === 'k9seturl') {
-    const baseUrl = interaction.options.getString('url');
-    koboldai.saveBaseUrl(baseUrl);
-    await tmpReply(interaction, "KoboldAI Base URL updated!");
   } else if (interaction.commandName === 'ab') {
     if (interaction.options.getSubcommand() === 'prompt' && koboldai.round === "PROMPT") {
       const prompt = interaction.options.getString('prompt');
@@ -144,6 +132,20 @@ discord.on('interactionCreate', async interaction => {
       koboldai.stopAdvetnureBot();
       await tmpReply(interaction, "Stopping game loop");
     } else if (interaction.options.getSubcommand() === 'model') {
+      const model = await koboldai.getCurrentModel();
+      await interaction.reply(`Current KoboldAI Base URL: ${model}`);
+    } else if (interaction.options.getSubcommand() === 'join') {
+      await setupVoice(queue);
+      await tmpReply(interaction, "Joining voice channel...");
+    } else if (interaction.options.getSubcommand() === 'leave') {
+      queue.vdisconnect();
+      await tmpReply(interaction, "Leaving voice channel...");
+    } else if (interaction.options.getSubcommand() === 'url') {
+      const baseUrl = interaction.options.getString('url');
+      koboldai.saveBaseUrl(baseUrl);
+      await interaction.reply("KoboldAI Base URL updated!");
+      await interaction.reply(`Current KoboldAI Base URL: ${koboldai.baseUrl}`);
+    } else if (interaction.options.getSubcommand() === 'generate') {
       const model = await koboldai.getCurrentModel();
       await interaction.reply(`Current KoboldAI Base URL: ${model}`);
     } else {
