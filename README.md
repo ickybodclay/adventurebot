@@ -28,23 +28,35 @@ And that should be it!
 
 `/ab skip` - Skip current TTS (if audio present)
 
-``
+`/ab redo` - Regenerate the last AI response(s) (only valid during vote round)
 
-`/k9join` - Join voice channel (specified `.env` file)
+`/ab retry` - Retry entering the last prompt (only valid during vote round)
 
-`/k9leave` - Leaves voice channel
+`/ab continue` - Submit empty prompt to continue story (only valid during prompt round)
+
+`/ab next` - Skip the countdown and advance to the next round
+
+`/ab new` - Start a new story (saves previous story to txt file)
+
+`/ab start` - Start Adventure Bot game loop
+
+`/ab stop` - Stop Adventure Bot game loop
+
+`/ab model` - Get the current running AI model
+
+`/ab join` - Join voice channel (specified `.env` file)
+
+`/ab leave` - Leaves voice channel
+
+`/ab url URL (optional)` - Get/set the current KoboldAI base url (Note: for set, make sure there is no trailing '/')
+
+`/ab generate PROMPT` - Generates AI response for given prompt 
 
 `/k9pause` - Pause TTS queue
 
 `/k9resume` - Resume TTS queue
 
 `/k9tts MESSAGE` - Add message directly to the TTS queue for K9000 to say
-
-`/k9generate PROMPT` - Generates AI response for given prompt 
-
-`/k9seturl URL` - Set the KoboldAI base url (no trailing '/')
-
-`/k9url` - Get the currently KoboldAI base url
 
 ### Twitch commands
 
