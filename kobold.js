@@ -27,6 +27,7 @@ module.exports = class KoboldAIClient {
     this.voteTimeoutInMs = 30*1000;
     this.endPromot = null;
     this.endResponse = null;
+    this.saved = false;
   }
   
   loadBaseUrl() {
@@ -49,7 +50,7 @@ module.exports = class KoboldAIClient {
   
   async newStory() {
     console.re.log("starting a new story...");
-    await this.saveStoryRemote();
+    if (!this.saved) await this.saveStoryRemote();
     await this.clearStory();
     this.reset();
   }
@@ -82,6 +83,7 @@ module.exports = class KoboldAIClient {
     this.roundStartTime = null;
     this.endPromot = null;
     this.endResponse = null;
+    this.saved = false;
   }
   
   get round() { return this._round; }
@@ -199,6 +201,7 @@ module.exports = class KoboldAIClient {
     })
       .then((res) => {
         console.re.log("KoboldAI> added story end");
+        this.saved = false;
       })
       .catch((ex) => {
         console.re.error(`koboldai add story end error ${ex.name}: ${ex.message}`);
@@ -250,6 +253,7 @@ module.exports = class KoboldAIClient {
     })
       .then((res) => {
         console.re.log(`KoboldAI> saved story '${saveName}'`);
+        this.saved = true;
       })
       .catch((ex) => {
         console.re.error(`koboldai save story error ${ex.name}: ${ex.message}`);
