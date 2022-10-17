@@ -1,4 +1,4 @@
-const { Client: DiscordClient, GatewayIntentBits } = require('discord.js');
+const { Client: DiscordClient, GatewayIntentBits, Partials } = require('discord.js');
 const { 
     createAudioPlayer, 
     entersState,
@@ -38,7 +38,8 @@ const discord = new DiscordClient({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildVoiceStates
-  ] 
+  ],
+  partials: [ Partials.Channel ]
 });
 
 const twitchChannel = process.env.TWITCH_CHANNEL;
@@ -77,8 +78,6 @@ var channel;
 
 discord.on('interactionCreate', async interaction => {
   if (!interaction.isChatInputCommand()) return;
-  
-  console.log(interaction);
 
   if (interaction.commandName === 'k9pause') {
     queue.pause();
@@ -135,11 +134,8 @@ discord.on('interactionCreate', async interaction => {
       queue.vdisconnect();
       await tmpReply(interaction, "Leaving voice channel...");
     } else if (interaction.options.getSubcommand() === 'url') {
-      console.re.log("ab url> getting or setting base url...");
       const baseUrl = interaction.options.getString('url');
       if (baseUrl) {
-        console.re.log(interaction.commandName);
-        console.re.log(interaction.options.getSubcommand());
         koboldai.saveBaseUrl(baseUrl);
         await tmpReply(interaction, "KoboldAI Base URL updated!");
       } else {
