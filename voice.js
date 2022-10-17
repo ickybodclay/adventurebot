@@ -133,12 +133,15 @@ discord.on('interactionCreate', async interaction => {
       queue.vdisconnect();
       await tmpReply(interaction, "Leaving voice channel...");
     } else if (interaction.options.getSubcommand() === 'url') {
+      console.re.log("ab url> getting or setting base url...");
       const baseUrl = interaction.options.getString('url');
       if (baseUrl) {
+        console.re.log(interaction.commandName);
+        console.re.log(interaction.options.getSubcommand());
         koboldai.saveBaseUrl(baseUrl);
-        await interaction.reply("KoboldAI Base URL updated!");
+        await tmpReply(interaction, "KoboldAI Base URL updated!");
       } else {
-        await interaction.reply(`Current KoboldAI Base URL: ${koboldai.baseUrl}`);
+        await tmpReply(interaction, `Current KoboldAI Base URL: ${koboldai.baseUrl}`);
       }
     } else if (interaction.options.getSubcommand() === 'generate') {
       const prompt = interaction.options.getString('prompt');
@@ -155,6 +158,8 @@ discord.on('interactionCreate', async interaction => {
         await interaction.editReply("Bot response was empty");
       }
     } else {
+      console.re.warn(interaction.commandName);
+      console.re.warn(interaction.options.getSubcommand());
       await tmpReply(interaction, "Not valid round for that command");
     }
   }
