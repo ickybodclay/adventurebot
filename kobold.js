@@ -7,7 +7,6 @@ const { censor } = require("./censor");
 
 module.exports = class KoboldAIClient {
   constructor() {
-    // please make sure you are using KoboldAI United version for API
     this.loadBaseUrl();
     this.prompts = [];
     this.votes = [];
