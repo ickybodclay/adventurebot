@@ -452,17 +452,21 @@ module.exports = class KoboldAIClient {
         if (this.botResponses.length == 0) {
           console.re.warn(`KoboldAI:generate> bot response was empty`);
         } else {
-          if (this._queue) {
+          if (this._queue && this._queue.isConnected()) {
             // TTS all the bot response options
             for(let i=0; i<this.botResponses.length; ++i) {
               matchVoiceAndPlay(this._queue, `Option ${i+1}: ${this.botResponses[i].prompt}`, this.voice);
             }
-            // 1 second break then go to voice round
+            // 1 second break then go to vote round
             this._queue.addBreak(() => {
               this.round = "VOTE";
               this.winningResponse = null;
               this.roundStartTime = null;
             });
+          } else {
+            this.round = "VOTE";
+            this.winningResponse = null;
+            this.roundStartTime = null;
           }
         }
       }
