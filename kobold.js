@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 const fs = require('fs');
 const { matchVoiceAndPlay } = require("./tts");
 const TTSQueue = require("./tts-queue");
-const { json } = require("./utils");
+const { json, wait } = require("./utils");
 const { censor } = require("./censor");
 
 module.exports = class KoboldAIClient {
@@ -180,6 +180,11 @@ module.exports = class KoboldAIClient {
   }
   
   addStory(prompt) {
+    if (!prompt || !prompt.prompt) {
+      console.re.warn("KoboldAI> prompt is missing");
+      return;
+    }
+    
     const requestUrl = `${this.baseUrl}/api/v1/story/end`;
     const postData = {
       prompt: prompt.prompt
@@ -397,8 +402,8 @@ module.exports = class KoboldAIClient {
     if (rawResponse && rawResponse.length > 0) {
       this.endResponse = censor(rawResponse[0].text);
       if (this._queue) matchVoiceAndPlay(this._queue, this.endResponse, this.voice);
-      await this.addStory(this.endPrompt);
-      await this.addStory(this.endResponse);
+      await this.addStory({ prompt: this.endPrompt });
+      await this.addStory({ prompt: this.endResponse });
       await this.saveStoryRemote();
     }
   }
