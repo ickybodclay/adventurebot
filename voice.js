@@ -77,6 +77,8 @@ var channel;
 
 discord.on('interactionCreate', async interaction => {
   if (!interaction.isChatInputCommand()) return;
+  
+  console.log(interaction);
 
   if (interaction.commandName === 'k9pause') {
     queue.pause();
@@ -141,7 +143,7 @@ discord.on('interactionCreate', async interaction => {
         koboldai.saveBaseUrl(baseUrl);
         await tmpReply(interaction, "KoboldAI Base URL updated!");
       } else {
-        await tmpReply(interaction, `Current KoboldAI Base URL: ${koboldai.baseUrl}`);
+        await tmpReply(interaction, `Current KoboldAI Base URL: ${koboldai.baseUrl}`, 3000);
       }
     } else if (interaction.options.getSubcommand() === 'generate') {
       const prompt = interaction.options.getString('prompt');
