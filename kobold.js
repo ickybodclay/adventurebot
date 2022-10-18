@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 const fs = require('fs');
 const { matchVoiceAndPlay } = require("./tts");
 const TTSQueue = require("./tts-queue");
-const { json, wait } = require("./utils");
+const { json } = require("./utils");
 const { censor } = require("./censor");
 
 module.exports = class KoboldAIClient {
