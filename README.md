@@ -20,6 +20,12 @@ Discord bot that generates TTS for Twitch chat and occasionally responds with AI
 
 And that should be it!
 
+## Optional Setup
+
+### Adventure Bot Stream Overlay
+
+There is an optional stream overlay that you can add to OBS to display what is going on in your story
+
 ## Usage
 
 ### Discord commands
