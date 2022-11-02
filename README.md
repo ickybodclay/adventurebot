@@ -4,7 +4,7 @@ Discord bot that generates TTS for Twitch chat and occasionally responds with AI
 
 ## Setup
 
-1. Add required secret keys. You'll need the following:
+1. Add required secret keys. You'll need the following (checkout `.env.example` for full list):
 
    - A Twitch bot (username and oauth token with ability to read and send messages)
    - A Discord bot (token and client id; make sure token has permission to use voice)
@@ -12,7 +12,7 @@ Discord bot that generates TTS for Twitch chat and occasionally responds with AI
    - The Discord guild id\* (server you want bot to join)
    - The Dicord voice channel id\* (voice channel you want bot to join)
    - KoboldAI United API Base Url (no trailing '/')
-   - Optional: `AB_OVERLAY_ORIGIN` for CORS (use '*' to accept all) and `AB_TOKEN` as a password f
+   - Optional: `AB_OVERLAY_ORIGIN` for CORS (use '*' to accept all) and `AB_TOKEN` as a password (can be set to anything) to secure your endpoint
 
    \*Note: use Discord developer mode so you can easily right click and "Copy ID" for these values
 
