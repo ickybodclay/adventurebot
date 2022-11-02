@@ -12,6 +12,7 @@ Discord bot that generates TTS for Twitch chat and occasionally responds with AI
    - The Discord guild id\* (server you want bot to join)
    - The Dicord voice channel id\* (voice channel you want bot to join)
    - KoboldAI United API Base Url (no trailing '/')
+   - Optional: `AB_OVERLAY_ORIGIN` for CORS (use '*' to accept all) and `AB_TOKEN` as a password f
 
    \*Note: use Discord developer mode so you can easily right click and "Copy ID" for these values
 
@@ -24,7 +25,9 @@ And that should be it!
 
 ### Adventure Bot Stream Overlay
 
-There is an optional stream overlay that you can add to OBS to display what is going on in your story
+A node app to display what is going on in your story in a nice neat stream overlay for OBS.
+
+Source code: [Adveture Bot Stream Overlay](https://github.com/ickybodclay/adventurebotoverlay)
 
 ## Usage
 
@@ -82,7 +85,7 @@ Note: for the following Twitch commands, must be channel owner or moderator.
 
 ## Endpoints
 
-Hular Hoops Bot provides a SSE endpoint to hook into for current story information.
+Adventure Bot provides a SSE endpoint to hook into for current story information.
 
 ### Adventure Bot
 
